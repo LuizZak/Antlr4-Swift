@@ -1742,6 +1742,8 @@ open class ParserATNSimulator: ATNSimulator {
                 try _input.seek(currentPosition)
                 if predSucceeds {
                     c = ATNConfig(config, pt.target) // no pred context
+                } else {
+                    c = ATNConfig(config, pt.target)
                 }
             }
             else {
