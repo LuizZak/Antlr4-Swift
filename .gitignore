@@ -1,0 +1,11 @@
+
+# Created by https://www.gitignore.io/api/swiftpm
+
+### SwiftPM ###
+Packages
+.build/
+xcuserdata
+DerivedData/
+
+
+# End of https://www.gitignore.io/api/swiftpm
