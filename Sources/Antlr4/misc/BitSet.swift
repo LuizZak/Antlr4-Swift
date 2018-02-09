@@ -558,8 +558,11 @@ public class BitSet: Hashable, CustomStringConvertible {
         // Process all words but the last word
         var i: Int = 0;
         while i < targetWords - 1 {
-            let wordOption1: Int64 = (words[sourceIndex] >>> Int64(fromIndex))
-            let wordOption2: Int64 = (words[sourceIndex + 1] << Int64(-fromIndex % 64))
+            let wordsAtIndex = words[sourceIndex]
+            let wordsAtIndexOffOne = words[sourceIndex + 1]
+            
+            let wordOption1: Int64 = (wordsAtIndex >>> Int64(fromIndex))
+            let wordOption2: Int64 = (wordsAtIndexOffOne << Int64(-fromIndex % 64))
             let wordOption = wordOption1 | wordOption2
             result.words[i] = wordAligned ? words[sourceIndex] : wordOption
 

@@ -66,9 +66,11 @@ extension Character {
         let MIN_SUPPLEMENTARY_CODE_POINT = 65536 // 0x010000
         let MIN_HIGH_SURROGATE = 0xd800 //"\u{dbff}"  //"\u{DBFF}"  //"\u{DBFF}"
         let MIN_LOW_SURROGATE = 0xdc00 //"\u{dc00}" //"\u{DC00}"
-        return ((high << 10) + low) + (MIN_SUPPLEMENTARY_CODE_POINT
-                - (MIN_HIGH_SURROGATE << 10)
-                - MIN_LOW_SURROGATE)
+        
+        let highShiftedTenLow = ((high << 10) + low)
+        let minHighSurrogateShifted = MIN_HIGH_SURROGATE << 10
+        
+        return highShiftedTenLow + (MIN_SUPPLEMENTARY_CODE_POINT - minHighSurrogateShifted - MIN_LOW_SURROGATE)
     }
 
 

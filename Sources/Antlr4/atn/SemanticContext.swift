@@ -108,7 +108,15 @@ public class SemanticContext: Hashable, CustomStringConvertible {
         public var description: String {
             return "{\(ruleIndex):\(predIndex)}?"
         }
-
+        
+        public static func ==(lhs: Predicate, rhs: Predicate) -> Bool {
+            if lhs === rhs {
+                return true
+            }
+            return lhs.ruleIndex == rhs.ruleIndex &&
+                lhs.predIndex == rhs.predIndex &&
+                lhs.isCtxDependent == rhs.isCtxDependent
+        }
     }
 
 
@@ -149,6 +157,13 @@ public class SemanticContext: Hashable, CustomStringConvertible {
         public var description: String {
             return "{" + String(precedence) + ">=prec}?"
 
+        }
+        
+        public static func ==(lhs: PrecedencePredicate, rhs: PrecedencePredicate) -> Bool {
+            if lhs === rhs {
+                return true
+            }
+            return lhs.precedence == rhs.precedence
         }
     }
 
@@ -282,6 +297,13 @@ public class SemanticContext: Hashable, CustomStringConvertible {
             return opnds.map({ $0.description }).joined(separator: "&&")
 
         }
+        
+        public static func ==(lhs: AND, rhs: AND) -> Bool {
+            if lhs === rhs {
+                return true
+            }
+            return lhs.opnds == rhs.opnds
+        }
     }
 
     /// 
@@ -387,6 +409,13 @@ public class SemanticContext: Hashable, CustomStringConvertible {
             return opnds.map({ $0.description }).joined(separator: "||")
 
         }
+        
+        public static func ==(lhs: SemanticContext.OR, rhs: SemanticContext.OR) -> Bool {
+            if lhs === rhs {
+                return true
+            }
+            return lhs.opnds == rhs.opnds
+        }
     }
 
     public static func and(_ a: SemanticContext?, _ b: SemanticContext?) -> SemanticContext {
@@ -427,7 +456,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
     }
 
     private static func filterPrecedencePredicates(_ collection: inout Set<SemanticContext>) -> [PrecedencePredicate] {
-        let result = collection.flatMap {
+        let result = collection.compactMap {
             $0 as? PrecedencePredicate
         }
         collection = Set<SemanticContext>(collection.filter {
@@ -442,53 +471,21 @@ public func ==(lhs: SemanticContext, rhs: SemanticContext) -> Bool {
         return true
     }
 
-    if (lhs is SemanticContext.Predicate) && (rhs is SemanticContext.Predicate) {
-        return (lhs as! SemanticContext.Predicate) == (rhs as! SemanticContext.Predicate)
+    if let lhs = lhs as? SemanticContext.Predicate, let rhs = rhs as? SemanticContext.Predicate {
+        return lhs == rhs
     }
 
-    if (lhs is SemanticContext.PrecedencePredicate) && (rhs is SemanticContext.PrecedencePredicate) {
-        return (lhs as! SemanticContext.PrecedencePredicate) == (rhs as! SemanticContext.PrecedencePredicate)
+    if let lhs = lhs as? SemanticContext.PrecedencePredicate, let rhs = rhs as? SemanticContext.PrecedencePredicate {
+        return lhs == rhs
     }
 
-    if (lhs is SemanticContext.AND) && (rhs is SemanticContext.AND) {
-        return (lhs as! SemanticContext.AND) == (rhs as! SemanticContext.AND)
+    if let lhs = lhs as? SemanticContext.AND, let rhs = rhs as? SemanticContext.AND {
+        return lhs == rhs
     }
 
-    if (lhs is SemanticContext.OR) && (rhs is SemanticContext.OR) {
-        return (lhs as! SemanticContext.OR) == (rhs as! SemanticContext.OR)
+    if let lhs = lhs as? SemanticContext.OR, let rhs = rhs as? SemanticContext.OR {
+        return lhs == rhs
     }
-
 
     return false
-}
-
-public func ==(lhs: SemanticContext.Predicate, rhs: SemanticContext.Predicate) -> Bool {
-    if lhs === rhs {
-        return true
-    }
-    return lhs.ruleIndex == rhs.ruleIndex &&
-            lhs.predIndex == rhs.predIndex &&
-            lhs.isCtxDependent == rhs.isCtxDependent
-}
-
-public func ==(lhs: SemanticContext.PrecedencePredicate, rhs: SemanticContext.PrecedencePredicate) -> Bool {
-    if lhs === rhs {
-        return true
-    }
-    return lhs.precedence == rhs.precedence
-}
-
-
-public func ==(lhs: SemanticContext.AND, rhs: SemanticContext.AND) -> Bool {
-    if lhs === rhs {
-        return true
-    }
-    return lhs.opnds == rhs.opnds
-}
-
-public func ==(lhs: SemanticContext.OR, rhs: SemanticContext.OR) -> Bool {
-    if lhs === rhs {
-        return true
-    }
-    return lhs.opnds == rhs.opnds
 }
