@@ -157,9 +157,7 @@ public class BufferedTokenStream: TokenStream {
 
         for i in 0..<n {
             let t: Token = try tokenSource.nextToken()
-            if t is WritableToken {
-                (t as! WritableToken).setTokenIndex(tokens.count)
-            }
+            (t as? WritableToken)?.setTokenIndex(tokens.count)
 
             tokens.append(t) //add
             if t.getType() == BufferedTokenStream.EOF {

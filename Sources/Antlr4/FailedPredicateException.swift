@@ -18,9 +18,8 @@ public class FailedPredicateException: RecognitionException {
 
 	public init(_ recognizer: Parser, _ predicate: String? = nil, _ message: String? = nil) {
 		let s = recognizer.getInterpreter().atn.states[recognizer.getState()]!
-
-		let trans = s.transition(0) as! AbstractPredicateTransition
-		if let predex = trans as? PredicateTransition {
+        
+		if let predex = s.transition(0) as? PredicateTransition {
 			self.ruleIndex = predex.ruleIndex
 			self.predicateIndex = predex.predIndex
 		}

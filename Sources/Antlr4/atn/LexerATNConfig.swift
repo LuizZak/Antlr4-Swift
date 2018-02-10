@@ -58,7 +58,7 @@ public class LexerATNConfig: ATNConfig {
 
     private static func checkNonGreedyDecision(_ source: LexerATNConfig, _ target: ATNState) -> Bool {
         return source.passedThroughNonGreedyDecision
-                || target is DecisionState && (target as! DecisionState).nonGreedy
+                || (target as? DecisionState)?.nonGreedy ?? false
     }
     /// 
     /// Gets the _org.antlr.v4.runtime.atn.LexerActionExecutor_ capable of executing the embedded

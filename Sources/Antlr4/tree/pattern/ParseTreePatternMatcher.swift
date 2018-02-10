@@ -212,9 +212,7 @@ public class ParseTreePatternMatcher {
                             _ labels: MultiMap<String, ParseTree>) throws -> ParseTree? {
 
         // x and <ID>, x and y, or x and x; or could be mismatched types
-        if tree is TerminalNode && patternTree is TerminalNode {
-            let t1 = tree as! TerminalNode
-            let t2 = patternTree as! TerminalNode
+        if let t1 = tree as? TerminalNode, let t2 = patternTree as? TerminalNode {
             var mismatchedNode: ParseTree? = nil
             // both are tokens and they have same type
             if t1.getSymbol()!.getType() == t2.getSymbol()!.getType() {
@@ -245,9 +243,8 @@ public class ParseTreePatternMatcher {
             return mismatchedNode
         }
 
-        if tree is ParserRuleContext && patternTree is ParserRuleContext {
-            let r1: ParserRuleContext = tree as! ParserRuleContext
-            let r2: ParserRuleContext = patternTree as! ParserRuleContext
+        if let r1: ParserRuleContext = tree as? ParserRuleContext,
+            let r2: ParserRuleContext = patternTree as? ParserRuleContext {
             var mismatchedNode: ParseTree? = nil
             // (expr ...) and <expr>
             if let ruleTagToken = getRuleTagToken(r2) {

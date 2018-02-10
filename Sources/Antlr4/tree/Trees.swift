@@ -108,9 +108,7 @@ public class Trees {
             }
         }
         // no recog for rule names
-        let payload: AnyObject = t.getPayload()
-        if payload is Token {
-            let token = payload as! Token
+        if let token = t.getPayload() as? Token {
             return token.getText()!
         }
         return "\(t.getPayload())"

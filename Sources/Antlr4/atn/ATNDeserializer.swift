@@ -373,16 +373,15 @@ public class ATNDeserializer {
 
     public func dictToJson(_ dict: [String: Any]) throws -> ATN {
         let version = dict["version"] as! Int
-        if version != ATNDeserializer.SERIALIZED_VERSION {
+        guard version == ATNDeserializer.SERIALIZED_VERSION else {
             let reason = "Could not deserialize ATN with version \(version) (expected \(ATNDeserializer.SERIALIZED_VERSION))."
             throw ANTLRError.unsupportedOperation(msg: reason)
         }
 
         let uuid = UUID(uuidString: dict["uuid"] as! String)!
 
-        if !ATNDeserializer.SUPPORTED_UUIDS.contains(uuid) {
+        guard ATNDeserializer.SUPPORTED_UUIDS.contains(uuid) else {
             let reason = "Could not deserialize ATN with UUID \(uuid) (expected \(ATNDeserializer.SERIALIZED_UUID) or a legacy UUID)."
-
             throw ANTLRError.unsupportedOperation(msg: reason)
         }
 

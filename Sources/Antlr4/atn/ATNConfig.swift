@@ -189,10 +189,8 @@ public func ==(lhs: ATNConfig, rhs: ATNConfig) -> Bool {
         return true
     }
     
-    if (lhs is LexerATNConfig) && (rhs is LexerATNConfig) {
-        return (lhs as! LexerATNConfig) == (rhs as! LexerATNConfig)
-
-
+    if let lhs = lhs as? LexerATNConfig, let rhs = rhs as? LexerATNConfig {
+        return lhs == rhs
     }
 
     if lhs.state.stateNumber != rhs.state.stateNumber {

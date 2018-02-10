@@ -68,24 +68,24 @@ public func ==(lhs: LexerAction, rhs: LexerAction) -> Bool {
         return true
     }
 
-    if (lhs is LexerChannelAction) && (rhs is LexerChannelAction) {
-        return (lhs as! LexerChannelAction) == (rhs as! LexerChannelAction)
-    } else if (lhs is LexerCustomAction) && (rhs is LexerCustomAction) {
-        return (lhs as! LexerCustomAction) == (rhs as! LexerCustomAction)
-    } else if (lhs is LexerIndexedCustomAction) && (rhs is LexerIndexedCustomAction) {
-        return (lhs as! LexerIndexedCustomAction) == (rhs as! LexerIndexedCustomAction)
-    } else if (lhs is LexerModeAction) && (rhs is LexerModeAction) {
-        return (lhs as! LexerModeAction) == (rhs as! LexerModeAction)
-    } else if (lhs is LexerMoreAction) && (rhs is LexerMoreAction) {
-        return (lhs as! LexerMoreAction) == (rhs as! LexerMoreAction)
-    } else if (lhs is LexerPopModeAction) && (rhs is LexerPopModeAction) {
-        return (lhs as! LexerPopModeAction) == (rhs as! LexerPopModeAction)
-    } else if (lhs is LexerPushModeAction) && (rhs is LexerPushModeAction) {
-        return (lhs as! LexerPushModeAction) == (rhs as! LexerPushModeAction)
-    } else if (lhs is LexerSkipAction) && (rhs is LexerSkipAction) {
-        return (lhs as! LexerSkipAction) == (rhs as! LexerSkipAction)
-    } else if (lhs is LexerTypeAction) && (rhs is LexerTypeAction) {
-        return (lhs as! LexerTypeAction) == (rhs as! LexerTypeAction)
+    if let lhs = lhs as? LexerChannelAction, let rhs = rhs as? LexerChannelAction {
+        return lhs == rhs
+    } else if let lhs = lhs as? LexerCustomAction, let rhs = rhs as? LexerCustomAction {
+        return lhs == rhs
+    } else if let lhs = lhs as? LexerIndexedCustomAction, let rhs = rhs as? LexerIndexedCustomAction {
+        return lhs == rhs
+    } else if let lhs = lhs as? LexerModeAction, let rhs = rhs as? LexerModeAction {
+        return lhs == rhs
+    } else if let lhs = lhs as? LexerMoreAction, let rhs = rhs as? LexerMoreAction {
+        return lhs == rhs
+    } else if let lhs = lhs as? LexerPopModeAction, let rhs = rhs as? LexerPopModeAction {
+        return lhs == rhs
+    } else if let lhs = lhs as? LexerPushModeAction, let rhs = rhs as? LexerPushModeAction {
+        return lhs == rhs
+    } else if let lhs = lhs as? LexerSkipAction, let rhs = rhs as? LexerSkipAction {
+        return lhs == rhs
+    } else if let lhs = lhs as? LexerTypeAction, let rhs = rhs as? LexerTypeAction {
+        return lhs == rhs
     }
 
 

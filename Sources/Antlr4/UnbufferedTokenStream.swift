@@ -184,9 +184,7 @@ public class UnbufferedTokenStream: TokenStream {
             //tokens = Arrays.copyOf(tokens, tokens.length * 2);
         }
 
-        if t is WritableToken {
-            (t as! WritableToken).setTokenIndex(getBufferStartIndex() + n)
-        }
+        (t as? WritableToken)?.setTokenIndex(getBufferStartIndex() + n)
 
         tokens[n] = t
         n += 1

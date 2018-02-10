@@ -264,13 +264,15 @@ public class SemanticContext: Hashable, CustomStringConvertible {
                 //differs |= (evaluated != context);
                 differs = differs || (evaluated != context)
 
-                if evaluated == nil {
-                    // The AND context is false if any element is false
-                    return nil
+                if let evaluated = evaluated {
+                    // Reduce the result by skipping true elements
+                    if evaluated != SemanticContext.NONE {
+                        operands.append(evaluated)
+                    }
                 }
                 else if evaluated != SemanticContext.NONE {
-                    // Reduce the result by skipping true elements
-                    operands.append(evaluated!)
+                    // The AND context is false if any element is false
+                    return nil
                 }
             }
 
@@ -419,13 +421,13 @@ public class SemanticContext: Hashable, CustomStringConvertible {
     }
 
     public static func and(_ a: SemanticContext?, _ b: SemanticContext?) -> SemanticContext {
-        if a == nil || a == SemanticContext.NONE {
+        guard let a = a, a != SemanticContext.NONE else {
             return b!
         }
-        if b == nil || b == SemanticContext.NONE {
-            return a!
+        guard let b = b, b != SemanticContext.NONE else {
+            return a
         }
-        let result: AND = AND(a!, b!)
+        let result: AND = AND(a, b)
         if result.opnds.count == 1 {
             return result.opnds[0]
         }
@@ -438,16 +440,16 @@ public class SemanticContext: Hashable, CustomStringConvertible {
     /// - seealso: org.antlr.v4.runtime.atn.ParserATNSimulator#getPredsForAmbigAlts
     /// 
     public static func or(_ a: SemanticContext?, _ b: SemanticContext?) -> SemanticContext {
-        if a == nil {
+        guard let a = a else {
             return b!
         }
-        if b == nil {
-            return a!
+        guard let b = b else {
+            return a
         }
         if a == SemanticContext.NONE || b == SemanticContext.NONE {
             return SemanticContext.NONE
         }
-        let result: OR = OR(a!, b!)
+        let result: OR = OR(a, b)
         if result.opnds.count == 1 {
             return result.opnds[0]
         }
