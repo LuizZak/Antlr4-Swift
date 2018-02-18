@@ -41,27 +41,21 @@ final class Entry<K: Hashable,V>: CustomStringConvertible {
     var description: String { return "\(getKey())=\(getValue())" }
 
 }
-func == <K, V: Equatable>(lhs: Entry<K,V>, rhs: Entry<K,V>) -> Bool {
+func == <K, V: Equatable>(lhs: Entry<K, V>, rhs: Entry<K, V>) -> Bool {
     if lhs === rhs {
         return true
     }
-    if  lhs.key == rhs.key {
-        if  lhs.value == rhs.value {
-            return true
-        }
+    if lhs.key == rhs.key && lhs.value == rhs.value {
+        return true
     }
     return false
 }
-func == <K, V: Equatable>(lhs: Entry<K,V?>, rhs: Entry<K,V?>) -> Bool {
+func == <K, V: Equatable>(lhs: Entry<K, V?>, rhs: Entry<K, V?>) -> Bool {
     if lhs === rhs {
         return true
     }
-    if  lhs.key == rhs.key {
-        if lhs.value == nil && rhs.value == nil {
-            return true
-        } else if lhs.value != nil && rhs.value != nil && lhs.value! == rhs.value! {
-            return true
-        }
+    if lhs.key == rhs.key && lhs.value == rhs.value {
+        return true
     }
     return false
 }

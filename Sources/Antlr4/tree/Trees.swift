@@ -45,8 +45,7 @@ public class Trees {
     /// parse trees and extract data appropriately.
     /// 
     public static func toStringTree(_ t: Tree) -> String {
-        let rulsName: Array<String>? = nil
-        return toStringTree(t, rulsName)
+        return toStringTree(t, nil as [String]?)
     }
 
     /// Print out a whole tree in LISP form. _#getNodeText_ is used on the
@@ -54,9 +53,7 @@ public class Trees {
     /// parse trees and extract data appropriately.
     /// 
     public static func toStringTree(_ t: Tree, _ recog: Parser?) -> String {
-        let ruleNames: [String]? = recog != nil ? recog!.getRuleNames() : nil
-        let ruleNamesList: Array<String>? = ruleNames ?? nil
-        return toStringTree(t, ruleNamesList)
+        return toStringTree(t, recog?.getRuleNames())
     }
 
     /// Print out a whole tree in LISP form. _#getNodeText_ is used on the
@@ -81,9 +78,7 @@ public class Trees {
     }
 
     public static func getNodeText(_ t: Tree, _ recog: Parser?) -> String {
-        let ruleNames: [String]? = recog != nil ? recog!.getRuleNames() : nil
-        let ruleNamesList: Array<String>? = ruleNames ?? nil
-        return getNodeText(t, ruleNamesList)
+        return getNodeText(t, recog?.getRuleNames())
     }
 
     public static func getNodeText(_ t: Tree, _ ruleNames: Array<String>?) -> String {

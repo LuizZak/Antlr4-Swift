@@ -292,7 +292,7 @@ open class Parser: Recognizer<ParserATNSimulator> {
     }
 
     public func getParseListeners() -> [ParseTreeListener] {
-        return _parseListeners ?? [ParseTreeListener]()
+        return _parseListeners ?? []
     }
 
     /// 
@@ -321,11 +321,9 @@ open class Parser: Recognizer<ParserATNSimulator> {
     /// - Parameter listener: the listener to add
     /// 
     public func addParseListener(_ listener: ParseTreeListener) {
-        if _parseListeners == nil {
-            _parseListeners = [ParseTreeListener]()
+        if _parseListeners?.append(listener) == nil {
+            _parseListeners = [listener]
         }
-
-        _parseListeners!.append(listener)
     }
 
     /// 
@@ -340,15 +338,13 @@ open class Parser: Recognizer<ParserATNSimulator> {
     /// 
 
     public func removeParseListener(_ listener: ParseTreeListener?) {
-        if _parseListeners != nil {
-            if !_parseListeners!.filter({ $0 === listener }).isEmpty {
-                _parseListeners = _parseListeners!.filter({
-                    $0 !== listener
-                })
-                if _parseListeners!.isEmpty {
-                    _parseListeners = nil
-                }
-            }
+        guard let parseListeners = _parseListeners else {
+            return
+        }
+        
+        _parseListeners = parseListeners.filter { $0 !== listener }
+        if _parseListeners?.isEmpty == true {
+            _parseListeners = nil
         }
     }
 
@@ -719,9 +715,9 @@ open class Parser: Recognizer<ParserATNSimulator> {
         // hook into tree
         retctx.parent = _parentctx
 
-        if _buildParseTrees && _parentctx != nil {
+        if _buildParseTrees, let parentctx = _parentctx {
             // add return ctx into invoking rule's tree
-            _parentctx!.addChild(retctx)
+            parentctx.addChild(retctx)
         }
     }
 

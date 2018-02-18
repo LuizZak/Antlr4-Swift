@@ -823,20 +823,20 @@ public class ATNDeserializer {
                 try checkCondition(state.transition(0).target is StarLoopEntryState)
             }
 
-            if state is LoopEndState {
-                try checkCondition((state as! LoopEndState).loopBackState != nil)
+            if let state = state as? LoopEndState {
+                try checkCondition(state.loopBackState != nil)
             }
 
-            if state is RuleStartState {
-                try checkCondition((state as! RuleStartState).stopState != nil)
+            if let state = state as? RuleStartState {
+                try checkCondition(state.stopState != nil)
             }
 
-            if state is BlockStartState {
-                try checkCondition((state as! BlockStartState).endState != nil)
+            if let state = state as? BlockStartState {
+                try checkCondition(state.endState != nil)
             }
 
-            if state is BlockEndState {
-                try checkCondition((state as! BlockEndState).startState != nil)
+            if let state = state as? BlockEndState {
+                try checkCondition(state.startState != nil)
             }
 
             if let decisionState = state as? DecisionState {

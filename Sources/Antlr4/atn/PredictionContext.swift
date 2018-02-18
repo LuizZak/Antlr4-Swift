@@ -264,9 +264,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                     }
                     let parents = [singleParent, singleParent]
                     let a_ = ArrayPredictionContext(parents, payloads)
-                    if mergeCache != nil {
-                        mergeCache!.put(a, b, a_)
-                    }
+                    mergeCache?.put(a, b, a_)
                     return a_
                 }
                 // parents differ and can't merge them. Just pack together
