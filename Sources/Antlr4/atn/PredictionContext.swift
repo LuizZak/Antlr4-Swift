@@ -213,20 +213,18 @@ public class PredictionContext: Hashable, CustomStringConvertible {
 
             if let mergeCache = mergeCache {
                 var previous = mergeCache.get(a, b)
-                if previous != nil {
-                    return previous!
+                if let previous = previous {
+                    return previous
                 }
                 previous = mergeCache.get(b, a)
-                if previous != nil {
-                    return previous!
+                if let previous = previous {
+                    return previous
                 }
             }
 
 
             if let rootMerge = mergeRoot(a, b, rootIsWildcard) {
-                if mergeCache != nil {
-                    mergeCache!.put(a, b, rootMerge)
-                }
+                mergeCache?.put(a, b, rootMerge)
                 return rootMerge
             }
 
@@ -245,9 +243,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                 // of those graphs.  dup a, a' points at merged array
                 // new joined parent so create new singleton pointing to it, a'
                 let a_ = SingletonPredictionContext.create(parent, a.returnState);
-                if mergeCache != nil {
-                    mergeCache!.put(a, b, a_)
-                }
+                mergeCache?.put(a, b, a_)
                 return a_
             } else {
                 // a != b payloads differ
@@ -288,9 +284,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                     // print("parent is null")
                 }
                 let a_ = ArrayPredictionContext(parents, payloads)
-                if mergeCache != nil {
-                    mergeCache!.put(a, b, a_)
-                }
+                mergeCache?.put(a, b, a_)
                 return a_
             }
     }
@@ -390,14 +384,14 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         _ rootIsWildcard: Bool,
         _ mergeCache: inout DoubleKeyMap<PredictionContext, PredictionContext, PredictionContext>?) -> PredictionContext {
 
-            if mergeCache != nil {
-                var previous = mergeCache!.get(a, b)
-                if previous != nil {
-                    return previous!
+            if let mergeCache = mergeCache {
+                var previous = mergeCache.get(a, b)
+                if let previous = previous {
+                    return previous
                 }
-                previous = mergeCache!.get(b, a)
-                if previous != nil {
-                    return previous!
+                previous = mergeCache.get(b, a)
+                if let previous = previous {
+                    return previous
                 }
             }
 
@@ -476,9 +470,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                 if k == 1 {
                     // for just one merged element, return singleton top
                     let a_ = SingletonPredictionContext.create(mergedParents[0], mergedReturnStates[0])
-                    if mergeCache != nil {
-                        mergeCache!.put(a, b, a_)
-                    }
+                    mergeCache?.put(a, b, a_)
                     //print("merge array 1 \(a_)")
                     return a_
                 }
@@ -491,15 +483,11 @@ public class PredictionContext: Hashable, CustomStringConvertible {
             // if we created same array as a or b, return that instead
             // TODO: track whether this is possible above during merge sort for speed
             if M == a {
-                if mergeCache != nil {
-                    mergeCache!.put(a, b, a)
-                }
+                mergeCache?.put(a, b, a)
                 return a
             }
             if M == b {
-                if mergeCache != nil {
-                    mergeCache!.put(a, b, b)
-                }
+                mergeCache?.put(a, b, b)
                 return b
             }
 
@@ -507,9 +495,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
             //combineCommonParents(&mergedParents)
             M.combineCommonParents()
 
-            if mergeCache != nil {
-                mergeCache!.put(a, b, M)
-            }
+            mergeCache?.put(a, b, M)
             // print("merge array 4 \(M)")
             return M
     }
@@ -585,15 +571,13 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                 return context
             }
 
-            var existing = visited[context]
-            if existing != nil {
-                return existing!
+            if let existing = visited[context] {
+                return existing
             }
-
-            existing = contextCache.get(context)
-            if existing != nil {
-                visited[context] = existing!
-                return existing!
+        
+            if let existing = contextCache.get(context) {
+                visited[context] = existing
+                return existing
             }
 
             var changed = false

@@ -212,9 +212,9 @@ public class LL1Analyzer {
             }
             else {
                 var set = t.labelIntervalSet()
-                if set != nil {
+                if let _set = set {
                     if t is NotSetTransition {
-                        set = set!.complement(IntervalSet.of(CommonToken.MIN_USER_TOKEN_TYPE, atn.maxTokenType)) as? IntervalSet
+                        set = _set.complement(IntervalSet.of(CommonToken.MIN_USER_TOKEN_TYPE, atn.maxTokenType)) as? IntervalSet
                     }
                     try! look.addAll(set)
                 }

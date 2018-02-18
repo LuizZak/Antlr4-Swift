@@ -142,8 +142,7 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
             outer:
             while true {
                 if _hitEOF {
-                    emitEOF()
-                    return _token!
+                    return emitEOF()
                 }
 
                 _token = nil
@@ -174,10 +173,13 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
                     }
                 } while _type == Lexer.MORE
 
-                if _token == nil {
-                    emit()
+                let token: Token
+                if let _token = _token {
+                    token = _token
+                } else {
+                    token = emit()
                 }
-                return _token!
+                return token
             }
         }
 
@@ -261,7 +263,6 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
     /// rather than a single variable as this implementation does).
     /// 
     open func emit(_ token: Token) {
-        //System.err.println("emit "+token);
         self._token = token
     }
 
@@ -327,8 +328,8 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
     /// text override.
     /// 
     open func getText() -> String {
-        if _text != nil {
-            return _text!
+        if let text = _text {
+            return text
         }
         return getInterpreter().getText(_input!)
     }

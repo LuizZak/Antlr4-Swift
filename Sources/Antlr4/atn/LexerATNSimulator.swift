@@ -433,8 +433,8 @@ open class LexerATNSimulator: ATNSimulator {
 
         if config.state is RuleStopState {
             if LexerATNSimulator.debug {
-                if recog != nil {
-                    print("closure at \(recog!.getRuleNames()[config.state.ruleIndex!]) rule stop \(config)\n")
+                if let recog = recog {
+                    print("closure at \(recog.getRuleNames()[config.state.ruleIndex!]) rule stop \(config)\n")
                 } else {
                     print("closure at rule stop \(config)\n")
                 }
@@ -701,10 +701,10 @@ open class LexerATNSimulator: ATNSimulator {
         let proposed = DFAState(configs)
         let firstConfigWithRuleStopState = configs.firstConfigWithRuleStopState
 
-        if firstConfigWithRuleStopState != nil {
+        if let firstConfigWithRuleStopState = firstConfigWithRuleStopState {
             proposed.isAcceptState = true
             proposed.lexerActionExecutor = (firstConfigWithRuleStopState as! LexerATNConfig).getLexerActionExecutor()
-            proposed.prediction = atn.ruleToTokenType[firstConfigWithRuleStopState!.state.ruleIndex!]
+            proposed.prediction = atn.ruleToTokenType[firstConfigWithRuleStopState.state.ruleIndex!]
         }
 
         let dfa = decisionToDFA[mode]

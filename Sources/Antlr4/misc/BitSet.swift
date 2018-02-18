@@ -759,7 +759,8 @@ public class BitSet: Hashable, CustomStringConvertible {
             return length() - 1
         }
 
-        var word: Int64 = words[u] & (BitSet.WORD_MASK >>> Int64(-(fromIndex + 1)))
+        let temp = Int64(-(fromIndex + 1))
+        var word: Int64 = words[u] & (BitSet.WORD_MASK >>> temp)
         while true {
             if word != 0 {
                 return (u + 1) * BitSet.BITS_PER_WORD - 1 - BitSet.numberOfLeadingZeros(word)
@@ -801,7 +802,8 @@ public class BitSet: Hashable, CustomStringConvertible {
             return fromIndex
         }
 
-        var word: Int64 = ~words[u] & (BitSet.WORD_MASK >>> Int64(-(fromIndex + 1)))
+        let temp = Int64(-(fromIndex + 1))
+        var word: Int64 = ~words[u] & (BitSet.WORD_MASK >>> temp)
         // var word : Int64 = ~words[u] & (WORD_MASK >>> -(fromIndex+1));
 
         while true {

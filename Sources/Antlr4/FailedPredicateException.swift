@@ -50,8 +50,8 @@ public class FailedPredicateException: RecognitionException {
 
 
 	private static func formatMessage(_ predicate: String?, _ message: String?) -> String {
-		if message != nil {
-			return message!
+		if let message = message {
+			return message
 		}
 
         let predstr = predicate ?? "<unknown>"

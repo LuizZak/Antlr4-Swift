@@ -27,10 +27,10 @@ public final class PredictionContextCache {
         if ctx === PredictionContext.EMPTY {
             return PredictionContext.EMPTY
         }
-        let existing: PredictionContext? = cache[ctx]
-        if existing != nil {
+        
+        if let existing = cache[ctx] {
 //			print(name+" reuses "+existing);
-            return existing!
+            return existing
         }
         cache[ctx] = ctx
         return ctx

@@ -87,10 +87,10 @@ public class Trees {
     }
 
     public static func getNodeText(_ t: Tree, _ ruleNames: Array<String>?) -> String {
-        if ruleNames != nil {
+        if let ruleNames = ruleNames {
             if let ruleNode = t as? RuleNode {
                 let ruleIndex: Int = ruleNode.getRuleContext().getRuleIndex()
-                let ruleName: String = ruleNames![ruleIndex]
+                let ruleName: String = ruleNames[ruleIndex]
                 let altNumber = (t as! RuleContext).getAltNumber()
                 if altNumber != ATN.INVALID_ALT_NUMBER  {
                     return "\(ruleName):\(altNumber)"
@@ -216,8 +216,8 @@ public class Trees {
                 return nil
             }
             let r: ParserRuleContext? = getRootOfSubtreeEnclosingRegion(child!, startTokenIndex, stopTokenIndex)
-            if r != nil {
-                return r!
+            if let r = r {
+                return r
             }
         }
         if let r = t as? ParserRuleContext {

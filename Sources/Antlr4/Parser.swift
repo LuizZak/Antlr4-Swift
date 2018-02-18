@@ -1040,12 +1040,15 @@ open class Parser: Recognizer<ParserATNSimulator> {
             removeParseListener(_tracer)
             _tracer = nil
         } else {
-            if _tracer != nil {
-                removeParseListener(_tracer!)
+            let newTracer: TraceListener
+            if let tracer = _tracer {
+                removeParseListener(tracer)
+                newTracer = tracer
             } else {
-                _tracer = TraceListener(self)
+                newTracer = TraceListener(self)
+                _tracer = newTracer
             }
-            addParseListener(_tracer!)
+            addParseListener(newTracer)
         }
     }
 

@@ -535,8 +535,8 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
         }
         var current = currentSymbol
         let lookback = try getTokenStream(recognizer).LT(-1)
-        if current.getType() == CommonToken.EOF && lookback != nil {
-            current = lookback!
+        if current.getType() == CommonToken.EOF, let lookback = lookback {
+            current = lookback
         }
 
         let token = recognizer.getTokenFactory().create(
@@ -567,15 +567,15 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
         guard let t = t else {
             return "<no token>"
         }
-        var s = getSymbolText(t)
-        if s == nil {
-            if getSymbolType(t) == CommonToken.EOF {
-                s = "<EOF>"
-            } else {
-                s = "<\(getSymbolType(t))>"
-            }
+        let s: String
+        if let _s = getSymbolText(t) {
+            s = _s
+        } else if getSymbolType(t) == CommonToken.EOF {
+            s = "<EOF>"
+        } else {
+            s = "<\(getSymbolType(t))>"
         }
-        return escapeWSAndQuote(s!)
+        return escapeWSAndQuote(s)
     }
 
     open func getSymbolText(_ symbol: Token) -> String? {

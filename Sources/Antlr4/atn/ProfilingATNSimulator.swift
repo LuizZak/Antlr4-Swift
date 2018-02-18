@@ -97,7 +97,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
         // during SLL prediction
         _sllStopIndex = _input.index()
 
-        let existingTargetState: DFAState? = super.getExistingTargetState(previousD, t)
+        let existingTargetState = super.getExistingTargetState(previousD, t)
         if existingTargetState != nil {
             decisions[currentDecision].SLL_DFATransitions += 1 // count only if we transition over a DFA state
             if existingTargetState == ATNSimulator.ERROR {
