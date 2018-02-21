@@ -3,67 +3,7 @@
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
 /// 
-
-final class Entry<K: Hashable,V>: CustomStringConvertible {
-    var key: K
-    var value: V
-    var next: Entry<K,V>!
-    var hash: Int
-
-    /// 
-    /// Creates new entry.
-    /// 
-    init(_ h: Int, _ k: K, _ v: V, _ n: Entry<K,V>!) {
-        value = v
-        next = n
-        key = k
-        hash = h
-    }
-
-    func getKey() -> K {
-        return key
-    }
-
-    func getValue() -> V {
-        return value
-    }
-
-    func setValue(_ newValue: V) -> V {
-        let oldValue: V = value
-        value = newValue
-        return oldValue
-    }
-
-    var hashValue: Int {
-        return  key.hashValue
-    }
-
-    var description: String { return "\(getKey())=\(getValue())" }
-
-}
-func == <K, V: Equatable>(lhs: Entry<K, V>, rhs: Entry<K, V>) -> Bool {
-    if lhs === rhs {
-        return true
-    }
-    if lhs.key == rhs.key && lhs.value == rhs.value {
-        return true
-    }
-    return false
-}
-func == <K, V: Equatable>(lhs: Entry<K, V?>, rhs: Entry<K, V?>) -> Bool {
-    if lhs === rhs {
-        return true
-    }
-    if lhs.key == rhs.key && lhs.value == rhs.value {
-        return true
-    }
-    return false
-}
-
-
-
-public final class HashMap<K: Hashable,V>: Sequence
-{
+public final class HashMap<K: Hashable, V>: Sequence {
 
     /// 
     /// The default initial capacity - MUST be a power of two.
@@ -85,7 +25,7 @@ public final class HashMap<K: Hashable,V>: Sequence
     /// 
     /// The table, resized as necessary. Length MUST Always be a power of two.
     /// 
-     var table: [Entry<K,V>?]
+     var table: [Entry?]
 
     /// 
     /// The number of key-value mappings contained in this map.
@@ -134,12 +74,12 @@ public final class HashMap<K: Hashable,V>: Sequence
 
         self.loadFactor = DEFAULT_LOAD_FACTOR
         threshold = Int(Float(initialCapacity) * loadFactor)
-        table =  [Entry<K,V>?](repeating: nil, count: initialCapacity)
+        table =  [Entry?](repeating: nil, count: initialCapacity)
     }
     public init() {
         self.loadFactor = DEFAULT_LOAD_FACTOR
         threshold = Int(Float(DEFAULT_INITIAL_CAPACITY) * DEFAULT_LOAD_FACTOR)
-        table =  [Entry<K,V>?](repeating: nil, count: DEFAULT_INITIAL_CAPACITY)
+        table =  [Entry?](repeating: nil, count: DEFAULT_INITIAL_CAPACITY)
     }
 
     static func hash(_ h: Int) -> Int {
@@ -229,7 +169,7 @@ public final class HashMap<K: Hashable,V>: Sequence
     /// HashMap.  Returns null if the HashMap contains no mapping
     /// for the key.
     /// 
-    func getEntry(_ key: K) -> Entry<K,V>! {
+    func getEntry(_ key: K) -> Entry! {
         let hash: Int =  HashMap.hash(key.hashValue)
         var e = table[HashMap.indexFor(hash, table.count)]
         while let eWrap = e {
@@ -286,7 +226,7 @@ public final class HashMap<K: Hashable,V>: Sequence
     /// 
     func addEntry(_ hash: Int, _ key: K, _ value: V, _ bucketIndex: Int) {
         let e = table[bucketIndex]
-        table[bucketIndex] = Entry<K,V>(hash, key, value, e)
+        table[bucketIndex] = Entry(hash, key, value, e)
         let oldSize = size
         size += 1
         if oldSize >= threshold {
@@ -314,7 +254,7 @@ public final class HashMap<K: Hashable,V>: Sequence
             return
         }
 
-        var newTable  = [Entry<K,V>?](repeating: nil, count: newCapacity)
+        var newTable  = [Entry?](repeating: nil, count: newCapacity)
         transfer(&newTable)
         table = newTable
         threshold = Int(Float(newCapacity) * loadFactor)
@@ -323,14 +263,14 @@ public final class HashMap<K: Hashable,V>: Sequence
     /// 
     /// Transfers all entries from current table to newTable.
     /// 
-    func transfer(_ newTable: inout [Entry<K,V>?]) {
+    func transfer(_ newTable: inout [Entry?]) {
 
         let newCapacity: Int = newTable.count
         let length = table.count
         for  j in 0..<length {
             if let e = table[j] {
                 table[j] = nil
-                var eOption: Entry<K,V>? = e
+                var eOption: Entry? = e
                 while let e = eOption {
                     let next = e.next
                     let i: Int = HashMap.indexFor(e.hash, newCapacity)
@@ -361,8 +301,7 @@ public final class HashMap<K: Hashable,V>: Sequence
         return nil
     }
 
-
-    func removeEntryForKey(_ key: K) -> Entry<K,V>? {
+    func removeEntryForKey(_ key: K) -> Entry? {
         let hash: Int = HashMap.hash(Int(key.hashValue))
         let i = Int(HashMap.indexFor(hash, Int(table.count)))
         var prev  = table[i]
@@ -393,7 +332,7 @@ public final class HashMap<K: Hashable,V>: Sequence
         for  j in 0..<length {
             if let e = table[j] {
                 valueList.append(e.value)
-                var eOption: Entry<K,V>? = e
+                var eOption: Entry? = e
                 while let e = eOption {
                     let next = e.next
                     eOption = next
@@ -413,7 +352,7 @@ public final class HashMap<K: Hashable,V>: Sequence
         for  j in 0..<length {
             if let e = table[j] {
                 keyList.append(e.key)
-                var eOption: Entry<K,V>? = e
+                var eOption: Entry? = e
                 while let e = eOption {
                     let next = e.next
                     eOption = next
@@ -427,13 +366,11 @@ public final class HashMap<K: Hashable,V>: Sequence
         return keyList
     }
 
-
-    public func makeIterator() ->  AnyIterator<(K,V)> {
-        var _next: Entry<K,V>? // next entry to return
+    public func makeIterator() ->  AnyIterator<(K, V)> {
+        var _next: Entry? // next entry to return
         let expectedModCount: Int = modCount // For fast-fail
         var index: Int = 0 // current slot
-        //var current: HashMapEntry<K,V> // current entry
-        if size > 0{ // advance to first entry
+        if size > 0 { // advance to first entry
 
             while index < table.count &&  _next == nil
             {
@@ -466,4 +403,56 @@ public final class HashMap<K: Hashable,V>: Sequence
 
     }
 
+
+    final class Entry: CustomStringConvertible {
+        var key: K
+        var value: V
+        var next: Entry?
+        var hash: Int
+
+        /// 
+        /// Creates new entry.
+        /// 
+        init(_ h: Int, _ k: K, _ v: V, _ n: Entry?) {
+            value = v
+            next = n
+            key = k
+            hash = h
+        }
+
+        func getKey() -> K {
+            return key
+        }
+
+        func getValue() -> V {
+            return value
+        }
+        
+        var hashValue: Int {
+            return  key.hashValue
+        }
+
+        var description: String { return "\(getKey())=\(getValue())" }
+
+    }
+
+}
+
+func == <K, V: Equatable>(lhs: HashMap<K, V>.Entry, rhs: HashMap<K, V>.Entry) -> Bool {
+    if lhs === rhs {
+        return true
+    }
+    if lhs.key == rhs.key && lhs.value == rhs.value {
+        return true
+    }
+    return false
+}
+func == <K, V: Equatable>(lhs: HashMap<K, V?>.Entry, rhs: HashMap<K, V?>.Entry) -> Bool {
+    if lhs === rhs {
+        return true
+    }
+    if lhs.key == rhs.key && lhs.value == rhs.value {
+        return true
+    }
+    return false
 }
