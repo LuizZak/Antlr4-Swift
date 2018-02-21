@@ -558,7 +558,8 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     public static func getCachedContext(
         _ context: PredictionContext,
         _ contextCache: PredictionContextCache,
-        _ visited: HashMap<PredictionContext, PredictionContext>) -> PredictionContext {
+        _ visited: inout HashMap<PredictionContext, PredictionContext>) -> PredictionContext {
+        
         if context.isEmpty() {
             return context
         }
@@ -581,7 +582,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                 return context
             }
 
-            let parent = getCachedContext(context.getParent(i)!, contextCache, visited)
+            let parent = getCachedContext(context.getParent(i)!, contextCache, &visited)
             //modified by janyou != !==
             if changed || parent !== context.getParent(i) {
                 if !changed {
@@ -624,14 +625,14 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     // ter's recursive version of Sam's getAllNodes()
     public static func getAllContextNodes(_ context: PredictionContext) -> [PredictionContext] {
         var nodes = [PredictionContext]()
-        let visited = HashMap<PredictionContext, PredictionContext>()
-        getAllContextNodes_(context, &nodes, visited)
+        var visited = HashMap<PredictionContext, PredictionContext>()
+        getAllContextNodes_(context, &nodes, &visited)
         return nodes
     }
 
     public static func getAllContextNodes_(_ context: PredictionContext?,
                                            _ nodes: inout [PredictionContext],
-                                           _ visited: HashMap<PredictionContext, PredictionContext>) {
+                                           _ visited: inout HashMap<PredictionContext, PredictionContext>) {
         guard let context = context, visited[context] == nil else {
             return
         }
@@ -639,7 +640,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         nodes.append(context)
         let length = context.size()
         for i in 0..<length {
-            getAllContextNodes_(context.getParent(i), &nodes, visited)
+            getAllContextNodes_(context.getParent(i), &nodes, &visited)
         }
     }
 

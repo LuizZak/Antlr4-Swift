@@ -1,9 +1,12 @@
+public typealias HashMap<K: Hashable, V> = Dictionary<K, V>
+
+/*
 ///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
 ///
-public final class HashMap<K: Hashable, V>: Sequence {
+public final struct HashMap<K: Hashable, V>: Sequence {
 
     ///
     /// The default initial capacity - MUST be a power of two.
@@ -190,7 +193,7 @@ public final class HashMap<K: Hashable, V>: Sequence {
     /// previously associated <tt>null</tt> with <tt>key</tt>.)
     ///
     @discardableResult
-    public func put(_ key: K, _ value: V) -> V? {
+    public mutating func put(_ key: K, _ value: V) -> V? {
 
         let hash: Int = HashMap.hash(key.hashValue)
         let i: Int = HashMap.indexFor(hash, table.count)
@@ -216,7 +219,7 @@ public final class HashMap<K: Hashable, V>: Sequence {
     ///
     /// Subclass overrides this to alter the behavior of put method.
     ///
-    func addEntry(_ hash: Int, _ key: K, _ value: V, _ bucketIndex: Int) {
+    mutating func addEntry(_ hash: Int, _ key: K, _ value: V, _ bucketIndex: Int) {
         let e = table[bucketIndex]
         table[bucketIndex] = Entry(hash, key, value, e)
         let oldSize = size
@@ -239,7 +242,7 @@ public final class HashMap<K: Hashable, V>: Sequence {
     /// capacity is MAXIMUM_CAPACITY (in which case value
     /// is irrelevant).
     ///
-    func resize(_ newCapacity: Int) {
+    mutating func resize(_ newCapacity: Int) {
         let oldCapacity: Int = table.count
         if oldCapacity == MAXIMUM_CAPACITY {
             threshold = Int.max
@@ -277,7 +280,7 @@ public final class HashMap<K: Hashable, V>: Sequence {
     /// Removes all of the mappings from this map.
     /// The map will be empty after this call returns.
     ///
-    public func clear() {
+    mutating public func clear() {
         modCount += 1
         let length = table.count
         for  i in 0..<length {
@@ -286,14 +289,14 @@ public final class HashMap<K: Hashable, V>: Sequence {
         size = 0
     }
     @discardableResult
-    public func remove(_ key: K) -> V? {
+    mutating public func remove(_ key: K) -> V? {
         if let e  = removeEntryForKey(key) {
             return e.value
         }
         return nil
     }
 
-    func removeEntryForKey(_ key: K) -> Entry? {
+    mutating func removeEntryForKey(_ key: K) -> Entry? {
         let hash: Int = HashMap.hash(Int(key.hashValue))
         let i = Int(HashMap.indexFor(hash, Int(table.count)))
         var prev  = table[i]
@@ -441,3 +444,4 @@ func == <K, V: Equatable>(lhs: HashMap<K, V?>.Entry, rhs: HashMap<K, V?>.Entry) 
     }
     return false
 }
+*/

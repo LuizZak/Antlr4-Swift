@@ -297,7 +297,7 @@ public class ATNConfigSet: Hashable, CustomStringConvertible {
 
     public final func getConflictingAltSubsets() -> [BitSet] {
         let length = configs.count
-        let configToAlts = HashMap<Int, BitSet>(count: length)
+        var configToAlts = HashMap<Int, BitSet>()
 
         for i in 0..<length {
             let hash = configHash(configs[i].state.stateNumber, configs[i].context)
@@ -312,12 +312,12 @@ public class ATNConfigSet: Hashable, CustomStringConvertible {
             try! alts.set(configs[i].alt)
         }
 
-        return configToAlts.values
+        return Array(configToAlts.values)
     }
 
     public final func getStateToAltMap() -> HashMap<ATNState, BitSet> {
         let length = configs.count
-        let m = HashMap<ATNState, BitSet>(count: length)
+        var m = HashMap<ATNState, BitSet>()
 
         for i in 0..<length {
             var alts: BitSet
@@ -406,7 +406,7 @@ public class ATNConfigSet: Hashable, CustomStringConvertible {
     public final func applyPrecedenceFilter(_ mergeCache: inout DoubleKeyMap<PredictionContext, PredictionContext, PredictionContext>?, _ parser: Parser, _ _outerContext: ParserRuleContext!) throws -> ATNConfigSet {
 
         let configSet = ATNConfigSet(fullCtx)
-        let statesFromAlt1 = HashMap<Int, PredictionContext>(count: configs.count)
+        var statesFromAlt1 = HashMap<Int, PredictionContext>()
         for config in configs {
             // handle alt 1 first
             if config.alt != 1 {

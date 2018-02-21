@@ -122,7 +122,7 @@ public struct LookupDictionary {
 
     }
     public mutating func removeAll() {
-        cache.clear()
+        cache = [:]
     }
 
 }
