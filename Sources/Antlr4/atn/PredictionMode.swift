@@ -453,8 +453,8 @@ public enum PredictionMode {
     /// - returns: the set of represented alternatives in `altsets`
     ///
     public static func getAlts(_ altsets: Array<BitSet>) -> BitSet {
-        var all = BitSet()
-        for alts in altsets {
+        let all: BitSet = BitSet()
+        for alts: BitSet in altsets {
             all.or(alts)
         }
         return all
@@ -505,7 +505,7 @@ public enum PredictionMode {
     }
 
     public static func getSingleViableAlt(_ altsets: [BitSet]) -> Int {
-        var viableAlts = BitSet()
+        let viableAlts = BitSet()
         for alts in altsets {
             let minAlt = alts.firstSetBit()
             try! viableAlts.set(minAlt)
