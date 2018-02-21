@@ -9,16 +9,16 @@
 /// - Author: Sam Harwell
 ///
 
-public final class MurmurHash {
+private let DEFAULT_SEED: UInt32 = 0
 
-    private static let DEFAULT_SEED: UInt32 = 0
+private let c1 = UInt32(0xCC9E2D51)
+private let c2 = UInt32(0x1B873593)
+private let r1 = UInt32(15)
+private let r2 = UInt32(13)
+private let m = UInt32(5)
+private let n = UInt32(0xE6546B64)
 
-    private static let c1 = UInt32(0xCC9E2D51)
-    private static let c2 = UInt32(0x1B873593)
-    private static let r1 = UInt32(15)
-    private static let r2 = UInt32(13)
-    private static let m = UInt32(5)
-    private static let n = UInt32(0xE6546B64)
+public enum MurmurHash {
 
     ///
     /// Initialize the hash using the default seed value.
@@ -159,8 +159,5 @@ public final class MurmurHash {
         }
 
         return finish(hash, byteCount: byteCount)
-    }
-
-    private init() {
     }
 }
