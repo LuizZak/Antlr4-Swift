@@ -12,8 +12,8 @@
 
 public final class PredictionContextCache {
     //internal final var
-    var cache: HashMap<PredictionContext, PredictionContext> =
-        HashMap<PredictionContext, PredictionContext>()
+    var cache: [PredictionContext: PredictionContext] =
+        [PredictionContext: PredictionContext]()
     public init() {
     }
     ///

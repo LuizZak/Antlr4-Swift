@@ -74,7 +74,7 @@ open class ATNSimulator {
     open func getCachedContext(_ context: PredictionContext) -> PredictionContext {
         //TODO: synced (sharedContextCache!)
         //synced (sharedContextCache!) {
-        var visited = HashMap<PredictionContext, PredictionContext>()
+        var visited = [PredictionContext: PredictionContext]()
 
         return PredictionContext.getCachedContext(context,
                                                   sharedContextCache,

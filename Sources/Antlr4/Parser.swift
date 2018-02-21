@@ -74,7 +74,7 @@ open class Parser: Recognizer<ParserATNSimulator> {
     ///
     /// - SeeAlso: org.antlr.v4.runtime.atn.ATNDeserializationOptions#isGenerateRuleBypassTransitions()
     ///
-    private var bypassAltsAtnCache: HashMap<String, ATN> = HashMap<String, ATN>()
+    private var bypassAltsAtnCache: [String: ATN] = [String: ATN]()
 
     ///
     /// The error handling strategy for the parser. The default value is a new

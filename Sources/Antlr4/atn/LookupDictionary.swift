@@ -20,9 +20,7 @@ public enum LookupDictionaryType: Int {
 
 public struct LookupDictionary {
     private var type: LookupDictionaryType
-    //    private var cache: HashMap<Int, [ATNConfig]> = HashMap<Int, [ATNConfig]>()
-    //
-    private var cache: HashMap<Int, ATNConfig> = HashMap<Int, ATNConfig>()
+    private var cache: [Int: ATNConfig] = [Int: ATNConfig]()
     public init(type: LookupDictionaryType = LookupDictionaryType.lookup) {
         self.type = type
     }

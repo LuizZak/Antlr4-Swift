@@ -10,7 +10,7 @@ public class DFA: CustomStringConvertible {
     /// (_java.util.Set_ only allows you to see if it's there).
     ///
 
-    public final var states: HashMap<DFAState, DFAState?> = HashMap<DFAState, DFAState?>()
+    public final var states: [DFAState: DFAState?] = [:]
 
     public /*volatile*/ var s0: DFAState?
 

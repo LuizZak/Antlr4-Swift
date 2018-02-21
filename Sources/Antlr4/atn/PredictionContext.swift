@@ -136,7 +136,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         _ a: PredictionContext,
         _ b: PredictionContext,
         _ rootIsWildcard: Bool,
-        _ mergeCache: inout DoubleKeyMap<PredictionContext, PredictionContext, PredictionContext>?) -> PredictionContext {
+        _ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?) -> PredictionContext {
         var a = a
         var b = b
         // assert ( a != nil && b != nil,"Expected: a!=null&&b!=null");
@@ -204,21 +204,21 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         _ a: SingletonPredictionContext,
         _ b: SingletonPredictionContext,
         _ rootIsWildcard: Bool,
-        _ mergeCache: inout DoubleKeyMap<PredictionContext, PredictionContext, PredictionContext>?) -> PredictionContext {
+        _ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?) -> PredictionContext {
 
         if let mergeCache = mergeCache {
-            var previous = mergeCache.get(a, b)
+            var previous = mergeCache[TuplePair(a, b)]
             if let previous = previous {
                 return previous
             }
-            previous = mergeCache.get(b, a)
+            previous = mergeCache[TuplePair(b, a)]
             if let previous = previous {
                 return previous
             }
         }
 
         if let rootMerge = mergeRoot(a, b, rootIsWildcard) {
-            mergeCache?.put(a, b, rootMerge)
+            mergeCache?[TuplePair(a, b)] = rootMerge
             return rootMerge
         }
 
@@ -237,7 +237,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
             // of those graphs.  dup a, a' points at merged array
             // new joined parent so create new singleton pointing to it, a'
             let a_ = SingletonPredictionContext.create(parent, a.returnState)
-            mergeCache?.put(a, b, a_)
+            mergeCache?[TuplePair(a, b)] = a_
             return a_
         } else {
             // a != b payloads differ
@@ -258,7 +258,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                 }
                 let parents = [singleParent, singleParent]
                 let a_ = ArrayPredictionContext(parents, payloads)
-                mergeCache?.put(a, b, a_)
+                mergeCache?[TuplePair(a, b)] = a_
                 return a_
             }
             // parents differ and can't merge them. Just pack together
@@ -276,7 +276,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                 // print("parent is null")
             }
             let a_ = ArrayPredictionContext(parents, payloads)
-            mergeCache?.put(a, b, a_)
+            mergeCache?[TuplePair(a, b)] = a_
             return a_
         }
     }
@@ -374,14 +374,14 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         _ a: ArrayPredictionContext,
         _ b: ArrayPredictionContext,
         _ rootIsWildcard: Bool,
-        _ mergeCache: inout DoubleKeyMap<PredictionContext, PredictionContext, PredictionContext>?) -> PredictionContext {
+        _ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?) -> PredictionContext {
 
         if let mergeCache = mergeCache {
-            var previous = mergeCache.get(a, b)
+            var previous = mergeCache[TuplePair(a, b)]
             if let previous = previous {
                 return previous
             }
-            previous = mergeCache.get(b, a)
+            previous = mergeCache[TuplePair(b, a)]
             if let previous = previous {
                 return previous
             }
@@ -462,7 +462,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
             if k == 1 {
                 // for just one merged element, return singleton top
                 let a_ = SingletonPredictionContext.create(mergedParents[0], mergedReturnStates[0])
-                mergeCache?.put(a, b, a_)
+                mergeCache?[TuplePair(a, b)] = a_
                 //print("merge array 1 \(a_)")
                 return a_
             }
@@ -475,11 +475,11 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         // if we created same array as a or b, return that instead
         // TODO: track whether this is possible above during merge sort for speed
         if M == a {
-            mergeCache?.put(a, b, a)
+            mergeCache?[TuplePair(a, b)] = a
             return a
         }
         if M == b {
-            mergeCache?.put(a, b, b)
+            mergeCache?[TuplePair(a, b)] = b
             return b
         }
 
@@ -487,7 +487,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         //combineCommonParents(&mergedParents)
         M.combineCommonParents()
 
-        mergeCache?.put(a, b, M)
+        mergeCache?[TuplePair(a, b)] = M
         // print("merge array 4 \(M)")
         return M
     }
@@ -558,7 +558,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     public static func getCachedContext(
         _ context: PredictionContext,
         _ contextCache: PredictionContextCache,
-        _ visited: inout HashMap<PredictionContext, PredictionContext>) -> PredictionContext {
+        _ visited: inout [PredictionContext: PredictionContext]) -> PredictionContext {
         
         if context.isEmpty() {
             return context
@@ -625,14 +625,14 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     // ter's recursive version of Sam's getAllNodes()
     public static func getAllContextNodes(_ context: PredictionContext) -> [PredictionContext] {
         var nodes = [PredictionContext]()
-        var visited = HashMap<PredictionContext, PredictionContext>()
+        var visited = [PredictionContext: PredictionContext]()
         getAllContextNodes_(context, &nodes, &visited)
         return nodes
     }
 
     public static func getAllContextNodes_(_ context: PredictionContext?,
                                            _ nodes: inout [PredictionContext],
-                                           _ visited: inout HashMap<PredictionContext, PredictionContext>) {
+                                           _ visited: inout [PredictionContext: PredictionContext]) {
         guard let context = context, visited[context] == nil else {
             return
         }

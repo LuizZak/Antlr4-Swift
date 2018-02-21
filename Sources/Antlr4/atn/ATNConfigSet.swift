@@ -83,7 +83,7 @@ public class ATNConfigSet: Hashable, CustomStringConvertible {
     //override
     @discardableResult
     public final func add(_ config: ATNConfig) throws -> Bool {
-        var mergeCache: DoubleKeyMap<PredictionContext, PredictionContext, PredictionContext>? = nil
+        var mergeCache: [TuplePair<PredictionContext, PredictionContext>: PredictionContext]? = nil
         return try add(config, &mergeCache)
     }
 
@@ -100,7 +100,7 @@ public class ATNConfigSet: Hashable, CustomStringConvertible {
     @discardableResult
     public final func add(
         _ config: ATNConfig,
-        _ mergeCache: inout DoubleKeyMap<PredictionContext, PredictionContext, PredictionContext>?) throws -> Bool {
+        _ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?) throws -> Bool {
         if readonly {
             throw ANTLRError.illegalState(msg: "This set is readonly")
         }
@@ -297,7 +297,7 @@ public class ATNConfigSet: Hashable, CustomStringConvertible {
 
     public final func getConflictingAltSubsets() -> [BitSet] {
         let length = configs.count
-        var configToAlts = HashMap<Int, BitSet>()
+        var configToAlts = [Int: BitSet]()
 
         for i in 0..<length {
             let hash = configHash(configs[i].state.stateNumber, configs[i].context)
@@ -315,9 +315,9 @@ public class ATNConfigSet: Hashable, CustomStringConvertible {
         return Array(configToAlts.values)
     }
 
-    public final func getStateToAltMap() -> HashMap<ATNState, BitSet> {
+    public final func getStateToAltMap() -> [ATNState: BitSet] {
         let length = configs.count
-        var m = HashMap<ATNState, BitSet>()
+        var m = [ATNState: BitSet]()
 
         for i in 0..<length {
             var alts: BitSet
@@ -379,7 +379,7 @@ public class ATNConfigSet: Hashable, CustomStringConvertible {
         return alt
     }
 
-    public final func removeAllConfigsNotInRuleStopState(_ mergeCache: inout DoubleKeyMap<PredictionContext, PredictionContext, PredictionContext>?, _ lookToEndOfRule: Bool, _ atn: ATN) -> ATNConfigSet {
+    public final func removeAllConfigsNotInRuleStopState(_ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?, _ lookToEndOfRule: Bool, _ atn: ATN) -> ATNConfigSet {
         if PredictionMode.allConfigsInRuleStopStates(self) {
             return self
         }
@@ -403,10 +403,10 @@ public class ATNConfigSet: Hashable, CustomStringConvertible {
         return result
     }
 
-    public final func applyPrecedenceFilter(_ mergeCache: inout DoubleKeyMap<PredictionContext, PredictionContext, PredictionContext>?, _ parser: Parser, _ _outerContext: ParserRuleContext!) throws -> ATNConfigSet {
+    public final func applyPrecedenceFilter(_ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?, _ parser: Parser, _ _outerContext: ParserRuleContext!) throws -> ATNConfigSet {
 
         let configSet = ATNConfigSet(fullCtx)
-        var statesFromAlt1 = HashMap<Int, PredictionContext>()
+        var statesFromAlt1 = [Int: PredictionContext]()
         for config in configs {
             // handle alt 1 first
             if config.alt != 1 {

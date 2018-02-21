@@ -261,14 +261,12 @@ open class ParserATNSimulator: ATNSimulator {
 
     ///
     /// Each prediction operation uses a cache for merge of prediction contexts.
-    /// Don't keep around as it wastes huge amounts of memory. DoubleKeyMap
-    /// isn't synchronized but we're ok since two threads shouldn't reuse same
-    /// parser/atnsim object because it can only handle one input at a time.
+    /// Don't keep around as it wastes huge amounts of memory.
     /// This maps graphs a and b to merged result c. (a,b)&rarr;c. We can avoid
     /// the merge if we ever see a and b again.  Note that (b,a)&rarr;c should
     /// also be examined during cache lookup.
     ///
-    internal final var mergeCache: DoubleKeyMap<PredictionContext, PredictionContext, PredictionContext>?
+    internal final var mergeCache: [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?
 
     // LAME globals to avoid parameters!!!!! I need these down deep in predTransition
     internal var _input: TokenStream!
@@ -766,7 +764,7 @@ open class ParserATNSimulator: ATNSimulator {
         }
 
         if mergeCache == nil {
-            mergeCache = DoubleKeyMap<PredictionContext, PredictionContext, PredictionContext>()
+            mergeCache = [:]
         }
 
         let intermediate = ATNConfigSet(fullCtx)
