@@ -9,14 +9,10 @@
 /// An immutable inclusive interval a..b
 /// 
 
-public class Interval: Hashable {
+public struct Interval: Hashable {
     public static let INTERVAL_POOL_MAX_VALUE: Int = 1000
 
     public static let INVALID: Interval = Interval(-1, -2)
-
-    //static var cache: Dictionary<Int, Interval> = Dictionary<Int, Interval>()
-    static var cache: Array<Interval?> = Array<Interval?>(repeating: nil, count: INTERVAL_POOL_MAX_VALUE + 1)
-    // new; Interval[INTERVAL_POOL_MAX_VALUE+1];
 
     public var a: Int
     public var b: Int
@@ -39,15 +35,7 @@ public class Interval: Hashable {
     /// have a..a (set with 1 element).
     /// 
     public static func of(_ a: Int, _ b: Int) -> Interval {
-        // cache just a..a
-        if a != b || a < 0 || a > INTERVAL_POOL_MAX_VALUE {
-            return Interval(a, b)
-        }
-        if cache[a] == nil {
-            cache[a] = Interval(a, a)
-        }
-
-        return cache[a]!
+        return Interval(a, b)
     }
 
     /// 
@@ -145,12 +133,8 @@ public class Interval: Hashable {
         var diff: Interval? = nil
         // other.a to left of this.a (or same)
         if other.startsBeforeNonDisjoint(self) {
-            diff = Interval.of(max(self.a, other.b + 1),
-                    self.b)
-        }
-
-                // other.a to right of this.a
-        else {
+            diff = Interval.of(max(self.a, other.b + 1), self.b)
+        } else {
             if other.startsAfterNonDisjoint(self) {
                 diff = Interval.of(self.a, other.a - 1)
             }
@@ -162,8 +146,8 @@ public class Interval: Hashable {
    public var description: String {
         return "\(a)..\(b)"
     }
-}
 
-public func ==(lhs: Interval, rhs: Interval) -> Bool {
-    return lhs.a == rhs.a && lhs.b == rhs.b
+    public static func ==(lhs: Interval, rhs: Interval) -> Bool {
+        return lhs.a == rhs.a && lhs.b == rhs.b
+    }
 }

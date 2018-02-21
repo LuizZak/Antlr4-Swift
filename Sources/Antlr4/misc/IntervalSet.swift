@@ -669,7 +669,7 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
         if readonly {
             throw ANTLRError.illegalState(msg: "can't alter readonly IntervalSet")
         }
-        for interval in intervals {
+        for (i, interval) in intervals.enumerated() {
             let a = interval.a
             let b = interval.b
             if el < a {
@@ -682,19 +682,19 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
             }
             // if on left edge x..b, adjust left
             if el == a {
-                interval.a += 1
+                intervals[i].a += 1
                 break
             }
             // if on right edge a..x, adjust right
             if el == b {
-                interval.b -= 1
+                intervals[i].b -= 1
                 break
             }
             // if in middle a..x..b, split interval
             if el > a && el < b {
                 // found in this interval
                 let oldb = interval.b
-                interval.b = el - 1      // [a..x-1]
+                intervals[i].b = el - 1      // [a..x-1]
                 try add(el + 1, oldb) // add [x+1..b]
             }
         }
