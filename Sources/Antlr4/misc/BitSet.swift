@@ -41,7 +41,7 @@ import Foundation
 /// - note: JDK1.0
 /// 
 
-public class BitSet: Hashable, CustomStringConvertible {
+public final class BitSet: Hashable, CustomStringConvertible {
     /// 
     /// BitSets are packed into arrays of "words."  Currently a word is
     /// a long, which consists of 64 bits, requiring 6 address bits.

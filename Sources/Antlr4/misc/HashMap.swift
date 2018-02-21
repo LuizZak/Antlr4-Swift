@@ -5,10 +5,10 @@
 /// 
 
 final class Entry<K: Hashable,V>: CustomStringConvertible {
-    final var key: K
-    final var value: V
-    final var next: Entry<K,V>!
-    final var hash: Int
+    var key: K
+    var value: V
+    var next: Entry<K,V>!
+    var hash: Int
 
     /// 
     /// Creates new entry.
@@ -20,21 +20,21 @@ final class Entry<K: Hashable,V>: CustomStringConvertible {
         hash = h
     }
 
-    final func getKey() -> K {
+    func getKey() -> K {
         return key
     }
 
-    final func getValue() -> V {
+    func getValue() -> V {
         return value
     }
 
-    final func setValue(_ newValue: V) -> V {
+    func setValue(_ newValue: V) -> V {
         let oldValue: V = value
         value = newValue
         return oldValue
     }
 
-    final var hashValue: Int {
+    var hashValue: Int {
         return  key.hashValue
     }
 
@@ -163,23 +163,23 @@ public final class HashMap<K: Hashable,V>: Sequence
     /// 
     /// - returns: <tt>true</tt> if this map contains no key-value mappings
     /// 
-    public final var isEmpty: Bool {
+    public var isEmpty: Bool {
         return size == 0
     }
-    public final subscript(key: K) -> V? {
+    public subscript(key: K) -> V? {
         get {
             return get(key)
         }
         set {
-            if newValue == nil {
+            if let newValue = newValue {
+                put(key,newValue)
+            } else {
                 remove(key)
-            }else{
-                put(key,newValue!)
             }
         }
     }
 
-    public final var count: Int {
+    public var count: Int {
         return size
     }
     /// 
@@ -199,7 +199,7 @@ public final class HashMap<K: Hashable,V>: Sequence
     /// 
     /// - seealso: #put(Object, Object)
     /// 
-    public final func get(_ key: K) -> V? {
+    public func get(_ key: K) -> V? {
         let hash: Int = HashMap.hash(key.hashValue)
         var e = table[HashMap.indexFor(hash, table.count)]
         while let eWrap = e {
@@ -220,7 +220,7 @@ public final class HashMap<K: Hashable,V>: Sequence
     /// - returns: <tt>true</tt> if this map contains a mapping for the specified
     /// key.
     /// 
-    public final func containsKey(_ key: K) -> Bool {
+    public func containsKey(_ key: K) -> Bool {
         return getEntry(key) != nil
     }
 
@@ -229,7 +229,7 @@ public final class HashMap<K: Hashable,V>: Sequence
     /// HashMap.  Returns null if the HashMap contains no mapping
     /// for the key.
     /// 
-    final func getEntry(_ key: K) -> Entry<K,V>! {
+    func getEntry(_ key: K) -> Entry<K,V>! {
         let hash: Int =  HashMap.hash(key.hashValue)
         var e = table[HashMap.indexFor(hash, table.count)]
         while let eWrap = e {
@@ -257,7 +257,7 @@ public final class HashMap<K: Hashable,V>: Sequence
     /// previously associated <tt>null</tt> with <tt>key</tt>.)
     /// 
     @discardableResult
-    public final func put(_ key: K, _ value: V) -> V? {
+    public func put(_ key: K, _ value: V) -> V? {
 
         let hash: Int = HashMap.hash(key.hashValue)
         let i: Int = HashMap.indexFor(hash, table.count)
@@ -284,7 +284,7 @@ public final class HashMap<K: Hashable,V>: Sequence
     /// 
     /// Subclass overrides this to alter the behavior of put method.
     /// 
-    final func addEntry(_ hash: Int, _ key: K, _ value: V, _ bucketIndex: Int) {
+    func addEntry(_ hash: Int, _ key: K, _ value: V, _ bucketIndex: Int) {
         let e = table[bucketIndex]
         table[bucketIndex] = Entry<K,V>(hash, key, value, e)
         let oldSize = size
@@ -307,7 +307,7 @@ public final class HashMap<K: Hashable,V>: Sequence
     /// capacity is MAXIMUM_CAPACITY (in which case value
     /// is irrelevant).
     /// 
-    final func resize(_ newCapacity: Int) {
+    func resize(_ newCapacity: Int) {
         let oldCapacity: Int = table.count
         if oldCapacity == MAXIMUM_CAPACITY {
             threshold = Int.max
@@ -323,7 +323,7 @@ public final class HashMap<K: Hashable,V>: Sequence
     /// 
     /// Transfers all entries from current table to newTable.
     /// 
-    final func transfer(_ newTable: inout [Entry<K,V>?]) {
+    func transfer(_ newTable: inout [Entry<K,V>?]) {
 
         let newCapacity: Int = newTable.count
         let length = table.count
@@ -345,7 +345,7 @@ public final class HashMap<K: Hashable,V>: Sequence
     /// Removes all of the mappings from this map.
     /// The map will be empty after this call returns.
     /// 
-    public final func clear() {
+    public func clear() {
         modCount += 1
         let length = table.count
         for  i in 0..<length {
@@ -362,7 +362,7 @@ public final class HashMap<K: Hashable,V>: Sequence
     }
 
 
-    final func removeEntryForKey(_ key: K) -> Entry<K,V>? {
+    func removeEntryForKey(_ key: K) -> Entry<K,V>? {
         let hash: Int = HashMap.hash(Int(key.hashValue))
         let i = Int(HashMap.indexFor(hash, Int(table.count)))
         var prev  = table[i]
@@ -387,7 +387,7 @@ public final class HashMap<K: Hashable,V>: Sequence
         return e
     }
 
-    public final var values: [V]{
+    public var values: [V]{
         var valueList: [V] = [V]()
         let length = table.count
         for  j in 0..<length {
@@ -407,7 +407,7 @@ public final class HashMap<K: Hashable,V>: Sequence
         return valueList
     }
 
-    public final var keys: [K]{
+    public var keys: [K]{
         var keyList: [K] = [K]()
         let length = table.count
         for  j in 0..<length {
