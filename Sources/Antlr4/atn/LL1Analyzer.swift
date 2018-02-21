@@ -38,8 +38,9 @@ public class LL1Analyzer {
             look[alt] = IntervalSet()
             var lookBusy = Set<ATNConfig>()
             let seeThruPreds = false // fail to get lookahead upon pred
+            var bs = BitSet()
             _LOOK(s.transition(alt).target, nil, PredictionContext.EMPTY,
-                  look[alt]!, &lookBusy, BitSet(), seeThruPreds, false)
+                  look[alt]!, &lookBusy, &bs, seeThruPreds, false)
             // Wipe out lookahead for this alternative if we found nothing
             // or we had a predicate when we !seeThruPreds
             if look[alt]!.size() == 0 || look[alt]!.contains(HIT_PRED) {
@@ -93,7 +94,8 @@ public class LL1Analyzer {
         let seeThruPreds = true // ignore preds; get all lookahead
         let lookContext = ctx != nil ? PredictionContext.fromRuleContext(s.atn!, ctx) : nil
         var config = Set<ATNConfig>()
-        _LOOK(s, stopState, lookContext, r, &config, BitSet(), seeThruPreds, true)
+        var bs = BitSet()
+        _LOOK(s, stopState, lookContext, r, &config, &bs, seeThruPreds, true)
         return r
     }
 
@@ -132,7 +134,7 @@ public class LL1Analyzer {
                         _ ctx: PredictionContext?,
                         _ look: IntervalSet,
                         _ lookBusy: inout Set<ATNConfig>,
-                        _ calledRuleStack: BitSet,
+                        _ calledRuleStack: inout BitSet,
                         _ seeThruPreds: Bool,
                         _ addEOF: Bool) {
         // print ("_LOOK(\(s.stateNumber), ctx=\(ctx)");
@@ -174,7 +176,7 @@ public class LL1Analyzer {
                     let returnState = atn.states[(ctx.getReturnState(i))]!
                     let removed = try! calledRuleStack.get(returnState.ruleIndex!)
                     try! calledRuleStack.clear(returnState.ruleIndex!)
-                    _LOOK(returnState, stopState, ctx.getParent(i), look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
+                    _LOOK(returnState, stopState, ctx.getParent(i), look, &lookBusy, &calledRuleStack, seeThruPreds, addEOF)
                     if removed {
                         try! calledRuleStack.set(returnState.ruleIndex!)
                     }
@@ -193,16 +195,16 @@ public class LL1Analyzer {
 
                 let newContext = SingletonPredictionContext.create(ctx, rt.followState.stateNumber)
                 try! calledRuleStack.set(rt.target.ruleIndex!)
-                _LOOK(t.target, stopState, newContext, look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
+                _LOOK(t.target, stopState, newContext, look, &lookBusy, &calledRuleStack, seeThruPreds, addEOF)
                 try! calledRuleStack.clear(rt.target.ruleIndex!)
             } else if t is AbstractPredicateTransition {
                 if seeThruPreds {
-                    _LOOK(t.target, stopState, ctx, look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
+                    _LOOK(t.target, stopState, ctx, look, &lookBusy, &calledRuleStack, seeThruPreds, addEOF)
                 } else {
                     try! look.add(HIT_PRED)
                 }
             } else if t.isEpsilon() {
-                _LOOK(t.target, stopState, ctx, look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
+                _LOOK(t.target, stopState, ctx, look, &lookBusy, &calledRuleStack, seeThruPreds, addEOF)
             } else if t is WildcardTransition {
                 try! look.addAll(IntervalSet.of(CommonToken.MIN_USER_TOKEN_TYPE, atn.maxTokenType))
             } else {

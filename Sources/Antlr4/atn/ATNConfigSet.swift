@@ -167,7 +167,7 @@ public class ATNConfigSet: Hashable, CustomStringConvertible {
     /// - since: 4.3
     ///
     public final func getAlts() -> BitSet {
-        let alts = BitSet()
+        var alts = BitSet()
         for config in configs {
             try! alts.set(config.alt)
         }
@@ -347,7 +347,7 @@ public class ATNConfigSet: Hashable, CustomStringConvertible {
 
     //for DiagnosticErrorListener
     public final func getAltBitSet() -> BitSet {
-        let result = BitSet()
+        var result = BitSet()
         for config in configs {
             try! result.set(config.alt)
         }
