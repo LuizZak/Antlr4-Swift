@@ -1,8 +1,8 @@
-/// 
+///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
+///
 
 //
 //  CharacterEextension.swift
@@ -53,7 +53,7 @@ extension Character {
     public static func isJavaIdentifierStart(_ char: Int) -> Bool {
         let ch = Character(integerLiteral: char)
         return ch == "_" || ch == "$" || ("a" <= ch && ch <= "z")
-                || ("A" <= ch && ch <= "Z")
+            || ("A" <= ch && ch <= "Z")
 
     }
 
@@ -66,12 +66,11 @@ extension Character {
         let MIN_SUPPLEMENTARY_CODE_POINT = 65536 // 0x010000
         let MIN_HIGH_SURROGATE = 0xd800 //"\u{dbff}"  //"\u{DBFF}"  //"\u{DBFF}"
         let MIN_LOW_SURROGATE = 0xdc00 //"\u{dc00}" //"\u{DC00}"
-        
+
         let highShiftedTenLow = ((high << 10) + low)
         let minHighSurrogateShifted = MIN_HIGH_SURROGATE << 10
-        
+
         return highShiftedTenLow + (MIN_SUPPLEMENTARY_CODE_POINT - minHighSurrogateShifted - MIN_LOW_SURROGATE)
     }
-
 
 }

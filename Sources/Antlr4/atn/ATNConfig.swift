@@ -1,57 +1,56 @@
-/// 
+///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
+///
 
-/// 
+///
 /// A tuple: (ATN state, predicted alt, syntactic, semantic context).
 /// The syntactic context is a graph-structured stack node whose
 /// path(s) to the root is the rule invocation(s)
 /// chain used to arrive at the state.  The semantic context is
 /// the tree of semantic predicates encountered before reaching
 /// an ATN state.
-/// 
-
+///
 
 public class ATNConfig: Hashable, CustomStringConvertible {
-    /// 
+    ///
     /// This field stores the bit mask for implementing the
     /// _#isPrecedenceFilterSuppressed_ property as a bit within the
     /// existing _#reachesIntoOuterContext_ field.
-    /// 
+    ///
     private final let SUPPRESS_PRECEDENCE_FILTER: Int = 0x40000000
 
-    /// 
+    ///
     /// The ATN state associated with this configuration
-    /// 
+    ///
     public final let state: ATNState
 
-    /// 
+    ///
     /// What alt (or lexer rule) is predicted by this configuration
-    /// 
+    ///
     public final let alt: Int
 
-    /// 
+    ///
     /// The stack of invoking states leading to the rule/states associated
     /// with this config.  We track only those contexts pushed during
     /// execution of the ATN simulator.
-    /// 
+    ///
     public final var context: PredictionContext?
 
-    /// 
+    ///
     /// We cannot execute predicates dependent upon local context unless
     /// we know for sure we are in the correct context. Because there is
     /// no way to do this efficiently, we simply cannot evaluate
     /// dependent predicates unless we are in the rule that initially
     /// invokes the ATN simulator.
-    /// 
-    /// 
+    ///
+    ///
     /// closure() tracks the depth of how far we dip into the outer context:
     /// depth &gt; 0.  Note that it may not be totally accurate depth since I
     /// don't ever decrement. TODO: make it a boolean then
-    /// 
-    /// 
+    ///
+    ///
     /// For memory efficiency, the _#isPrecedenceFilterSuppressed_ method
     /// is also backed by this field. Since the field is publicly accessible, the
     /// highest bit which would not cause the value to become negative is used to
@@ -61,10 +60,9 @@ public class ATNConfig: Hashable, CustomStringConvertible {
     /// constructors as well as certain operations like
     /// _org.antlr.v4.runtime.atn.ATNConfigSet#add(org.antlr.v4.runtime.atn.ATNConfig, DoubleKeyMap)_ method are
     /// __completely__ unaffected by the change.
-    /// 
+    ///
     public final var reachesIntoOuterContext: Int = 0
     //=0 intital by janyou
-
 
     public final let semanticContext: SemanticContext
 
@@ -122,11 +120,11 @@ public class ATNConfig: Hashable, CustomStringConvertible {
         self.reachesIntoOuterContext = c.reachesIntoOuterContext
     }
 
-    /// 
+    ///
     /// This method gets the value of the _#reachesIntoOuterContext_ field
     /// as it existed prior to the introduction of the
     /// _#isPrecedenceFilterSuppressed_ method.
-    /// 
+    ///
     public final func getOuterContextDepth() -> Int {
         return reachesIntoOuterContext & ~SUPPRESS_PRECEDENCE_FILTER
     }
@@ -143,11 +141,11 @@ public class ATNConfig: Hashable, CustomStringConvertible {
         }
     }
 
-    /// 
+    ///
     /// An ATN configuration is equal to another if both have
     /// the same state, they predict the same alternative, and
     /// syntactic/semantic contexts are the same.
-    /// 
+    ///
 
     public var hashValue: Int {
         var hashCode = MurmurHash.initialize(7)
@@ -188,7 +186,7 @@ public func ==(lhs: ATNConfig, rhs: ATNConfig) -> Bool {
     if lhs === rhs {
         return true
     }
-    
+
     if let lhs = lhs as? LexerATNConfig, let rhs = rhs as? LexerATNConfig {
         return lhs == rhs
     }
@@ -203,7 +201,7 @@ public func ==(lhs: ATNConfig, rhs: ATNConfig) -> Bool {
     if lhs.isPrecedenceFilterSuppressed() != rhs.isPrecedenceFilterSuppressed() {
         return false
     }
-    
+
     if lhs.context != rhs.context {
         return false
     }

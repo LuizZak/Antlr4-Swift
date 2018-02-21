@@ -1,14 +1,13 @@
-/// 
+///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
-
+///
 
 public class LexerATNConfig: ATNConfig {
-    /// 
+    ///
     /// This is the backing field for _#getLexerActionExecutor_.
-    /// 
+    ///
     private let lexerActionExecutor: LexerActionExecutor?
 
     fileprivate let passedThroughNonGreedyDecision: Bool
@@ -58,12 +57,12 @@ public class LexerATNConfig: ATNConfig {
 
     private static func checkNonGreedyDecision(_ source: LexerATNConfig, _ target: ATNState) -> Bool {
         return source.passedThroughNonGreedyDecision
-                || (target as? DecisionState)?.nonGreedy ?? false
+            || (target as? DecisionState)?.nonGreedy ?? false
     }
-    /// 
+    ///
     /// Gets the _org.antlr.v4.runtime.atn.LexerActionExecutor_ capable of executing the embedded
     /// action(s) for the current configuration.
-    /// 
+    ///
     public final func getLexerActionExecutor() -> LexerActionExecutor? {
         return lexerActionExecutor
     }
@@ -75,7 +74,7 @@ public class LexerATNConfig: ATNConfig {
     override
     /*public func hashCode() -> Int {
 
-    }*/
+     }*/
     public var hashValue: Int {
         var hashCode = MurmurHash.initialize(7)
         hashCode = MurmurHash.update(hashCode, state.stateNumber)
@@ -97,13 +96,10 @@ public func ==(lhs: LexerATNConfig, rhs: LexerATNConfig) -> Bool {
         return true
     }
 
-
     //let lexerOther : LexerATNConfig = rhs  // as! LexerATNConfig;
     if lhs.passedThroughNonGreedyDecision != rhs.passedThroughNonGreedyDecision {
         return false
     }
-
-
 
     if lhs.state.stateNumber != rhs.state.stateNumber {
         return false
@@ -115,14 +111,14 @@ public func ==(lhs: LexerATNConfig, rhs: LexerATNConfig) -> Bool {
     if lhs.isPrecedenceFilterSuppressed() != rhs.isPrecedenceFilterSuppressed() {
         return false
     }
-    
+
     if lhs.getLexerActionExecutor() != rhs.getLexerActionExecutor() {
         return false
     }
-    
+
     if lhs.context != rhs.context {
         return false
     }
-    
+
     return lhs.semanticContext == rhs.semanticContext
 }

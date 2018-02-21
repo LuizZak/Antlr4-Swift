@@ -3,7 +3,6 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-
 public protocol WritableToken: Token {
     func setText(_ text: String)
 

@@ -1,49 +1,47 @@
-/// 
+///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
+///
 
-
-
-/// 
+///
 /// A tree structure used to record the semantic context in which
 /// an ATN configuration is valid.  It's either a single predicate,
 /// a conjunction `p1&&p2`, or a sum of products `p1||p2`.
-/// 
+///
 /// I have scoped the _org.antlr.v4.runtime.atn.SemanticContext.AND_, _org.antlr.v4.runtime.atn.SemanticContext.OR_, and _org.antlr.v4.runtime.atn.SemanticContext.Predicate_ subclasses of
 /// _org.antlr.v4.runtime.atn.SemanticContext_ within the scope of this outer class.
-/// 
+///
 
 import Foundation
 
 public class SemanticContext: Hashable, CustomStringConvertible {
-    /// 
+    ///
     /// The default _org.antlr.v4.runtime.atn.SemanticContext_, which is semantically equivalent to
     /// a predicate of the form `{true`?}.
-    /// 
+    ///
     public static let NONE: SemanticContext = Predicate()
 
-    /// 
+    ///
     /// For context independent predicates, we evaluate them without a local
     /// context (i.e., null context). That way, we can evaluate them without
     /// having to create proper rule-specific context during prediction (as
     /// opposed to the parser, which creates them naturally). In a practical
     /// sense, this avoids a cast exception from RuleContext to myruleContext.
-    /// 
+    ///
     /// For context dependent predicates, we must pass in a local context so that
     /// references such as $arg evaluate properly as _localctx.arg. We only
     /// capture context dependent predicates in the context in which we begin
     /// prediction, so we passed in the outer context here in case of context
     /// dependent predicate evaluation.
-    /// 
+    ///
     public func eval<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> Bool {
         fatalError(#function + " must be overridden")
     }
 
-    /// 
+    ///
     /// Evaluate the precedence predicates for the context and reduce the result.
-    /// 
+    ///
     /// - parameter parser: The parser instance.
     /// - parameter parserCallStack:
     /// - returns: The simplified semantic context after precedence predicates are
@@ -56,7 +54,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
     /// precedence predicate evaluation.
     /// * A non-`null` _org.antlr.v4.runtime.atn.SemanticContext_: the new simplified
     /// semantic context after precedence predicates are evaluated.
-    /// 
+    ///
     public func evalPrecedence<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> SemanticContext? {
         return self
     }
@@ -103,12 +101,11 @@ public class SemanticContext: Hashable, CustomStringConvertible {
             return MurmurHash.finish(hashCode, 3)
         }
 
-
         override
         public var description: String {
             return "{\(ruleIndex):\(predIndex)}?"
         }
-        
+
         public static func ==(lhs: Predicate, rhs: Predicate) -> Bool {
             if lhs === rhs {
                 return true
@@ -118,7 +115,6 @@ public class SemanticContext: Hashable, CustomStringConvertible {
                 lhs.isCtxDependent == rhs.isCtxDependent
         }
     }
-
 
     public class PrecedencePredicate: SemanticContext {
         public let precedence: Int
@@ -145,7 +141,6 @@ public class SemanticContext: Hashable, CustomStringConvertible {
             }
         }
 
-
         override
         public var hashValue: Int {
             var hashCode: Int = 1
@@ -158,7 +153,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
             return "{" + String(precedence) + ">=prec}?"
 
         }
-        
+
         public static func ==(lhs: PrecedencePredicate, rhs: PrecedencePredicate) -> Bool {
             if lhs === rhs {
                 return true
@@ -167,32 +162,32 @@ public class SemanticContext: Hashable, CustomStringConvertible {
         }
     }
 
-    /// 
+    ///
     /// This is the base class for semantic context "operators", which operate on
     /// a collection of semantic context "operands".
-    /// 
+    ///
     /// -  4.3
-    /// 
+    ///
 
     public class Operator: SemanticContext {
-        /// 
+        ///
         /// Gets the operands for the semantic context operator.
-        /// 
+        ///
         /// - returns: a collection of _org.antlr.v4.runtime.atn.SemanticContext_ operands for the
         /// operator.
-        /// 
+        ///
         /// -  4.3
-        /// 
+        ///
 
         public func getOperands() -> Array<SemanticContext> {
             fatalError(#function + " must be overridden")
         }
     }
 
-    /// 
+    ///
     /// A semantic context which is true whenever none of the contained contexts
     /// is false.
-    /// 
+    ///
 
     public class AND: Operator {
         public let opnds: [SemanticContext]
@@ -228,7 +223,6 @@ public class SemanticContext: Hashable, CustomStringConvertible {
             return opnds
         }
 
-
         override
         public var hashValue: Int {
             //MurmurHash.hashCode(opnds, AND.class.hashCode());
@@ -237,13 +231,13 @@ public class SemanticContext: Hashable, CustomStringConvertible {
             return MurmurHash.hashCode(opnds, seed)
         }
 
-        /// 
-        /// 
-        /// 
-        /// 
+        ///
+        ///
+        ///
+        ///
         /// The evaluation of predicates by this context is short-circuiting, but
         /// unordered.
-        /// 
+        ///
         override
         public func eval<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> Bool {
             for opnd in opnds {
@@ -269,8 +263,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
                     if evaluated != SemanticContext.NONE {
                         operands.append(evaluated)
                     }
-                }
-                else if evaluated != SemanticContext.NONE {
+                } else if evaluated != SemanticContext.NONE {
                     // The AND context is false if any element is false
                     return nil
                 }
@@ -299,7 +292,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
             return opnds.map({ $0.description }).joined(separator: "&&")
 
         }
-        
+
         public static func ==(lhs: AND, rhs: AND) -> Bool {
             if lhs === rhs {
                 return true
@@ -308,10 +301,10 @@ public class SemanticContext: Hashable, CustomStringConvertible {
         }
     }
 
-    /// 
+    ///
     /// A semantic context which is true whenever at least one of the contained
     /// contexts is true.
-    /// 
+    ///
 
     public class OR: Operator {
         public final var opnds: [SemanticContext]
@@ -347,20 +340,19 @@ public class SemanticContext: Hashable, CustomStringConvertible {
             return opnds
         }
 
-
         override
         public var hashValue: Int {
 
             return MurmurHash.hashCode(opnds, NSStringFromClass(OR.self).hashValue)
         }
 
-        /// 
-        /// 
-        /// 
-        /// 
+        ///
+        ///
+        ///
+        ///
         /// The evaluation of predicates by this context is short-circuiting, but
         /// unordered.
-        /// 
+        ///
         override
         public func eval<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> Bool {
             for opnd in opnds {
@@ -381,8 +373,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
                 if evaluated == SemanticContext.NONE {
                     // The OR context is true if any element is true
                     return SemanticContext.NONE
-                }
-                else if let evaluated = evaluated {
+                } else if let evaluated = evaluated {
                     // Reduce the result by skipping false elements
                     operands.append(evaluated)
                 }
@@ -411,7 +402,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
             return opnds.map({ $0.description }).joined(separator: "||")
 
         }
-        
+
         public static func ==(lhs: SemanticContext.OR, rhs: SemanticContext.OR) -> Bool {
             if lhs === rhs {
                 return true
@@ -435,10 +426,10 @@ public class SemanticContext: Hashable, CustomStringConvertible {
         return result
     }
 
-    /// 
-    /// 
+    ///
+    ///
     /// - seealso: org.antlr.v4.runtime.atn.ParserATNSimulator#getPredsForAmbigAlts
-    /// 
+    ///
     public static func or(_ a: SemanticContext?, _ b: SemanticContext?) -> SemanticContext {
         guard let a = a else {
             return b!

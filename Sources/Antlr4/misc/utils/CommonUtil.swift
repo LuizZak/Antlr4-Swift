@@ -90,7 +90,7 @@ func toUUID(_ data: [Character], _ offset: Int) -> UUID {
     return UUID(mostSigBits: mostSigBits, leastSigBits: leastSigBits)
 }
 
-func ==<T:Equatable>(_ lhs: [T?], _ rhs: [T?]) -> Bool {
+func ==<T: Equatable>(_ lhs: [T?], _ rhs: [T?]) -> Bool {
 
     if lhs.count != rhs.count {
         return false

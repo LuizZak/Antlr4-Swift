@@ -1,8 +1,8 @@
-/// 
+///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
+///
 
 //
 //  LookupATNConfig.swift
@@ -30,11 +30,9 @@ public class LookupATNConfig: Hashable {
 
     }
 
-
 }
 
 public func ==(lhs: LookupATNConfig, rhs: LookupATNConfig) -> Bool {
-
 
     if lhs.config === rhs.config {
         return true
@@ -44,9 +42,8 @@ public func ==(lhs: LookupATNConfig, rhs: LookupATNConfig) -> Bool {
         return lhs.config == rhs.config
     }
 
-
     let same: Bool =
-    lhs.config.state.stateNumber == rhs.config.state.stateNumber &&
+        lhs.config.state.stateNumber == rhs.config.state.stateNumber &&
             lhs.config.alt == rhs.config.alt &&
             lhs.config.semanticContext == rhs.config.semanticContext
 

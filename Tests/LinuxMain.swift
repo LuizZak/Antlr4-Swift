@@ -8,6 +8,6 @@ XCTMain([
     testCase(TokenStreamTests.allTests),
     testCase(TokenStreamRewriterTests.allTests),
     testCase(VisitorTests.allTests)
-])
+    ])
 
 #endif

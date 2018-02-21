@@ -3,12 +3,11 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-
 /// Indicates that the parser could not decide which of two or more paths
 /// to take based upon the remaining input. It tracks the starting token
 /// of the offending input and also knows where the parser was
 /// in the various paths when the error. Reported by reportNoViableAlternative()
-/// 
+///
 
 public class NoViableAltException: RecognitionException {
     /// Which configurations did we try at input.index() that couldn't match input.LT(1)?
@@ -19,18 +18,18 @@ public class NoViableAltException: RecognitionException {
     /// not be buffering tokens so get a reference to it. (At the
     /// time the error occurred, of course the stream needs to keep a
     /// buffer all of the tokens but later we might not have access to those.)
-    /// 
+    ///
     private final var startToken: Token
 
     public convenience init(_ recognizer: Parser) {
         // LL(1) error
         let token = try! recognizer.getCurrentToken()
         self.init(recognizer,
-                recognizer.getInputStream()!,
-                token,
-                token,
-                nil,
-                recognizer._ctx)
+                  recognizer.getInputStream()!,
+                  token,
+                  token,
+                  nil,
+                  recognizer._ctx)
     }
 
     public init(_ recognizer: Parser?,
@@ -49,11 +48,9 @@ public class NoViableAltException: RecognitionException {
         }
     }
 
-
     public func getStartToken() -> Token {
         return startToken
     }
-
 
     public func getDeadEndConfigs() -> ATNConfigSet? {
         return deadEndConfigs

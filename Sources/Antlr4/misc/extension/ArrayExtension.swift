@@ -1,8 +1,8 @@
-/// 
+///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
+///
 
 import Foundation
 
@@ -12,22 +12,22 @@ extension Array {
     mutating func concat(_ addArray: [Element]) -> [Element] {
         return self + addArray
     }
-    
-    mutating func removeObject<T:Equatable>(_ object: T) {
+
+    mutating func removeObject<T: Equatable>(_ object: T) {
         var index: Int?
         for (idx, objectToCompare) in self.enumerated() {
-            
+
             if let to = objectToCompare as? T {
                 if object == to {
                     index = idx
                 }
             }
         }
-        
+
         if let index = index {
             self.remove(at: index)
         }
-        
+
     }
 
     ///
@@ -46,18 +46,17 @@ extension Array {
     mutating func push(_ newElement: Element) {
         return append(newElement)
     }
-    
+
     func all(_ test: (Element) -> Bool) -> Bool {
         for item in self {
             if !test(item) {
                 return false
             }
         }
-        
+
         return true
     }
-    
-    
+
     ///
     /// Checks if test returns true for all the elements in self
     ///
@@ -70,10 +69,10 @@ extension Array {
                 return false
             }
         }
-        
+
         return true
     }
-    
+
     ///
     /// Checks if test returns true for any element of self.
     ///
@@ -86,12 +85,10 @@ extension Array {
                 return true
             }
         }
-        
+
         return false
     }
-    
-    
-    
+
     ///
     /// slice array
     /// :param: index slice index
@@ -101,26 +98,22 @@ extension Array {
     ///
     //func slice(startIndex startIndex:Int, endIndex:Int) -> Slice<Element> {
     func slice(startIndex: Int, endIndex: Int) -> ArraySlice<Element> {
-        
-        
+
         return self[startIndex ... endIndex]
-        
+
     }
     // func slice(index:Int,isClose:Bool = false) ->(first:Slice<Element> ,second:Slice<Element>){
-    func slice(_ index: Int, isClose: Bool = false) -> (first:ArraySlice<Element>, second:ArraySlice<Element>) {
+    func slice(_ index: Int, isClose: Bool = false) -> (first: ArraySlice<Element>, second: ArraySlice<Element>) {
         var first = self[0 ... index]
         var second = self[index ..< count]
-        
+
         if isClose {
             first = second + first
             second = []
         }
-        
+
         return (first, second)
-        
+
     }
-    
 
 }
-
-

@@ -1,15 +1,13 @@
-/// 
+///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
+///
 
-
-
-/// 
-/// 
+///
+///
 /// -  Sam Harwell
-/// 
+///
 
 import Foundation
 
@@ -18,44 +16,43 @@ public class ATNDeserializer {
 
     ///
     /// This is the earliest supported serialized UUID.
-    /// 
+    ///
     private static let BASE_SERIALIZED_UUID = UUID(uuidString: "33761B2D-78BB-4A43-8B0B-4F5BEE8AACF3")!
 
-    /// 
+    ///
     /// This UUID indicates an extension of _BASE_SERIALIZED_UUID_ for the
     /// addition of precedence predicates.
-    /// 
+    ///
     private static let ADDED_PRECEDENCE_TRANSITIONS = UUID(uuidString: "1DA0C57D-6C06-438A-9B27-10BCB3CE0F61")!
-    /// 
+    ///
     /// This UUID indicates an extension of _#ADDED_PRECEDENCE_TRANSITIONS_
     /// for the addition of lexer actions encoded as a sequence of
     /// _org.antlr.v4.runtime.atn.LexerAction_ instances.
-    /// 
+    ///
     private static let ADDED_LEXER_ACTIONS = UUID(uuidString: "AADB8D7E-AEEF-4415-AD2B-8204D6CF042E")!
 
-    /// 
+    ///
     /// This UUID indicates the serialized ATN contains two sets of
     /// IntervalSets, where the second set's values are encoded as
     /// 32-bit integers to support the full Unicode SMP range up to U+10FFFF.
-    /// 
+    ///
     private static let ADDED_UNICODE_SMP = UUID(uuidString: "59627784-3BE5-417A-B9EB-8131A7286089")!
 
-    /// 
+    ///
     /// This list contains all of the currently supported UUIDs, ordered by when
     /// the feature first appeared in this branch.
-    /// 
+    ///
     private static let SUPPORTED_UUIDS = [
         ATNDeserializer.BASE_SERIALIZED_UUID,
         ATNDeserializer.ADDED_PRECEDENCE_TRANSITIONS,
         ATNDeserializer.ADDED_LEXER_ACTIONS,
-        ATNDeserializer.ADDED_UNICODE_SMP,
-        ]
+        ATNDeserializer.ADDED_UNICODE_SMP
+    ]
 
-    /// 
+    ///
     /// This is the current serialized UUID.
-    /// 
+    ///
     public static let SERIALIZED_UUID = ADDED_UNICODE_SMP
-
 
     private let deserializationOptions: ATNDeserializationOptions
 
@@ -63,11 +60,11 @@ public class ATNDeserializer {
         self.deserializationOptions = deserializationOptions ?? ATNDeserializationOptions.getDefaultOptions()
     }
 
-    /// 
+    ///
     /// Determines if a particular serialized representation of an ATN supports
     /// a particular feature, identified by the _java.util.UUID_ used for serializing
     /// the ATN at the time the feature was first introduced.
-    /// 
+    ///
     /// - parameter feature: The _java.util.UUID_ marking the first time the feature was
     /// supported in the serialized ATN.
     /// - parameter actualUuid: The _java.util.UUID_ of the actual serialized ATN which is
@@ -75,7 +72,7 @@ public class ATNDeserializer {
     /// - returns: `true` if the `actualUuid` value represents a
     /// serialized ATN at or after the feature identified by `feature` was
     /// introduced; otherwise, `false`.
-    /// 
+    ///
     internal func isFeatureSupported(_ feature: UUID, _ actualUuid: UUID) -> Bool {
         let supported = ATNDeserializer.SUPPORTED_UUIDS
         guard let featureIndex = supported.index(of: feature),
@@ -84,7 +81,6 @@ public class ATNDeserializer {
         }
         return actualIndex >= featureIndex
     }
-
 
     public func deserialize(_ inData: [Character]) throws -> ATN {
         // don't adjust the first value since that's the version number
@@ -306,8 +302,7 @@ public class ATNDeserializer {
                 }
                 atn.lexerActions = lexerActions
 
-            }
-            else {
+            } else {
                 convertOldActionTransitions(atn)
             }
         }
@@ -315,7 +310,6 @@ public class ATNDeserializer {
         try finalizeATN(atn)
         return atn
     }
-
 
     private func readUnicodeInt(_ data: [Character], _ p: inout Int) -> Int {
         let result = toInt(data[p])
@@ -399,7 +393,7 @@ public class ATNDeserializer {
         var endStateNumbers = [(BlockStartState, Int)]()
 
         let states = dict["states"] as! [[String: Any]]
-        
+
         for state in states {
             let ruleIndex = state["ruleIndex"] as! Int
             let stype = state["stateType"] as! Int
@@ -408,8 +402,7 @@ public class ATNDeserializer {
                 // special case
                 let loopBackStateNumber = state["detailStateNumber"] as! Int
                 loopBackStateNumbers.append((s as! LoopEndState, loopBackStateNumber))
-            }
-            else if let bsState = s as? BlockStartState {
+            } else if let bsState = s as? BlockStartState {
                 let endStateNumber = state["detailStateNumber"] as! Int
                 endStateNumbers.append((bsState, endStateNumber))
             }
@@ -499,7 +492,6 @@ public class ATNDeserializer {
             }
         }
 
-
         //
         // EDGES
         //
@@ -551,8 +543,7 @@ public class ATNDeserializer {
                     lexerActions.append(lexerAction)
                 }
                 atn.lexerActions = lexerActions
-            }
-            else {
+            } else {
                 convertOldActionTransitions(atn)
             }
         }
@@ -600,7 +591,6 @@ public class ATNDeserializer {
         }
     }
 
-
     /// for compatibility with older serialized ATNs, convert the old
     /// serialized action index for action transitions to the new
     /// form, which is the index of a LexerCustomAction
@@ -626,7 +616,6 @@ public class ATNDeserializer {
         atn.lexerActions = legacyLexerActions
     }
 
-
     private func validateStates(_ atn: ATN) throws {
         for state in atn.states {
             if let state = state as? BlockStartState {
@@ -637,12 +626,10 @@ public class ATNDeserializer {
                         throw ANTLRError.illegalState(msg: "state.endState.startState != nil")
                     }
                     stateEndState.startState = state
-                }
-                else {
+                } else {
                     throw ANTLRError.illegalState(msg: "state.endState == nil")
                 }
-            }
-            else if let loopbackState = state as? PlusLoopbackState {
+            } else if let loopbackState = state as? PlusLoopbackState {
                 let length = loopbackState.getNumberOfTransitions()
                 for i in 0..<length {
                     let target = loopbackState.transition(i).target
@@ -650,8 +637,7 @@ public class ATNDeserializer {
                         startState.loopBackState = loopbackState
                     }
                 }
-            }
-            else if let loopbackState = state as? StarLoopbackState {
+            } else if let loopbackState = state as? StarLoopbackState {
                 let length = loopbackState.getNumberOfTransitions()
                 for i in 0..<length {
                     let target = loopbackState.transition(i).target
@@ -662,7 +648,6 @@ public class ATNDeserializer {
             }
         }
     }
-
 
     private func finalizeATN(_ atn: ATN) throws {
         markPrecedenceDecisions(atn)
@@ -679,14 +664,13 @@ public class ATNDeserializer {
         }
     }
 
-
     ///
     /// Analyze the _org.antlr.v4.runtime.atn.StarLoopEntryState_ states in the specified ATN to set
     /// the _org.antlr.v4.runtime.atn.StarLoopEntryState#precedenceRuleDecision_ field to the
     /// correct value.
-    /// 
+    ///
     /// - parameter atn: The ATN.
-    /// 
+    ///
     internal func markPrecedenceDecisions(_ atn: ATN) {
         for state in atn.states {
             ///
@@ -703,7 +687,6 @@ public class ATNDeserializer {
             }
         }
     }
-
 
     private func generateRuleBypassTransitions(_ atn: ATN) throws {
         let length = atn.ruleToStartState.count
@@ -749,8 +732,7 @@ public class ATNDeserializer {
                 }
 
                 excludeTransition = (endState as? StarLoopEntryState)?.loopBackState?.transition(0)
-            }
-            else {
+            } else {
                 endState = atn.ruleToStopState[i]
             }
 
@@ -786,7 +768,6 @@ public class ATNDeserializer {
             bypassStart.addTransition(EpsilonTransition(matchState))
         }
     }
-
 
     internal func verifyATN(_ atn: ATN) throws {
         // verify assumptions
@@ -857,7 +838,6 @@ public class ATNDeserializer {
 
         }
     }
-
 
     internal func edgeFactory(_ atn: ATN,
                               _ type: Int, _ src: Int, _ trg: Int,

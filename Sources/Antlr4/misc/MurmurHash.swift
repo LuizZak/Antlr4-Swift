@@ -3,13 +3,11 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-
-
-/// 
+///
 /// https://en.wikipedia.org/wiki/MurmurHash
-/// 
+///
 /// - Author: Sam Harwell
-/// 
+///
 
 public final class MurmurHash {
 
@@ -22,21 +20,21 @@ public final class MurmurHash {
     private static let m = UInt32(5)
     private static let n = UInt32(0xE6546B64)
 
-    /// 
+    ///
     /// Initialize the hash using the default seed value.
-    /// 
+    ///
     /// - Returns: the intermediate hash value
-    /// 
+    ///
     public static func initialize() -> UInt32 {
         return initialize(DEFAULT_SEED)
     }
 
-    /// 
+    ///
     /// Initialize the hash using the specified `seed`.
-    /// 
+    ///
     /// - Parameter seed: the seed
     /// - Returns: the intermediate hash value
-    /// 
+    ///
     public static func initialize(_ seed: UInt32) -> UInt32 {
         return seed
     }
@@ -47,15 +45,15 @@ public final class MurmurHash {
         k = (k << r1) | (k >> (32 - r1))
         k = k &* c2
         return k
-     }
+    }
 
-    /// 
+    ///
     /// Update the intermediate hash value for the next input `value`.
-    /// 
+    ///
     /// - Parameter hash: the intermediate hash value
     /// - Parameter value: the value to add to the current hash
     /// - Returns: the updated intermediate hash value
-    /// 
+    ///
     public static func update2(_ hashIn: UInt32, _ value: Int) -> UInt32 {
         let k = calcK(UInt32(truncatingIfNeeded: value))
         var hash = hashIn
@@ -66,25 +64,25 @@ public final class MurmurHash {
         return hash
     }
 
-    /// 
+    ///
     /// Update the intermediate hash value for the next input `value`.
-    /// 
+    ///
     /// - Parameter hash: the intermediate hash value
     /// - Parameter value: the value to add to the current hash
     /// - Returns: the updated intermediate hash value
-    /// 
-    public static func update<T:Hashable>(_ hash: UInt32, _ value: T?) -> UInt32 {
+    ///
+    public static func update<T: Hashable>(_ hash: UInt32, _ value: T?) -> UInt32 {
         return update2(hash, value?.hashValue ?? 0)
     }
 
-    /// 
+    ///
     /// Apply the final computation steps to the intermediate value `hash`
     /// to form the final result of the MurmurHash 3 hash function.
-    /// 
+    ///
     /// - Parameter hash: the intermediate hash value
     /// - Parameter numberOfWords: the number of UInt32 values added to the hash
     /// - Returns: the final hash result
-    /// 
+    ///
     public static func finish(_ hashin: UInt32, _ numberOfWords: Int) -> Int {
         return Int(finish(hashin, byteCount: (numberOfWords &* 4)))
     }
@@ -102,16 +100,16 @@ public final class MurmurHash {
         return hash
     }
 
-    /// 
+    ///
     /// Utility function to compute the hash code of an array using the
     /// MurmurHash algorithm.
-    /// 
+    ///
     /// - Parameter <T>: the array element type
     /// - Parameter data: the array data
     /// - Parameter seed: the seed for the MurmurHash algorithm
     /// - Returns: the hash code of the data
-    /// 
-    public static func hashCode<T:Hashable>(_ data: [T], _ seed: Int) -> Int {
+    ///
+    public static func hashCode<T: Hashable>(_ data: [T], _ seed: Int) -> Int {
         var hash = initialize(UInt32(truncatingIfNeeded: seed))
         for value in data {
             hash = update(hash, value)

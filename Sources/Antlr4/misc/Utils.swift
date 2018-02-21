@@ -2,8 +2,7 @@
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
-
+///
 
 import Foundation
 
@@ -14,23 +13,18 @@ public class Utils {
         for c in s {
             if c == " " && escapeSpaces {
                 buf += "\u{00B7}"
-            }
-            else if c == "\t" {
-                    buf += "\\t"
-            }
-            else if c == "\n" {
+            } else if c == "\t" {
+                buf += "\\t"
+            } else if c == "\n" {
                 buf += "\\n"
-            }
-            else if c == "\r" {
+            } else if c == "\r" {
                 buf += "\\r"
-            }
-            else {
+            } else {
                 buf.append(c)
             }
         }
         return buf
     }
-
 
     public static func toMap(_ keys: [String]) -> [String: Int] {
         var m = [String: Int]()
@@ -41,11 +35,10 @@ public class Utils {
     }
 
     public static func bitLeftShift(_ n: Int) -> Int64 {
-       return (Int64(1) << Int64(n % 64))
+        return (Int64(1) << Int64(n % 64))
     }
 
-
-    public static func testBitLeftShiftArray(_ nArray: [Int],_ bitsShift: Int) -> Bool {
+    public static func testBitLeftShiftArray(_ nArray: [Int], _ bitsShift: Int) -> Bool {
         let test: Bool = (((nArray[0] - bitsShift) & ~0x3f) == 0)
 
         var temp: Int64 =  Int64(nArray[0] - bitsShift)

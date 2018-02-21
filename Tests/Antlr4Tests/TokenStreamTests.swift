@@ -6,7 +6,7 @@ import XCTest
 import Antlr4
 
 class TokenStreamTests: XCTestCase {
-    
+
     static let allTests = [
         ("testBufferedTokenStreamClearFetchEOFWithNewSource", testBufferedTokenStreamClearFetchEOFWithNewSource)
     ]
@@ -16,14 +16,14 @@ class TokenStreamTests: XCTestCase {
         let inputStream1 = ANTLRInputStream("A")
         let tokenStream = CommonTokenStream(VisitorBasicLexer(inputStream1))
 
-        try tokenStream.fill();
+        try tokenStream.fill()
         XCTAssertEqual(2, tokenStream.size())
         XCTAssertEqual(VisitorBasicLexer.A, try tokenStream.get(0).getType())
         XCTAssertEqual(Lexer.EOF, try tokenStream.get(1).getType())
 
-        let inputStream2 = ANTLRInputStream("AA");
-        tokenStream.setTokenSource(VisitorBasicLexer(inputStream2));
-        try tokenStream.fill();
+        let inputStream2 = ANTLRInputStream("AA")
+        tokenStream.setTokenSource(VisitorBasicLexer(inputStream2))
+        try tokenStream.fill()
         XCTAssertEqual(3, tokenStream.size())
         XCTAssertEqual(VisitorBasicLexer.A, try tokenStream.get(0).getType())
         XCTAssertEqual(VisitorBasicLexer.A, try tokenStream.get(1).getType())

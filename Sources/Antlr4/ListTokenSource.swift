@@ -1,72 +1,72 @@
-/// 
+///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
+///
 
-/// 
+///
 /// Provides an implementation of _org.antlr.v4.runtime.TokenSource_ as a wrapper around a list
 /// of _org.antlr.v4.runtime.Token_ objects.
-/// 
+///
 /// If the final token in the list is an _org.antlr.v4.runtime.Token#EOF_ token, it will be used
 /// as the EOF token for every call to _#nextToken_ after the end of the
 /// list is reached. Otherwise, an EOF token will be created.
-/// 
+///
 
 public class ListTokenSource: TokenSource {
-    /// 
+    ///
     /// The wrapped collection of _org.antlr.v4.runtime.Token_ objects to return.
-    /// 
+    ///
     internal final var tokens: [Token]
 
-    /// 
+    ///
     /// The name of the input source. If this value is `null`, a call to
     /// _#getSourceName_ should return the source name used to create the
     /// the next token in _#tokens_ (or the previous token if the end of
     /// the input has been reached).
-    /// 
+    ///
     private final var sourceName: String?
 
-    /// 
+    ///
     /// The index into _#tokens_ of token to return by the next call to
     /// _#nextToken_. The end of the input is indicated by this value
     /// being greater than or equal to the number of items in _#tokens_.
-    /// 
+    ///
     internal var i = 0
 
-    /// 
+    ///
     /// This field caches the EOF token for the token source.
-    /// 
+    ///
     internal var eofToken: Token?
 
-    /// 
+    ///
     /// This is the backing field for _#getTokenFactory_ and
     /// _setTokenFactory_.
-    /// 
+    ///
     private var _factory = CommonTokenFactory.DEFAULT
 
-    /// 
+    ///
     /// Constructs a new _org.antlr.v4.runtime.ListTokenSource_ instance from the specified
     /// collection of _org.antlr.v4.runtime.Token_ objects.
-    /// 
+    ///
     /// - parameter tokens: The collection of _org.antlr.v4.runtime.Token_ objects to provide as a
     /// _org.antlr.v4.runtime.TokenSource_.
-    /// 
+    ///
     public convenience init(_ tokens: [Token]) {
         self.init(tokens, nil)
     }
 
-    /// 
+    ///
     /// Constructs a new _org.antlr.v4.runtime.ListTokenSource_ instance from the specified
     /// collection of _org.antlr.v4.runtime.Token_ objects and source name.
-    /// 
+    ///
     /// - parameter tokens: The collection of _org.antlr.v4.runtime.Token_ objects to provide as a
     /// _org.antlr.v4.runtime.TokenSource_.
     /// - parameter sourceName: The name of the _org.antlr.v4.runtime.TokenSource_. If this value is
     /// `null`, _#getSourceName_ will attempt to infer the name from
     /// the next _org.antlr.v4.runtime.Token_ (or the previous token if the end of the input has
     /// been reached).
-    /// 
+    ///
     public init(_ tokens: [Token], _ sourceName: String?) {
         self.tokens = tokens
         self.sourceName = sourceName
@@ -75,11 +75,9 @@ public class ListTokenSource: TokenSource {
     public func getCharPositionInLine() -> Int {
         if i < tokens.count {
             return tokens[i].getCharPositionInLine()
-        }
-        else if let eofToken = eofToken {
+        } else if let eofToken = eofToken {
             return eofToken.getCharPositionInLine()
-        }
-        else if tokens.count > 0 {
+        } else if tokens.count > 0 {
             // have to calculate the result from the line/column of the previous
             // token, along with the text of the token.
             let lastToken = tokens[tokens.count - 1]
@@ -90,8 +88,8 @@ public class ListTokenSource: TokenSource {
                 }
             }
             return (lastToken.getCharPositionInLine() +
-                    lastToken.getStopIndex() -
-                    lastToken.getStartIndex() + 1)
+                lastToken.getStopIndex() -
+                lastToken.getStartIndex() + 1)
         }
 
         // only reach this if tokens is empty, meaning EOF occurs at the first
@@ -162,11 +160,9 @@ public class ListTokenSource: TokenSource {
     public func getInputStream() -> CharStream? {
         if i < tokens.count {
             return tokens[i].getInputStream()
-        }
-        else if let eofToken = eofToken {
+        } else if let eofToken = eofToken {
             return eofToken.getInputStream()
-        }
-        else if tokens.count > 0 {
+        } else if tokens.count > 0 {
             return tokens[tokens.count - 1].getInputStream()
         }
 

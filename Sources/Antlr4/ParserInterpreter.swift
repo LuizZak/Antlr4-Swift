@@ -3,34 +3,32 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-
-
 /// A parser simulator that mimics what ANTLR's generated
 /// parser code does. A ParserATNSimulator is used to make
 /// predictions via adaptivePredict but this class moves a pointer through the
 /// ATN to simulate parsing. ParserATNSimulator just
 /// makes us efficient rather than having to backtrack, for example.
-/// 
+///
 /// This properly creates parse trees even for left recursive rules.
-/// 
+///
 /// We rely on the left recursive rule invocation and special predicate
 /// transitions to make left recursive rules work.
-/// 
+///
 /// See TestParserInterpreter for examples.
-/// 
+///
 
 public class ParserInterpreter: Parser {
     internal final var grammarFileName: String
     internal final var atn: ATN
     /// This identifies StarLoopEntryState's that begin the (...)*
     /// precedence loops of left recursive rules.
-    /// 
+    ///
     internal final var statesNeedingLeftRecursionContext: BitSet
 
     internal final var decisionToDFA: [DFA]
     // not shared like it is for generated parsers
     internal final var sharedContextCache: PredictionContextCache =
-    PredictionContextCache()
+        PredictionContextCache()
 
     internal final var ruleNames: [String]
 
@@ -38,22 +36,22 @@ public class ParserInterpreter: Parser {
 
     /// Tracks LR rules for adjusting the contexts
     internal final var _parentContextStack: Array<(ParserRuleContext?, Int)> =
-    Array<(ParserRuleContext?, Int)>()
+        Array<(ParserRuleContext?, Int)>()
 
     /// We need a map from (decision,inputIndex)->forced alt for computing ambiguous
     /// parse trees. For now, we allow exactly one override.
-    /// 
+    ///
     internal var overrideDecision: Int = -1
     internal var overrideDecisionInputIndex: Int = -1
     internal var overrideDecisionAlt: Int = -1
 
     /// A copy constructor that creates a new parser interpreter by reusing
     /// the fields of a previous interpreter.
-    /// 
+    ///
     /// - Since: 4.5.1
-    /// 
+    ///
     /// - Parameter old: The interpreter to copy
-    /// 
+    ///
     public init(_ old: ParserInterpreter) throws {
 
         self.atn = old.atn
@@ -64,8 +62,8 @@ public class ParserInterpreter: Parser {
         self.vocabulary = old.vocabulary
         try  super.init(old.getTokenStream()!)
         setInterpreter(ParserATNSimulator(self, atn,
-                decisionToDFA,
-                sharedContextCache))
+                                          decisionToDFA,
+                                          sharedContextCache))
     }
 
     public init(_ grammarFileName: String, _ vocabulary: Vocabulary,
@@ -93,8 +91,8 @@ public class ParserInterpreter: Parser {
         try super.init(input)
         // get atn simulator that knows how to do predictions
         setInterpreter(ParserATNSimulator(self, atn,
-                decisionToDFA,
-                sharedContextCache))
+                                          decisionToDFA,
+                                          sharedContextCache))
     }
 
     override
@@ -151,8 +149,7 @@ public class ParserInterpreter: Parser {
             default:
                 do {
                     try self.visitState(p)
-                }
-                 catch ANTLRException.recognition(let e) {
+                } catch ANTLRException.recognition(let e) {
                     setState(self.atn.ruleToStopState[p.ruleIndex!].stateNumber)
                     getContext()!.exception = e
                     getErrorHandler().reportError(self, e)
@@ -193,14 +190,14 @@ public class ParserInterpreter: Parser {
         switch transition.getSerializationType() {
         case Transition.EPSILON:
             if try statesNeedingLeftRecursionContext.get(p.stateNumber) &&
-                    !(transition.target is LoopEndState) {
+                !(transition.target is LoopEndState) {
                 // We are at the start of a left recursive rule's (...)* loop
                 // but it's not the exit branch of loop.
                 let ctx: InterpreterRuleContext = InterpreterRuleContext(
-                _parentContextStack.last!.0, //peek()
-                        _parentContextStack.last!.1, //peek()
+                    _parentContextStack.last!.0, //peek()
+                    _parentContextStack.last!.1, //peek()
 
-                        _ctx!.getRuleIndex())
+                    _ctx!.getRuleIndex())
                 try    pushNewRecursionContext(ctx, atn.ruleToStartState[p.ruleIndex!].stateNumber, _ctx!.getRuleIndex())
             }
             break
@@ -278,7 +275,7 @@ public class ParserInterpreter: Parser {
     /// allowing the adaptive prediction mechanism to choose the
     /// first alternative within a block that leads to a successful parse,
     /// force it to take the alternative, 1..n for n alternatives.
-    /// 
+    ///
     /// As an implementation limitation right now, you can only specify one
     /// override. This is sufficient to allow construction of different
     /// parse trees for ambiguous input. It means re-parsing the entire input
@@ -286,17 +283,17 @@ public class ParserInterpreter: Parser {
     /// live in the various parse trees. For example, in one interpretation,
     /// an ambiguous input sequence would be matched completely in expression
     /// but in another it could match all the way back to the root.
-    /// 
+    ///
     /// s : e '!'? ;
     /// e : ID
     /// | ID '!'
     /// ;
-    /// 
+    ///
     /// Here, x! can be matched as (s (e ID) !) or (s (e ID !)). In the first
     /// case, the ambiguous sequence is fully contained only by the root.
     /// In the second case, the ambiguous sequences fully contained within just
     /// e, as in: (e ID !).
-    /// 
+    ///
     /// Rather than trying to optimize this and make
     /// some intelligent decisions for optimization purposes, I settled on
     /// just re-parsing the whole input and then using
@@ -307,12 +304,12 @@ public class ParserInterpreter: Parser {
     /// the actual call stack. That impedance mismatch was enough to make
     /// it it challenging to restart the parser at a deeply nested rule
     /// invocation.
-    /// 
+    ///
     /// Only parser interpreters can override decisions so as to avoid inserting
     /// override checking code in the critical ALL(*) prediction execution path.
-    /// 
+    ///
     /// - Since: 4.5.1
-    /// 
+    ///
     public func addDecisionOverride(_ decision: Int, _ tokenIndex: Int, _ forcedAlt: Int) {
         overrideDecision = decision
         overrideDecisionInputIndex = tokenIndex

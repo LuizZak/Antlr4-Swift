@@ -3,7 +3,6 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-
 public protocol TerminalNode: ParseTree {
     func getSymbol() -> Token?
 }

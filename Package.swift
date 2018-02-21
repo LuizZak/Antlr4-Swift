@@ -11,7 +11,7 @@ let package = Package(
         .library(
             name: "Antlr4",
             type: .dynamic,
-            targets: ["Antlr4"]),
+            targets: ["Antlr4"])
     ],
     targets: [
         .target(
@@ -19,6 +19,6 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "Antlr4Tests",
-            dependencies: ["Antlr4"]),
+            dependencies: ["Antlr4"])
     ]
 )

@@ -1,22 +1,21 @@
-/// 
+///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
-
+///
 
 public class ArrayPredictionContext: PredictionContext {
-    /// 
+    ///
     /// Parent can be null only if full ctx mode and we make an array
     /// from _#EMPTY_ and non-empty. We merge _#EMPTY_ by using null parent and
     /// returnState == _#EMPTY_RETURN_STATE_.
-    /// 
+    ///
     public final var parents: [PredictionContext?]
 
-    /// 
+    ///
     /// Sorted for merge, no duplicates; if present,
     /// _#EMPTY_RETURN_STATE_ is always last.
-    /// 
+    ///
     public final let returnStates: [Int]
 
     public convenience init(_ a: SingletonPredictionContext) {
@@ -70,8 +69,7 @@ public class ArrayPredictionContext: PredictionContext {
             buf += "\(returnState)"
             if let parent = parents[i] {
                 buf += " \(parent)"
-            }
-            else {
+            } else {
                 buf += "null"
             }
         }
@@ -83,7 +81,7 @@ public class ArrayPredictionContext: PredictionContext {
 
         let length = parents.count
         var uniqueParents: Dictionary<PredictionContext, PredictionContext> =
-        Dictionary<PredictionContext, PredictionContext>()
+            Dictionary<PredictionContext, PredictionContext>()
         for p in 0..<length {
             if let parent: PredictionContext = parents[p] {
                 // if !uniqueParents.keys.contains(parent) {
@@ -102,7 +100,6 @@ public class ArrayPredictionContext: PredictionContext {
     }
 }
 
-
 public func ==(lhs: ArrayPredictionContext, rhs: ArrayPredictionContext) -> Bool {
     if lhs === rhs {
         return true
@@ -113,4 +110,3 @@ public func ==(lhs: ArrayPredictionContext, rhs: ArrayPredictionContext) -> Bool
 
     return lhs.returnStates == rhs.returnStates && lhs.parents == rhs.parents
 }
-

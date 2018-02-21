@@ -3,7 +3,6 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-
 public class TerminalNodeImpl: TerminalNode {
     public var symbol: Token
     public weak var parent: ParseTree?
@@ -11,7 +10,6 @@ public class TerminalNodeImpl: TerminalNode {
     public init(_ symbol: Token) {
         self.symbol = symbol
     }
-
 
     public func getChild(_ i: Int) -> Tree? {
         return nil
@@ -47,7 +45,6 @@ public class TerminalNodeImpl: TerminalNode {
     public func getChildCount() -> Int {
         return 0
     }
-
 
     public func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
         return visitor.visitTerminal(self)

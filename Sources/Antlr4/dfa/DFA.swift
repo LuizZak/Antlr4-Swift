@@ -1,15 +1,14 @@
-/// 
+///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
-
+///
 
 public class DFA: CustomStringConvertible {
-    /// 
+    ///
     /// A set of all DFA states. Use _java.util.Map_ so we can get old state back
     /// (_java.util.Set_ only allows you to see if it's there).
-    /// 
+    ///
 
     public final var states: HashMap<DFAState, DFAState?> = HashMap<DFAState, DFAState?>()
 
@@ -17,21 +16,21 @@ public class DFA: CustomStringConvertible {
 
     public final var decision: Int
 
-    /// 
+    ///
     /// From which ATN state did we create this DFA?
-    /// 
+    ///
 
     public let atnStartState: DecisionState
 
-    /// 
+    ///
     /// `true` if this DFA is for a precedence decision; otherwise,
     /// `false`. This is the backing field for _#isPrecedenceDfa_.
-    /// 
+    ///
     private let precedenceDfa: Bool
-    
-    /// 
+
+    ///
     /// mutex for DFAState changes.
-    /// 
+    ///
     private let dfaStateMutex = Mutex()
 
     public convenience init(_ atnStartState: DecisionState) {
@@ -50,38 +49,37 @@ public class DFA: CustomStringConvertible {
 
             precedenceDfa = true
             s0 = precedenceState
-        }
-        else {
+        } else {
             precedenceDfa = false
             s0 = nil
         }
     }
 
-    /// 
+    ///
     /// Gets whether this DFA is a precedence DFA. Precedence DFAs use a special
     /// start state _#s0_ which is not stored in _#states_. The
     /// _org.antlr.v4.runtime.dfa.DFAState#edges_ array for this start state contains outgoing edges
     /// supplying individual start states corresponding to specific precedence
     /// values.
-    /// 
+    ///
     /// - returns: `true` if this is a precedence DFA; otherwise,
     /// `false`.
     /// - seealso: org.antlr.v4.runtime.Parser#getPrecedence()
-    /// 
+    ///
     public final func isPrecedenceDfa() -> Bool {
         return precedenceDfa
     }
 
-    /// 
+    ///
     /// Get the start state for a specific precedence value.
-    /// 
+    ///
     /// - parameter precedence: The current precedence.
     /// - returns: The start state corresponding to the specified precedence, or
     /// `null` if no start state exists for the specified precedence.
-    /// 
+    ///
     /// - throws: _ANTLRError.illegalState_ if this is not a precedence DFA.
     /// - seealso: #isPrecedenceDfa()
-    /// 
+    ///
     public final func getPrecedenceStartState(_ precedence: Int) throws -> DFAState? {
         if !isPrecedenceDfa() {
             throw ANTLRError.illegalState(msg: "Only precedence DFAs may contain a precedence start state.")
@@ -95,16 +93,16 @@ public class DFA: CustomStringConvertible {
         return edges[precedence]
     }
 
-    /// 
+    ///
     /// Set the start state for a specific precedence value.
-    /// 
+    ///
     /// - parameter precedence: The current precedence.
     /// - parameter startState: The start state corresponding to the specified
     /// precedence.
-    /// 
+    ///
     /// - throws: _ANTLRError.illegalState_ if this is not a precedence DFA.
     /// - seealso: #isPrecedenceDfa()
-    /// 
+    ///
     public final func setPrecedenceStartState(_ precedence: Int, _ startState: DFAState) throws {
         if !isPrecedenceDfa() {
             throw ANTLRError.illegalState(msg: "Only precedence DFAs may contain a precedence start state.")
@@ -129,7 +127,7 @@ public class DFA: CustomStringConvertible {
 
     ///
     /// Return a list of all states in this DFA, ordered by state number.
-    /// 
+    ///
     public func getStates() -> [DFAState] {
         var result = [DFAState](states.keys)
 

@@ -1,13 +1,12 @@
-/// 
+///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
+///
 
-
-/// 
+///
 /// A DFA walker that knows how to dump them to serialized strings.
-/// 
+///
 
 public class DFASerializer: CustomStringConvertible {
     private let dfa: DFA
@@ -46,7 +45,6 @@ public class DFASerializer: CustomStringConvertible {
     internal func getEdgeLabel(_ i: Int) -> String {
         return vocabulary.getDisplayName(i - 1)
     }
-
 
     internal func getStateString(_ s: DFAState) -> String {
         let n = s.stateNumber

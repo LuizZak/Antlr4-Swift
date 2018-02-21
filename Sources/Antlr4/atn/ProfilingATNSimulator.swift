@@ -1,13 +1,12 @@
-/// 
+///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
+///
 
-
-/// 
+///
 /// -  4.3
-/// 
+///
 
 import Foundation
 
@@ -21,7 +20,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     internal var currentDecision: Int = 0
     internal var currentState: DFAState?
 
-    /// 
+    ///
     /// At the point of LL failover, we record how SLL would resolve the conflict so that
     /// we can determine whether or not a decision / input pair is context-sensitive.
     /// If LL gives a different result than SLL's predicted alternative, we have a
@@ -32,27 +31,26 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     /// was not required in order to produce a correct prediction for this decision and input sequence.
     /// It may in fact still be a context sensitivity but we don't know by looking at the
     /// minimum alternatives for the current input.
-    /// 
+    ///
     internal var conflictingAltResolvedBySLL: Int = 0
 
     public init(_ parser: Parser) {
         decisions = [DecisionInfo]()
 
         super.init(parser,
-                parser.getInterpreter().atn,
-                parser.getInterpreter().decisionToDFA,
-                parser.getInterpreter().sharedContextCache)
+                   parser.getInterpreter().atn,
+                   parser.getInterpreter().decisionToDFA,
+                   parser.getInterpreter().sharedContextCache)
 
         numDecisions = atn.decisionToState.count
         for i in 0..<numDecisions {
             decisions[i] = DecisionInfo(i)
         }
 
-
     }
 
     override
-    public func adaptivePredict(_ input: TokenStream, _ decision: Int,_ outerContext: ParserRuleContext?) throws -> Int {
+    public func adaptivePredict(_ input: TokenStream, _ decision: Int, _ outerContext: ParserRuleContext?) throws -> Int {
         var outerContext = outerContext
         self._sllStopIndex = -1
         self._llStopIndex = -1
@@ -69,7 +67,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
         if SLL_k > decisions[decision].SLL_MaxLook {
             decisions[decision].SLL_MaxLook = SLL_k
             decisions[decision].SLL_MaxLookEvent =
-                    LookaheadEventInfo(decision, nil, input, _startIndex, _sllStopIndex, false)
+                LookaheadEventInfo(decision, nil, input, _startIndex, _sllStopIndex, false)
         }
 
         if _llStopIndex >= 0 {
@@ -79,7 +77,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
             if LL_k > decisions[decision].LL_MaxLook {
                 decisions[decision].LL_MaxLook = LL_k
                 decisions[decision].LL_MaxLookEvent =
-                        LookaheadEventInfo(decision, nil, input, _startIndex, _llStopIndex, true)
+                    LookaheadEventInfo(decision, nil, input, _startIndex, _llStopIndex, true)
             }
         }
 
@@ -87,7 +85,6 @@ public class ProfilingATNSimulator: ParserATNSimulator {
             self.currentDecision = -1
         }
         return alt
-
 
     }
 
@@ -102,7 +99,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
             decisions[currentDecision].SLL_DFATransitions += 1 // count only if we transition over a DFA state
             if existingTargetState == ATNSimulator.ERROR {
                 decisions[currentDecision].errors.append(
-                ErrorInfo(currentDecision, previousD.configs, _input, _startIndex, _sllStopIndex, false)
+                    ErrorInfo(currentDecision, previousD.configs, _input, _startIndex, _sllStopIndex, false)
                 )
             }
         }
@@ -134,7 +131,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
                 // no reach on current lookahead symbol. ERROR.
                 // TODO: does not handle delayed errors per getSynValidOrSemInvalidAltThatFinishedDecisionEntryRule()
                 decisions[currentDecision].errors.append(
-                ErrorInfo(currentDecision, closure, _input, _startIndex, _llStopIndex, true)
+                    ErrorInfo(currentDecision, closure, _input, _startIndex, _llStopIndex, true)
                 )
             }
         } else {
@@ -143,7 +140,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
             } else {
                 // no reach on current lookahead symbol. ERROR.
                 decisions[currentDecision].errors.append(
-                ErrorInfo(currentDecision, closure, _input, _startIndex, _sllStopIndex, false)
+                    ErrorInfo(currentDecision, closure, _input, _startIndex, _sllStopIndex, false)
                 )
             }
         }
@@ -180,7 +177,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     internal func reportContextSensitivity(_ dfa: DFA, _ prediction: Int, _ configs: ATNConfigSet, _ startIndex: Int, _ stopIndex: Int) {
         if prediction != conflictingAltResolvedBySLL {
             decisions[currentDecision].contextSensitivities.append(
-            ContextSensitivityInfo(currentDecision, configs, _input, startIndex, stopIndex)
+                ContextSensitivityInfo(currentDecision, configs, _input, startIndex, stopIndex)
             )
         }
         super.reportContextSensitivity(dfa, prediction, configs, startIndex, stopIndex)
@@ -203,16 +200,15 @@ public class ProfilingATNSimulator: ParserATNSimulator {
             // to different minimum alternatives we have also identified a
             // context sensitivity.
             decisions[currentDecision].contextSensitivities.append(
-            ContextSensitivityInfo(currentDecision, configs, _input, startIndex, stopIndex)
+                ContextSensitivityInfo(currentDecision, configs, _input, startIndex, stopIndex)
             )
         }
         decisions[currentDecision].ambiguities.append(
-        AmbiguityInfo(currentDecision, configs, ambigAlts!,
-                _input, startIndex, stopIndex, configs.fullCtx)
+            AmbiguityInfo(currentDecision, configs, ambigAlts!,
+                          _input, startIndex, stopIndex, configs.fullCtx)
         )
         super.reportAmbiguity(dfa, D, startIndex, stopIndex, exact, ambigAlts!, configs)
     }
-
 
     public func getDecisionInfo() -> [DecisionInfo] {
         return decisions

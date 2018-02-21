@@ -3,22 +3,21 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-
 /// A rule context is a record of a single rule invocation.
-/// 
+///
 /// We form a stack of these context objects using the parent
 /// pointer. A parent pointer of null indicates that the current
 /// context is the bottom of the stack. The ParserRuleContext subclass
 /// as a children list so that we can turn this data structure into a
 /// tree.
-/// 
+///
 /// The root node always has a null pointer and invokingState of -1.
-/// 
+///
 /// Upon entry to parsing, the first invoked rule function creates a
 /// context object (asubclass specialized for that rule such as
 /// SContext) and makes it the root of a parse tree, recorded by field
 /// Parser._ctx.
-/// 
+///
 /// public final SContext s() throws RecognitionException {
 /// SContext _localctx = new SContext(_ctx, getState()); <-- create new node
 /// enterRule(_localctx, 0, RULE_s);                     <-- push it
@@ -26,34 +25,34 @@
 /// exitRule();                                          <-- pop back to _localctx
 /// return _localctx;
 /// }
-/// 
+///
 /// A subsequent rule invocation of r from the start rule s pushes a
 /// new context object for r whose parent points at s and use invoking
 /// state is the state with r emanating as edge label.
-/// 
+///
 /// The invokingState fields from a context object to the root
 /// together form a stack of rule indication states where the root
 /// (bottom of the stack) has a -1 sentinel value. If we invoke start
 /// symbol s then call r1, which calls r2, the  would look like
 /// this:
-/// 
+///
 /// SContext[-1]   <- root node (bottom of the stack)
 /// R1Context[p]   <- p in rule s called r1
 /// R2Context[q]   <- q in rule r1 called r2
-/// 
+///
 /// So the top of the stack, _ctx, represents a call to the current
 /// rule and it holds the return address from another rule that invoke
 /// to this rule. To invoke a rule, we must always have a current context.
-/// 
+///
 /// The parent contexts are useful for computing lookahead sets and
 /// getting error information.
-/// 
+///
 /// These objects are used during parsing and prediction.
 /// For the special case of parsers, we use the subclass
 /// ParserRuleContext.
-/// 
+///
 /// - SeeAlso: org.antlr.v4.runtime.ParserRuleContext
-/// 
+///
 
 open class RuleContext: RuleNode {
     public static let EMPTY = ParserRuleContext()
@@ -65,7 +64,7 @@ open class RuleContext: RuleNode {
     /// The "return address" is the followState of invokingState
     /// If parent is null, this should be -1 this context object represents
     /// the start rule.
-    /// 
+    ///
     public var invokingState = -1
 
     public init() {
@@ -89,7 +88,7 @@ open class RuleContext: RuleNode {
 
     /// A context is empty if there is no invoking state; meaning nobody called
     /// current context.
-    /// 
+    ///
     open func isEmpty() -> Bool {
         return invokingState == -1
     }
@@ -118,11 +117,11 @@ open class RuleContext: RuleNode {
 
     /// Return the combined text of all child nodes. This method only considers
     /// tokens which have been added to the parse tree.
-    /// 
+    ///
     /// Since tokens on hidden channels (e.g. whitespace or comments) are not
     /// added to the parse trees, they will not appear in the output of this
     /// method.
-    /// 
+    ///
 
     open func getText() -> String {
         let length = getChildCount()
@@ -149,16 +148,13 @@ open class RuleContext: RuleNode {
         return nil
     }
 
-
     open func getChildCount() -> Int {
         return 0
     }
 
-
     open subscript(index: Int) -> ParseTree {
         preconditionFailure("Index out of range (RuleContext never has children, though its subclasses may).")
     }
-
 
     open func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
         return visitor.visitChildren(self)
@@ -174,7 +170,7 @@ open class RuleContext: RuleNode {
 
     /// Print out a whole tree, not just a node, in LISP format
     /// (root child1 .. childN). Print just a node if this is a leaf.
-    /// 
+    ///
     public func toStringTree(_ ruleNames: [String]?) -> String {
         return Trees.toStringTree(self, ruleNames)
     }
@@ -187,8 +183,8 @@ open class RuleContext: RuleNode {
         return toString(nil, nil)
     }
 
-     open var debugDescription: String {
-         return description
+    open var debugDescription: String {
+        return description
     }
 
     public final func toString<T>(_ recog: Recognizer<T>) -> String {
@@ -215,8 +211,7 @@ open class RuleContext: RuleNode {
                 let ruleIndexInRange = (ruleIndex >= 0 && ruleIndex < ruleNames.count)
                 let ruleName = (ruleIndexInRange ? ruleNames[ruleIndex] : String(ruleIndex))
                 buf += ruleName
-            }
-            else {
+            } else {
                 if !pWrap.isEmpty() {
                     buf += String(pWrap.invokingState)
                 }

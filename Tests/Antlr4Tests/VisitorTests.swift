@@ -13,7 +13,7 @@ class VisitorTests: XCTestCase {
         ("testVisitErrorNode", testVisitErrorNode),
         ("testVisitTerminalNode", testVisitTerminalNode)
     ]
-    
+
     ///
     /// This test verifies the basic behavior of visitors, with an emphasis on
     /// {@link AbstractParseTreeVisitor#visitTerminal}.
@@ -42,7 +42,7 @@ class VisitorTests: XCTestCase {
         let visitor = Visitor()
         let result = visitor.visit(context)
         let expected =
-        "[@0,0:0='A',<1>,1:0]\n" +
+            "[@0,0:0='A',<1>,1:0]\n" +
         "[@1,1:0='<EOF>',<-1>,1:1]\n"
         XCTAssertEqual(expected, result)
     }
@@ -188,8 +188,7 @@ class VisitorTests: XCTestCase {
                 let right = visit(ctx.expr(1)!)!
                 if ctx.MUL() != nil {
                     return left * right
-                }
-                else {
+                } else {
                     return left / right
                 }
             }
@@ -199,8 +198,7 @@ class VisitorTests: XCTestCase {
                 let right = visit(ctx.expr(1)!)!
                 if ctx.ADD() != nil {
                     return left + right
-                }
-                else {
+                } else {
                     return left - right
                 }
             }
