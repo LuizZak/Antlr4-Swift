@@ -10,8 +10,8 @@
 /// - Author: Sam Harwell
 ///
 
-public class Vocabulary: Hashable {
-    private static let EMPTY_NAMES: [String?] = [String?](repeating: "", count: 1)
+public struct Vocabulary {
+    public static let EMPTY_NAMES: [String?] = [""]
 
     ///
     /// Gets an empty _org.antlr.v4.runtime.Vocabulary_ instance.
@@ -23,28 +23,12 @@ public class Vocabulary: Hashable {
     ///
     public static let EMPTY_VOCABULARY: Vocabulary = Vocabulary(EMPTY_NAMES, EMPTY_NAMES, EMPTY_NAMES)
 
-    private final var literalNames: [String?]
+    private var literalNames: [String?]
 
-    private final var symbolicNames: [String?]
+    private var symbolicNames: [String?]
 
-    private final var displayNames: [String?]
-
-    ///
-    /// Constructs a new instance of _org.antlr.v4.runtime.Vocabulary_ from the specified
-    /// literal and symbolic token names.
-    ///
-    /// - SeeAlso: #getLiteralName(int)
-    /// - SeeAlso: #getSymbolicName(int)
-    /// - Parameter literalNames: The literal names assigned to tokens, or `null`
-    /// if no literal names are assigned.
-    /// - Parameter symbolicNames: The symbolic names assigned to tokens, or
-    /// `null` if no symbolic names are assigned.
-    ///
-    ///
-    public convenience init(_ literalNames: [String?], _ symbolicNames: [String?]) {
-        self.init(literalNames, symbolicNames, nil)
-    }
-
+    private var displayNames: [String?]
+    
     ///
     /// Constructs a new instance of _org.antlr.v4.runtime.Vocabulary_ from the specified
     /// literal, symbolic, and display token names.
@@ -62,12 +46,54 @@ public class Vocabulary: Hashable {
     /// _#getDisplayName(int)_.
     ///
     ///
-    public init(_ literalNames: [String?]?, _ symbolicNames: [String?]?, _ displayNames: [String?]?) {
-        self.literalNames = literalNames ?? Vocabulary.EMPTY_NAMES
-        self.symbolicNames = symbolicNames ?? Vocabulary.EMPTY_NAMES
-        self.displayNames = displayNames ?? Vocabulary.EMPTY_NAMES
+    public init(_ literalNames: [String?] = EMPTY_NAMES,
+                _ symbolicNames: [String?] = EMPTY_NAMES,
+                _ displayNames: [String?] = EMPTY_NAMES) {
+        self.literalNames = literalNames
+        self.symbolicNames = symbolicNames
+        self.displayNames = displayNames
+    }
+    
+    public func getLiteralName(_ tokenType: Int) -> String? {
+        if tokenType >= 0 && tokenType < literalNames.count {
+            return literalNames[tokenType]
+        }
+
+        return nil
     }
 
+    public func getSymbolicName(_ tokenType: Int) -> String? {
+        if tokenType >= 0 && tokenType < symbolicNames.count {
+            return symbolicNames[tokenType]
+        }
+        if tokenType == CommonToken.EOF {
+            return "EOF"
+        }
+        
+        return nil
+    }
+    
+    public func getDisplayName(_ tokenType: Int) -> String {
+        if tokenType >= 0 && tokenType < displayNames.count {
+            if let displayName = displayNames[tokenType] {
+                return displayName
+            }
+        }
+        
+        if let literalName = getLiteralName(tokenType) {
+            return literalName
+        }
+        
+        if let symbolicName = getSymbolicName(tokenType) {
+            return symbolicName
+        }
+        
+        return String(tokenType)
+    }
+}
+
+public extension Vocabulary {
+    
     ///
     /// Returns a _org.antlr.v4.runtime.Vocabulary_ instance from the specified set of token
     /// names. This method acts as a compatibility layer for the single
@@ -86,7 +112,7 @@ public class Vocabulary: Hashable {
         guard let tokenNames = tokenNames, tokenNames.count > 0 else {
             return EMPTY_VOCABULARY
         }
-
+        
         var literalNames = tokenNames
         var symbolicNames = tokenNames
         let length = tokenNames.count
@@ -103,59 +129,12 @@ public class Vocabulary: Hashable {
                     continue
                 }
             }
-
+            
             // wasn't a literal or symbolic name
             literalNames[i] = nil
             symbolicNames[i] = nil
         }
-
+        
         return Vocabulary(literalNames, symbolicNames, tokenNames)
     }
-
-    public func getLiteralName(_ tokenType: Int) -> String? {
-        if tokenType >= 0 && tokenType < literalNames.count {
-            return literalNames[tokenType]
-        }
-
-        return nil
-    }
-
-    public func getSymbolicName(_ tokenType: Int) -> String? {
-        if tokenType >= 0 && tokenType < symbolicNames.count {
-            return symbolicNames[tokenType]
-        }
-        if tokenType == CommonToken.EOF {
-            return "EOF"
-        }
-
-        return nil
-    }
-
-    public func getDisplayName(_ tokenType: Int) -> String {
-        if tokenType >= 0 && tokenType < displayNames.count {
-            if let displayName = displayNames[tokenType] {
-                return displayName
-            }
-        }
-
-        if let literalName = getLiteralName(tokenType) {
-            return literalName
-        }
-
-        if let symbolicName = getSymbolicName(tokenType) {
-            return symbolicName
-        }
-
-        return String(tokenType)
-    }
-
-    public var hashValue: Int {
-        return Unmanaged.passUnretained(self).toOpaque().hashValue
-        //        return unsafeAddress(of: self).hashValue
-    }
-
-}
-
-public func ==(lhs: Vocabulary, rhs: Vocabulary) -> Bool {
-    return lhs === rhs
 }

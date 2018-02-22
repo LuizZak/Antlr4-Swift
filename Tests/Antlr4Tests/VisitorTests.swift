@@ -41,9 +41,11 @@ class VisitorTests: XCTestCase {
 
         let visitor = Visitor()
         let result = visitor.visit(context)
-        let expected =
-            "[@0,0:0='A',<1>,1:0]\n" +
-        "[@1,1:0='<EOF>',<-1>,1:1]\n"
+        let expected = """
+            [@0,0:0='A',<1>,1:0]
+            [@1,1:0='<EOF>',<-1>,1:1]
+            
+            """
         XCTAssertEqual(expected, result)
     }
 

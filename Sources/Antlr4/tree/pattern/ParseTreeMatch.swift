@@ -7,7 +7,7 @@
 /// Represents the result of matching a _org.antlr.v4.runtime.tree.ParseTree_ against a tree pattern.
 ///
 
-public class ParseTreeMatch: CustomStringConvertible {
+public struct ParseTreeMatch: CustomStringConvertible {
     ///
     /// This is the backing field for _#getTree()_.
     ///
