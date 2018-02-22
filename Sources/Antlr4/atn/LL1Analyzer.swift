@@ -4,7 +4,7 @@
 /// can be found in the LICENSE.txt file in the project root.
 ///
 
-public class LL1Analyzer {
+public struct LL1Analyzer {
     ///
     /// Special value added to the lookahead sets to indicate that we hit
     /// a predicate during analysis if `seeThruPreds==false`.

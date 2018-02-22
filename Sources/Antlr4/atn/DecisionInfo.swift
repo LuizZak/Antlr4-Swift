@@ -18,11 +18,11 @@
 /// -  4.3
 ///
 
-public class DecisionInfo: CustomStringConvertible {
+public struct DecisionInfo: CustomStringConvertible {
     ///
     /// The decision number, which is an index into _org.antlr.v4.runtime.atn.ATN#decisionToState_.
     ///
-    public final var decision: Int
+    public var decision: Int
 
     ///
     /// The total number of times _org.antlr.v4.runtime.atn.ParserATNSimulator#adaptivePredict_ was
@@ -111,7 +111,7 @@ public class DecisionInfo: CustomStringConvertible {
     ///
     /// - seealso: org.antlr.v4.runtime.atn.ContextSensitivityInfo
     ///
-    public final var contextSensitivities: Array<ContextSensitivityInfo> = Array<ContextSensitivityInfo>()
+    public var contextSensitivities: Array<ContextSensitivityInfo> = Array<ContextSensitivityInfo>()
 
     ///
     /// A collection of _org.antlr.v4.runtime.atn.ErrorInfo_ instances describing the parse errors
@@ -120,7 +120,7 @@ public class DecisionInfo: CustomStringConvertible {
     ///
     /// - seealso: org.antlr.v4.runtime.atn.ErrorInfo
     ///
-    public final var errors: Array<ErrorInfo> = Array<ErrorInfo>()
+    public var errors: Array<ErrorInfo> = Array<ErrorInfo>()
 
     ///
     /// A collection of _org.antlr.v4.runtime.atn.AmbiguityInfo_ instances describing the
@@ -128,7 +128,7 @@ public class DecisionInfo: CustomStringConvertible {
     ///
     /// - seealso: org.antlr.v4.runtime.atn.AmbiguityInfo
     ///
-    public final var ambiguities: Array<AmbiguityInfo> = Array<AmbiguityInfo>()
+    public var ambiguities: Array<AmbiguityInfo> = Array<AmbiguityInfo>()
 
     ///
     /// A collection of _org.antlr.v4.runtime.atn.PredicateEvalInfo_ instances describing the
@@ -137,7 +137,7 @@ public class DecisionInfo: CustomStringConvertible {
     ///
     /// - seealso: org.antlr.v4.runtime.atn.PredicateEvalInfo
     ///
-    public final var predicateEvals: Array<PredicateEvalInfo> = Array<PredicateEvalInfo>()
+    public var predicateEvals: Array<PredicateEvalInfo> = Array<PredicateEvalInfo>()
 
     ///
     /// The total number of ATN transitions required during SLL prediction for
