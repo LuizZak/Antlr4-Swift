@@ -185,7 +185,7 @@ public class Trees {
             //nodes.addAll(descendants(t.getChild(i)));
             let child = t.getChild(i)
             if child != nil {
-                nodes.concat(descendants(child as! ParseTree))
+                nodes.append(contentsOf: descendants(child as! ParseTree))
             }
 
         }

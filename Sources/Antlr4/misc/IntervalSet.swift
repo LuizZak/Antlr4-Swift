@@ -662,7 +662,7 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
             }
             // if whole interval x..x, rm
             if el == a && el == b {
-                intervals.removeObject(interval)
+                intervals.remove(interval)
                 break
             }
             // if on left edge x..b, adjust left

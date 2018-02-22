@@ -134,7 +134,7 @@ public class ParserInterpreter: Parser {
                 if _ctx!.isEmpty() {
                     if startRuleStartState.isPrecedenceRule {
                         let result: ParserRuleContext = _ctx!
-                        let parentContext: (ParserRuleContext?, Int) = _parentContextStack.pop()
+                        let parentContext: (ParserRuleContext?, Int) = _parentContextStack.removeLast()
                         try unrollRecursionContexts(parentContext.0!)
                         return result
                     } else {
@@ -164,7 +164,7 @@ public class ParserInterpreter: Parser {
     override
     public func enterRecursionRule(_ localctx: ParserRuleContext, _ state: Int, _ ruleIndex: Int, _ precedence: Int) throws {
         let pair: (ParserRuleContext?, Int) = (_ctx, localctx.invokingState)
-        _parentContextStack.push(pair)
+        _parentContextStack.append(pair)
         try super.enterRecursionRule(localctx, state, ruleIndex, precedence)
     }
 
@@ -259,7 +259,7 @@ public class ParserInterpreter: Parser {
     internal func visitRuleStopState(_ p: ATNState) throws {
         let ruleStartState = atn.ruleToStartState[p.ruleIndex!]
         if ruleStartState.isPrecedenceRule {
-            let (parentContext, parentState) = _parentContextStack.pop()
+            let (parentContext, parentState) = _parentContextStack.removeLast()
             try unrollRecursionContexts(parentContext!)
             setState(parentState)
         } else {

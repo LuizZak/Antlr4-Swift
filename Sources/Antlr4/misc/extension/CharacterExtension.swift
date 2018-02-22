@@ -14,31 +14,27 @@
 import Foundation
 
 extension Character {
+    
+    public init(integerLiteral value: IntegerLiteralType) {
+        self = Character(UnicodeScalar(value)!)
+    }
 
     //"1" -> 1 "2"  -> 2
     var integerValue: Int {
         return Int(String(self)) ?? 0
     }
-    public init(integerLiteral value: IntegerLiteralType) {
-        self = Character(UnicodeScalar(value)!)
-    }
+    
     var utf8Value: UInt8 {
-        for s in String(self).utf8 {
-            return s
-        }
-        return 0
+        return String(self).utf8.first ?? 0
     }
 
     var utf16Value: UInt16 {
-        for s in String(self).utf16 {
-            return s
-        }
-        return 0
+        return unicodeScalars.first?.utf16.first ?? 0
     }
 
     //char ->  int
     var unicodeValue: Int {
-        return Int(String(self).unicodeScalars.first?.value ?? 0)
+        return Int(self.unicodeScalars.first?.value ?? 0)
     }
 
     public static var MAX_VALUE: Int {
@@ -52,8 +48,7 @@ extension Character {
 
     public static func isJavaIdentifierStart(_ char: Int) -> Bool {
         let ch = Character(integerLiteral: char)
-        return ch == "_" || ch == "$" || ("a" <= ch && ch <= "z")
-            || ("A" <= ch && ch <= "Z")
+        return ch == "_" || ch == "$" || ("a" <= ch && ch <= "z") || ("A" <= ch && ch <= "Z")
 
     }
 

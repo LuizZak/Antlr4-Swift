@@ -5,13 +5,13 @@
 ///
 
 ///
-/// This class provides access to specific and aggregate statistics gathered
+/// This struct provides access to specific and aggregate statistics gathered
 /// during profiling of a parser.
 ///
 /// -  4.3
 ///
 
-public class ParseInfo {
+public struct ParseInfo {
     internal let atnSimulator: ProfilingATNSimulator
 
     public init(_ atnSimulator: ProfilingATNSimulator) {

@@ -10,8 +10,8 @@ public struct TuplePair<T: Hashable, U: Hashable>: Hashable {
 
     public var hashValue: Int {
         var hash = 3
-        hash = hash * 7 + key1.hashValue
-        hash = hash * 7 + key2.hashValue
+        hash = hash * 17 + key1.hashValue
+        hash = hash * 17 + key2.hashValue
         return hash
     }
 

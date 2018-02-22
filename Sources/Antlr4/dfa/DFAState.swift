@@ -145,11 +145,11 @@ public class DFAState: Hashable, CustomStringConvertible {
         }
         return buf
     }
-}
-
-public func ==(lhs: DFAState, rhs: DFAState) -> Bool {
-    if lhs === rhs {
-        return true
+    
+    public static func ==(lhs: DFAState, rhs: DFAState) -> Bool {
+        if lhs === rhs {
+            return true
+        }
+        return (lhs.configs == rhs.configs)
     }
-    return (lhs.configs == rhs.configs)
 }
