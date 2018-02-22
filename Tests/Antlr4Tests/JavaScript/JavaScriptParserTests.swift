@@ -10,6 +10,8 @@ class JavaScriptParserTests: XCTestCase {
         // (making BitSet a struct failed)
         // 12.712 (12.712) seconds - after making IntervalSet a struct
         // 12.753 (12.753) seconds - after removing Throws from IntervalSet
+        // 12.797 (12.797) seconds - after addressing hot path in Utils.testBitLeftShiftArray (cherry-pick of 4d91ac0f6ae9104df88a30c83232ee43d113333b)
+        // 12.345 (12.345) seconds - after cherry-pick of "Convert Vocabulary and ParseTreeMatch to structs" (90ad3ff6cd8e792fbb65dfd7837c1772972cfa95)
         let urls = try XCTUnwrap(Bundle.module.urls(forResourcesWithExtension: ".js", subdirectory: nil))
 
         for url in urls {
