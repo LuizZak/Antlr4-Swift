@@ -9,14 +9,12 @@
 /// -  Sam Harwell
 ///
 
-public class ATNDeserializationOptions {
+public struct ATNDeserializationOptions {
 
     static let defaultOptions: ATNDeserializationOptions = {
-
-        let defaultOptions = ATNDeserializationOptions()
+        var defaultOptions = ATNDeserializationOptions()
         defaultOptions.makeReadOnly()
         return defaultOptions
-
     }()
 
     private var readOnly: Bool = false
@@ -37,28 +35,28 @@ public class ATNDeserializationOptions {
         return defaultOptions
     }
 
-    public final func isReadOnly() -> Bool {
+    public func isReadOnly() -> Bool {
         return readOnly
     }
 
-    public final func makeReadOnly() {
+    public mutating func makeReadOnly() {
         readOnly = true
     }
 
-    public final func isVerifyATN() -> Bool {
+    public func isVerifyATN() -> Bool {
         return verifyATN
     }
 
-    public final func setVerifyATN(_ verifyATN: Bool) throws {
+    public mutating func setVerifyATN(_ verifyATN: Bool) throws {
         try throwIfReadOnly()
         self.verifyATN = verifyATN
     }
 
-    public final func isGenerateRuleBypassTransitions() -> Bool {
+    public func isGenerateRuleBypassTransitions() -> Bool {
         return generateRuleBypassTransitions
     }
 
-    public final func setGenerateRuleBypassTransitions(_ generateRuleBypassTransitions: Bool) throws {
+    public mutating func setGenerateRuleBypassTransitions(_ generateRuleBypassTransitions: Bool) throws {
         try throwIfReadOnly()
         self.generateRuleBypassTransitions = generateRuleBypassTransitions
     }
