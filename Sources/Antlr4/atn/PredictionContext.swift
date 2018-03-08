@@ -22,9 +22,11 @@ public class PredictionContext: Hashable, CustomStringConvertible {
 
     private static let INITIAL_HASH = UInt32(1)
 
+    private static var globalNodeCountLock = NSLock()
     public static var globalNodeCount = 0
 
     public final let id: Int = {
+        globalNodeCountLock.lock(); defer { globalNodeCountLock.unlock() }
         let oldGlobalNodeCount = globalNodeCount
         globalNodeCount += 1
         return oldGlobalNodeCount

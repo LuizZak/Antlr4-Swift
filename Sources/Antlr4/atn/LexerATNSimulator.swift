@@ -85,9 +85,7 @@ open class LexerATNSimulator: ATNSimulator {
     ///
 
     internal final var prevAccept = SimState()
-
-    public static var match_calls = 0
-
+    
     public convenience init(_ atn: ATN, _ decisionToDFA: [DFA],
                             _ sharedContextCache: PredictionContextCache) {
         self.init(nil, atn, decisionToDFA, sharedContextCache)
@@ -110,8 +108,6 @@ open class LexerATNSimulator: ATNSimulator {
     }
 
     open func match(_ input: CharStream, _ mode: Int) throws -> Int {
-        LexerATNSimulator.match_calls += 1
-
         self.mode = mode
         var mark = input.mark()
         defer {
