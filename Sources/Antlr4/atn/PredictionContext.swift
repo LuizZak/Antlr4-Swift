@@ -21,17 +21,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     public static let EMPTY_RETURN_STATE = Int(Int32.max)
 
     private static let INITIAL_HASH = UInt32(1)
-
-    private static var globalNodeCountLock = NSLock()
-    public static var globalNodeCount = 0
-
-    public final let id: Int = {
-        globalNodeCountLock.lock(); defer { globalNodeCountLock.unlock() }
-        let oldGlobalNodeCount = globalNodeCount
-        globalNodeCount += 1
-        return oldGlobalNodeCount
-    }()
-
+    
     ///
     /// Stores the computed hash code of this _org.antlr.v4.runtime.atn.PredictionContext_. The hash
     /// code is computed in parts to match the following reference algorithm.
@@ -493,69 +483,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         // print("merge array 4 \(M)")
         return M
     }
-
-    public static func toDOTString(_ context: PredictionContext?) -> String {
-        if context == nil {
-            return ""
-        }
-        var buf = ""
-        buf += "digraph G {\n"
-        buf += "rankdir=LR;\n"
-
-        var nodes = getAllContextNodes(context!)
-
-        nodes.sort { $0.id > $1.id }
-
-        for current in nodes {
-            if current is SingletonPredictionContext {
-                buf += "  s\(current.id)"
-                var returnState = String(current.getReturnState(0))
-                if current is EmptyPredictionContext {
-                    returnState = "$"
-                }
-                buf += " [label=\"\(returnState)\"];\n"
-                continue
-            }
-            let arr = current as! ArrayPredictionContext
-            buf += "  s\(arr.id) [shape=box, label=\"["
-            var first = true
-            let returnStates = arr.returnStates
-            for inv in returnStates {
-                if !first {
-                    buf += ", "
-                }
-                if inv == EMPTY_RETURN_STATE {
-                    buf += "$"
-                } else {
-                    buf += String(inv)
-                }
-                first = false
-            }
-            buf += "]\"];\n"
-        }
-
-        for current in nodes {
-            if current === EMPTY {
-                continue
-            }
-            let length = current.size()
-            for i in 0..<length {
-                guard let currentParent = current.getParent(i) else {
-                    continue
-                }
-                buf += "  s\(current.id) -> s\(currentParent.id)"
-                if current.size() > 1 {
-                    buf += " [label=\"parent[\(i)]\"];\n"
-                } else {
-                    buf += ";\n"
-                }
-            }
-        }
-
-        buf.append("}\n")
-        return buf
-    }
-
+    
     // From Sam
     public static func getCachedContext(
         _ context: PredictionContext,
