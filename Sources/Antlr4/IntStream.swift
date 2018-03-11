@@ -136,7 +136,7 @@ public protocol IntStream: class {
     /// - parameter marker: A marker returned by a call to `mark()`.
     /// - seealso: #mark
     ///
-    func release(_ marker: Int) throws
+    func release(_ marker: Int)
 
     ///
     /// Return the index into the stream of the input symbol referred to by

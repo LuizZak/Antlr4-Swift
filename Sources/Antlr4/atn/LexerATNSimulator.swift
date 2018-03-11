@@ -111,7 +111,7 @@ open class LexerATNSimulator: ATNSimulator {
         self.mode = mode
         var mark = input.mark()
         defer {
-            try! input.release(mark)
+            input.release(mark)
         }
 
         self.startIndex = input.index()
@@ -437,10 +437,10 @@ open class LexerATNSimulator: ATNSimulator {
 
             if config.context == nil || config.context!.hasEmptyPath() {
                 if config.context == nil || config.context!.isEmpty() {
-                    try configs.add(config)
+                    configs.add(config)
                     return true
                 } else {
-                    try configs.add(LexerATNConfig(config, config.state, PredictionContext.EMPTY))
+                    configs.add(LexerATNConfig(config, config.state, PredictionContext.EMPTY))
                     currentAltReachedAcceptState = true
                 }
             }
@@ -464,7 +464,7 @@ open class LexerATNSimulator: ATNSimulator {
         // optimization
         if !config.state.onlyHasEpsilonTransitions() {
             if !currentAltReachedAcceptState || !config.hasPassedThroughNonGreedyDecision() {
-                try configs.add(config)
+                configs.add(config)
             }
         }
 
@@ -609,7 +609,7 @@ open class LexerATNSimulator: ATNSimulator {
                 charPositionInLine = savedCharPositionInLine
                 line = savedLine
                 try! input.seek(index)
-                try! input.release(marker)
+                input.release(marker)
             }
 
             return try recog.sempred(nil, ruleIndex, predIndex)

@@ -161,11 +161,10 @@ public class BufferedTokenStream: TokenStream {
         return n
     }
 
-    public func get(_ i: Int) throws -> Token {
-        if i < 0 || i >= tokens.count {
-            let  index = tokens.count - 1
-            throw ANTLRError.indexOutOfBounds(msg: "token index  \(i) out of range 0..\(index)")
-        }
+    public func get(_ i: Int) -> Token {
+        precondition(i >= 0 && i < tokens.count,
+                     "token index  \(i) out of range 0..\(index)")
+        
         return tokens[i]
     }
 

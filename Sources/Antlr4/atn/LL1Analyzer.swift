@@ -173,11 +173,11 @@ public struct LL1Analyzer {
                 for i in 0..<length {
                     let returnState = atn.states[(ctx.getReturnState(i))]!
                     let removed = calledRuleStack.get(returnState.ruleIndex!)
-                    try! calledRuleStack.clear(returnState.ruleIndex!)
+                    calledRuleStack.clear(returnState.ruleIndex!)
                     _LOOK(returnState, stopState, ctx.getParent(i),
                           look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
                     if removed {
-                        try! calledRuleStack.set(returnState.ruleIndex!)
+                        calledRuleStack.set(returnState.ruleIndex!)
                     }
                 }
                 return
@@ -193,9 +193,9 @@ public struct LL1Analyzer {
                 }
 
                 let newContext = SingletonPredictionContext.create(ctx, rt.followState.stateNumber)
-                try! calledRuleStack.set(rt.target.ruleIndex!)
+                calledRuleStack.set(rt.target.ruleIndex!)
                 _LOOK(t.target, stopState, newContext, look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
-                try! calledRuleStack.clear(rt.target.ruleIndex!)
+                calledRuleStack.clear(rt.target.ruleIndex!)
             } else if t is AbstractPredicateTransition {
                 if seeThruPreds {
                     _LOOK(t.target, stopState, ctx, look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)

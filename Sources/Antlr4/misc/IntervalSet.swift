@@ -231,7 +231,6 @@ public final class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     ///
 
     public func subtract(_ left: IntervalSet?, _ right: IntervalSet?) -> IntervalSet {
-
         guard let left = left, !left.isNil() else {
             return IntervalSet()
         }

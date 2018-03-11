@@ -16,6 +16,7 @@ public protocol TokenStream: IntStream {
     /// `LT(k).getType()==LA(k)`.
     ///
     /// - SeeAlso: org.antlr.v4.runtime.IntStream#LA
+    /// - precondition: k > 0
     ///
     func LT(_ k: Int) throws -> Token?
 
@@ -36,8 +37,9 @@ public protocol TokenStream: IntStream {
     /// - Throws: ANTLRError.illegalArgument if {code index} is less than 0
     /// - Throws: ANTLRError.unsupportedOperation if the stream does not support
     /// retrieving the token at the specified index
+    /// - precondition: {code index} is greater than or equal to zero.
     ///
-    func get(_ index: Int) throws -> Token
+    func get(_ index: Int) -> Token
 
     ///
     /// Gets the underlying _org.antlr.v4.runtime.TokenSource_ which provides tokens for this

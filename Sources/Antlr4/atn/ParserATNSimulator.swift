@@ -388,7 +388,7 @@ open class ParserATNSimulator: ATNSimulator {
             mergeCache = nil // wack cache after each prediction
             _dfa = nil
             try! input.seek(index)
-            try! input.release(m)
+            input.release(m)
             return alt
         }
 
@@ -807,7 +807,7 @@ open class ParserATNSimulator: ATNSimulator {
                 // for each transition
                 let trans = config.state.transition(ti)
                 if let target = getReachableTarget(trans, t) {
-                    try! intermediate.add(ATNConfig(config, target), &mergeCache)
+                    intermediate.add(ATNConfig(config, target), &mergeCache)
                 }
             }
         }
@@ -892,7 +892,7 @@ open class ParserATNSimulator: ATNSimulator {
                 
                 assert(!skippedStopStates.isEmpty, "Expected: !skippedStopStates.isEmpty()")
                 for c in skippedStopStates {
-                    try! reach.add(c, &mergeCache)
+                    reach.add(c, &mergeCache)
                 }
             }
 
@@ -1257,7 +1257,7 @@ open class ParserATNSimulator: ATNSimulator {
         let predictions = BitSet()
         for pair in predPredictions {
             if pair.pred == SemanticContext.NONE {
-                try! predictions.set(pair.alt)
+                predictions.set(pair.alt)
                 if !complete {
                     break
                 }
@@ -1274,7 +1274,7 @@ open class ParserATNSimulator: ATNSimulator {
                 if debug || dfa_debug {
                     print("PREDICT \(pair.alt)")
                 }
-                try! predictions.set(pair.alt)
+                predictions.set(pair.alt)
                 if !complete {
                     break
                 }
@@ -1356,7 +1356,7 @@ open class ParserATNSimulator: ATNSimulator {
                 for i in 0..<length {
                     if configContext.getReturnState(i) == PredictionContext.EMPTY_RETURN_STATE {
                         if fullCtx {
-                            try! configs.add(ATNConfig(config, config.state, PredictionContext.EMPTY), &mergeCache)
+                            configs.add(ATNConfig(config, config.state, PredictionContext.EMPTY), &mergeCache)
                             continue
                         } else {
                             // we have no context info, just chase follow links (if greedy)
@@ -1387,7 +1387,7 @@ open class ParserATNSimulator: ATNSimulator {
                 return
             } else if fullCtx {
                 // reached end of start rule
-                try! configs.add(config, &mergeCache)
+                configs.add(config, &mergeCache)
                 return
             } else {
                 // else if we have no context info, just chase follow links (if greedy)
@@ -1415,7 +1415,7 @@ open class ParserATNSimulator: ATNSimulator {
         let p = config.state
         // optimization
         if !p.onlyHasEpsilonTransitions() {
-            try! configs.add(config, &mergeCache)
+            configs.add(config, &mergeCache)
             // make sure to not return here, because EOF transitions can act as
             // both epsilon transitions and non-epsilon transitions.
             //            if ( debug ) print("added config "+configs);
@@ -1856,7 +1856,7 @@ open class ParserATNSimulator: ATNSimulator {
         var conflictingAlts: BitSet
         if configs.uniqueAlt != ATN.INVALID_ALT_NUMBER {
             conflictingAlts = BitSet()
-            try! conflictingAlts.set(configs.uniqueAlt)
+            conflictingAlts.set(configs.uniqueAlt)
         } else {
             conflictingAlts = configs.conflictingAlts!
         }
@@ -1906,7 +1906,7 @@ open class ParserATNSimulator: ATNSimulator {
                            _ outerContext: ParserRuleContext,
                            _ configs: ATNConfigSet,
                            _ startIndex: Int) -> NoViableAltException {
-        let startToken = try! input.get(startIndex)
+        let startToken = input.get(startIndex)
         var offendingToken: Token? = nil
         do {
             offendingToken = try input.LT(1)
@@ -2000,7 +2000,7 @@ open class ParserATNSimulator: ATNSimulator {
             D.stateNumber = dfa.states.count
 
             if !D.configs.isReadonly() {
-                try! D.configs.optimizeConfigs(self)
+                D.configs.optimizeConfigs(self)
                 D.configs.setReadonly(true)
             }
 

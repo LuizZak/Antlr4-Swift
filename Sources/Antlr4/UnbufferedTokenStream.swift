@@ -69,13 +69,13 @@ public class UnbufferedTokenStream: TokenStream {
         try fill(1) // prime the pump
     }
 
-    public func get(_ i: Int) throws -> Token {
+    public func get(_ i: Int) -> Token {
         // get absolute index
         let bufferStartIndex: Int = getBufferStartIndex()
-        if i < bufferStartIndex || i >= bufferStartIndex + n {
-            throw ANTLRError.indexOutOfBounds(
-                msg: "get(\(i)) outside buffer: \(bufferStartIndex)..\(bufferStartIndex + n)")
-        }
+        precondition(
+            i >= bufferStartIndex && i < bufferStartIndex + n,
+            "get(\(i)) outside buffer: \(bufferStartIndex)..\(bufferStartIndex + n)")
+        
         return tokens[i - bufferStartIndex]
     }
 
@@ -201,10 +201,11 @@ public class UnbufferedTokenStream: TokenStream {
         return mark
     }
 
-    public func release(_ marker: Int) throws {
+    public func release(_ marker: Int) {
         let expectedMark: Int = -numMarkers
         if marker != expectedMark {
-            throw ANTLRError.illegalState(msg: "release() called with an invalid marker.")
+            assertionFailure("release() called with an invalid marker.")
+            return
         }
 
         numMarkers -= 1

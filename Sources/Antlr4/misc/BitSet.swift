@@ -314,11 +314,9 @@ public final class BitSet: Hashable, CustomStringConvertible {
     /// - parameter  bitIndex: a bit index
     /// - throws: _ANTLRError.IndexOutOfBounds_ if the specified index is negative
     ///
-    public func set(_ bitIndex: Int) throws {
-        if bitIndex < 0 {
-            throw ANTLRError.indexOutOfBounds(msg: "bitIndex < 0: \(bitIndex)")
-
-        }
+    public func set(_ bitIndex: Int) {
+        precondition(bitIndex >= 0, "bitIndex < 0: \(bitIndex)")
+        
         let index: Int = BitSet.wordIndex(bitIndex)
         expandTo(index)
 
@@ -337,9 +335,9 @@ public final class BitSet: Hashable, CustomStringConvertible {
     ///
     public func set(_ bitIndex: Int, _ value: Bool) throws {
         if value {
-            try set(bitIndex)
+            set(bitIndex)
         } else {
-            try clear(bitIndex)
+            clear(bitIndex)
         }
     }
 
@@ -416,7 +414,7 @@ public final class BitSet: Hashable, CustomStringConvertible {
     /// -   JDK1.0
     /// - precondition: bitIndex >= 0
     ///
-    public func clear(_ bitIndex: Int) throws {
+    public func clear(_ bitIndex: Int) {
         precondition(bitIndex >= 0, "bitIndex < 0: \(bitIndex)")
         
         let index: Int = BitSet.wordIndex(bitIndex)

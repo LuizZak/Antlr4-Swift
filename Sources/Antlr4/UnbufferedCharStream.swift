@@ -192,7 +192,7 @@ open class UnbufferedCharStream: CharStream {
     /** Decrement number of markers, resetting buffer if we hit 0.
      * @param marker
      */
-    public func release(_ marker: Int) throws {
+    public func release(_ marker: Int) {
         let expectedMark = -numMarkers
         if marker != expectedMark {
             preconditionFailure("release() called with an invalid marker.")

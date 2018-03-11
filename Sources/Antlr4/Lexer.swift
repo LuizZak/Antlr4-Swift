@@ -135,7 +135,7 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
         defer {
             // make sure we release marker after match or
             // unbuffered char stream will keep buffering
-            try! _input.release(tokenStartMarker)
+            _input.release(tokenStartMarker)
         }
         do {
             outer:

@@ -82,7 +82,7 @@ public class ParserInterpreter: Parser {
         for  state in atn.states {
             if let state = state as? StarLoopEntryState {
                 if state.precedenceRuleDecision {
-                    try! self.statesNeedingLeftRecursionContext.set(state.stateNumber)
+                    self.statesNeedingLeftRecursionContext.set(state.stateNumber)
                 }
             }
 

@@ -117,7 +117,7 @@ public class TokenStreamRewriter {
 
         public var description: String {
             let opName = String(describing: type(of: self))
-            return "<\(opName)@\(try! tokens.get(index)):\"\(text!)\">"
+            return "<\(opName)@\(tokens.get(index)):\"\(text!)\">"
         }
     }
 
@@ -126,7 +126,7 @@ public class TokenStreamRewriter {
             if let text = text {
                 buf.append(text)
             }
-            let token = try tokens.get(index)
+            let token = tokens.get(index)
             if token.getType() != CommonToken.EOF {
                 buf.append(token.getText()!)
             }
@@ -161,8 +161,8 @@ public class TokenStreamRewriter {
 
         override
         public var description: String {
-            let token = try! tokens.get(index)
-            let lastToken = try! tokens.get(lastIndex)
+            let token = tokens.get(index)
+            let lastToken = tokens.get(lastIndex)
             if let text = text {
                 return "<ReplaceOp@\(token)..\(lastToken):\"\(text)\">"
             }
@@ -589,7 +589,7 @@ public class TokenStreamRewriter {
         while i <= stop && i < tokens.size() {
             let op = indexToOp[i]
             indexToOp.removeValue(forKey: i)  // remove so any left have index size-1
-            let t = try tokens.get(i)
+            let t = tokens.get(i)
             if let op = op {
                 i = try op.execute(&buf) // execute operation and skip
             } else {

@@ -18,16 +18,16 @@ class TokenStreamTests: XCTestCase {
 
         try tokenStream.fill()
         XCTAssertEqual(2, tokenStream.size())
-        XCTAssertEqual(VisitorBasicLexer.A, try tokenStream.get(0).getType())
-        XCTAssertEqual(Lexer.EOF, try tokenStream.get(1).getType())
+        XCTAssertEqual(VisitorBasicLexer.A, tokenStream.get(0).getType())
+        XCTAssertEqual(Lexer.EOF, tokenStream.get(1).getType())
 
         let inputStream2 = ANTLRInputStream("AA")
         tokenStream.setTokenSource(VisitorBasicLexer(inputStream2))
         try tokenStream.fill()
         XCTAssertEqual(3, tokenStream.size())
-        XCTAssertEqual(VisitorBasicLexer.A, try tokenStream.get(0).getType())
-        XCTAssertEqual(VisitorBasicLexer.A, try tokenStream.get(1).getType())
-        XCTAssertEqual(Lexer.EOF, try tokenStream.get(2).getType())
+        XCTAssertEqual(VisitorBasicLexer.A, tokenStream.get(0).getType())
+        XCTAssertEqual(VisitorBasicLexer.A, tokenStream.get(1).getType())
+        XCTAssertEqual(Lexer.EOF, tokenStream.get(2).getType())
     }
 
 }
