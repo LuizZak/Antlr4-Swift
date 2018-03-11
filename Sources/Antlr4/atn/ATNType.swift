@@ -10,7 +10,7 @@
 /// -  Sam Harwell
 ///
 
-public enum ATNType: Int {
+public enum ATNType: Int, Codable {
 
     ///
     /// A lexer grammar.

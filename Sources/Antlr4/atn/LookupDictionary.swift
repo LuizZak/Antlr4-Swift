@@ -19,7 +19,7 @@ public enum LookupDictionaryType: Int {
 }
 
 public struct LookupDictionary {
-    private var type: LookupDictionaryType
+    private(set) internal var type: LookupDictionaryType
     private var cache: [Int: ATNConfig] = [Int: ATNConfig]()
     public init(type: LookupDictionaryType = LookupDictionaryType.lookup) {
         self.type = type

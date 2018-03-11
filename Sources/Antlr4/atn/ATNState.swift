@@ -82,21 +82,21 @@ public class ATNState: Hashable, CustomStringConvertible {
     public static let PLUS_LOOP_BACK: Int = 11
     public static let LOOP_END: Int = 12
 
-    public static let serializationNames: Array<String> =
-
-        ["INVALID",
-         "BASIC",
-         "RULE_START",
-         "BLOCK_START",
-         "PLUS_BLOCK_START",
-         "STAR_BLOCK_START",
-         "TOKEN_START",
-         "RULE_STOP",
-         "BLOCK_END",
-         "STAR_LOOP_BACK",
-         "STAR_LOOP_ENTRY",
-         "PLUS_LOOP_BACK",
-         "LOOP_END"]
+    public static let serializationNames: Array<String> = [
+        "INVALID",
+        "BASIC",
+        "RULE_START",
+        "BLOCK_START",
+        "PLUS_BLOCK_START",
+        "STAR_BLOCK_START",
+        "TOKEN_START",
+        "RULE_STOP",
+        "BLOCK_END",
+        "STAR_LOOP_BACK",
+        "STAR_LOOP_ENTRY",
+        "PLUS_LOOP_BACK",
+        "LOOP_END"
+    ]
 
     public static let INVALID_STATE_NUMBER: Int = -1
 

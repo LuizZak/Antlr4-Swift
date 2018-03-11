@@ -35,33 +35,31 @@ public class Transition {
     public static let WILDCARD: Int = 9
     public static let PRECEDENCE: Int = 10
 
-    public let serializationNames: Array<String> =
+    public let serializationNames: [String] = [
+        "INVALID",
+        "EPSILON",
+        "RANGE",
+        "RULE",
+        "PREDICATE",
+        "ATOM",
+        "ACTION",
+        "SET",
+        "NOT_SET",
+        "WILDCARD",
+        "PRECEDENCE"
+    ]
 
-        ["INVALID",
-         "EPSILON",
-         "RANGE",
-         "RULE",
-         "PREDICATE",
-         "ATOM",
-         "ACTION",
-         "SET",
-         "NOT_SET",
-         "WILDCARD",
-         "PRECEDENCE"]
-
-    public static let serializationTypes: Dictionary<String, Int> = [
-
-        NSStringFromClass(EpsilonTransition.self): EPSILON,
-        NSStringFromClass(RangeTransition.self): RANGE,
-        NSStringFromClass(RuleTransition.self): RULE,
-        NSStringFromClass(PredicateTransition.self): PREDICATE,
-        NSStringFromClass(AtomTransition.self): ATOM,
-        NSStringFromClass(ActionTransition.self): ACTION,
-        NSStringFromClass(SetTransition.self): SET,
-        NSStringFromClass(NotSetTransition.self): NOT_SET,
-        NSStringFromClass(WildcardTransition.self): WILDCARD,
-        NSStringFromClass(PrecedencePredicateTransition.self): PRECEDENCE
-
+    public static let serializationTypes: [String: Int] = [
+        "\(EpsilonTransition.self)": EPSILON,
+        "\(RangeTransition.self)": RANGE,
+        "\(RuleTransition.self)": RULE,
+        "\(PredicateTransition.self)": PREDICATE,
+        "\(AtomTransition.self)": ATOM,
+        "\(ActionTransition.self)": ACTION,
+        "\(SetTransition.self)": SET,
+        "\(NotSetTransition.self)": NOT_SET,
+        "\(WildcardTransition.self)": WILDCARD,
+        "\(PrecedencePredicateTransition.self)": PRECEDENCE
     ]
 
     ///
