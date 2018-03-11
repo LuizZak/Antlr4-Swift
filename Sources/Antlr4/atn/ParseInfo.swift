@@ -37,9 +37,9 @@ public struct ParseInfo {
     /// - returns: A list of decision numbers which required one or more
     /// full-context predictions during parsing.
     ///
-    public func getLLDecisions() -> Array<Int> {
+    public func getLLDecisions() -> [Int] {
         var decisions: [DecisionInfo] = atnSimulator.getDecisionInfo()
-        var LL: Array<Int> = Array<Int>()
+        var LL: [Int] = []
         let length = decisions.count
         for i in 0..<length {
             let fallBack: Int64 = decisions[i].LL_Fallback

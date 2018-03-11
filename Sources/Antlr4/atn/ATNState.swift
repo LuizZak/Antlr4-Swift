@@ -82,7 +82,7 @@ public class ATNState: Hashable, CustomStringConvertible {
     public static let PLUS_LOOP_BACK: Int = 11
     public static let LOOP_END: Int = 12
 
-    public static let serializationNames: Array<String> = [
+    public static let serializationNames: [String] = [
         "INVALID",
         "BASIC",
         "RULE_START",
@@ -115,8 +115,8 @@ public class ATNState: Hashable, CustomStringConvertible {
     ///
     /// Track the transitions emanating from this ATN state.
     ///
-    internal final var transitions: Array<Transition> = Array<Transition>()
-    //Array<Transition>(INITIAL_NUM_TRANSITIONS);
+    internal final var transitions: [Transition] = []
+    //[Transition](INITIAL_NUM_TRANSITIONS);
 
     ///
     /// Used to cache lookahead during parsing, not used during construction
@@ -187,7 +187,7 @@ public class ATNState: Hashable, CustomStringConvertible {
     }
 }
 
-public func ==(lhs: ATNState, rhs: ATNState) -> Bool {
+public func == (lhs: ATNState, rhs: ATNState) -> Bool {
     if lhs === rhs {
         return true
     }

@@ -418,15 +418,9 @@ public enum PredictionMode {
     /// others, otherwise `false`
     ///
     public static func allSubsetsEqual(_ altsets: [BitSet]) -> Bool {
-
         let first: BitSet = altsets[0]
-        for it in altsets {
-            if it != first {
-                return false
-            }
-
-        }
-        return true
+        
+        return altsets.contains(where: { $0 != first })
     }
 
     ///
@@ -452,7 +446,7 @@ public enum PredictionMode {
     /// - parameter altsets: a collection of alternative subsets
     /// - returns: the set of represented alternatives in `altsets`
     ///
-    public static func getAlts(_ altsets: Array<BitSet>) -> BitSet {
+    public static func getAlts(_ altsets: [BitSet]) -> BitSet {
         let all: BitSet = BitSet()
         for alts: BitSet in altsets {
             all.or(alts)

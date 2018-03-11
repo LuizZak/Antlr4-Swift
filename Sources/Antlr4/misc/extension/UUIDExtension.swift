@@ -16,7 +16,7 @@ extension UUID {
             $0.pointee = leastSigBits
             $0.advanced(by: 1).pointee = mostSigBits
         }
-        let u = NSUUID(uuidBytes: bytes)
-        self.init(uuidString: u.uuidString)!
+        let uuid = NSUUID(uuidBytes: bytes)
+        self.init(uuidString: uuid.uuidString)!
     }
 }

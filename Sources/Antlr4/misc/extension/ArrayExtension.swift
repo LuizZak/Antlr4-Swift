@@ -66,10 +66,8 @@ extension Array {
 extension Array where Element: Equatable {
     mutating func remove(_ object: Element) {
         var index: Int?
-        for (idx, objectToCompare) in self.enumerated() {
-            if object == objectToCompare {
-                index = idx
-            }
+        for (idx, objectToCompare) in self.enumerated() where object == objectToCompare {
+            index = idx
         }
 
         if let index = index {

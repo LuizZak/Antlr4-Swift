@@ -9,9 +9,7 @@
 ///
 
 public struct Interval: Hashable {
-    public static let INTERVAL_POOL_MAX_VALUE: Int = 1000
-
-    public static let INVALID: Interval = Interval(-1, -2)
+    public static let invalid: Interval = Interval(-1, -2)
 
     public var a: Int
     public var b: Int
@@ -21,9 +19,9 @@ public struct Interval: Hashable {
     public static var hits: Int = 0
     public static var outOfRange: Int = 0
 
-    public init(_ a: Int, _ b: Int) {
-        self.a = a
-        self.b = b
+    public init(_ start: Int, _ end: Int) {
+        self.a = start
+        self.b = end
     }
 
     ///
@@ -33,8 +31,8 @@ public struct Interval: Hashable {
     /// Interval object with a..a in it.  On Java.g4, 218623 IntervalSets
     /// have a..a (set with 1 element).
     ///
-    public static func of(_ a: Int, _ b: Int) -> Interval {
-        return Interval(a, b)
+    public static func of(_ start: Int, _ end: Int) -> Interval {
+        return Interval(start, end)
     }
 
     ///
@@ -55,60 +53,60 @@ public struct Interval: Hashable {
         return hash
     }
     ///
-    /// Does this start completely before other? Disjoint
+    /// Does this start completely before a? Disjoint
     ///
-    public func startsBeforeDisjoint(_ other: Interval) -> Bool {
-        return self.a < other.a && self.b < other.a
+    public func startsBeforeDisjoint(_ a: Interval) -> Bool {
+        return self.a < a.a && self.b < a.a
     }
 
     ///
-    /// Does this start at or before other? Nondisjoint
+    /// Does this start at or before a? Nondisjoint
     ///
-    public func startsBeforeNonDisjoint(_ other: Interval) -> Bool {
-        return self.a <= other.a && self.b >= other.a
+    public func startsBeforeNonDisjoint(_ a: Interval) -> Bool {
+        return self.a <= a.a && self.b >= a.a
     }
 
     ///
-    /// Does this.a start after other.b? May or may not be disjoint
+    /// Does this.a start after a.b? May or may not be disjoint
     ///
-    public func startsAfter(_ other: Interval) -> Bool {
-        return self.a > other.a
+    public func startsAfter(_ a: Interval) -> Bool {
+        return self.a > a.a
     }
 
     ///
-    /// Does this start completely after other? Disjoint
+    /// Does this start completely after a? Disjoint
     ///
-    public func startsAfterDisjoint(_ other: Interval) -> Bool {
-        return self.a > other.b
+    public func startsAfterDisjoint(_ a: Interval) -> Bool {
+        return self.a > a.b
     }
 
     ///
-    /// Does this start after other? NonDisjoint
+    /// Does this start after a? NonDisjoint
     ///
-    public func startsAfterNonDisjoint(_ other: Interval) -> Bool {
-        return self.a > other.a && self.a <= other.b // this.b>=other.b implied
+    public func startsAfterNonDisjoint(_ a: Interval) -> Bool {
+        return self.a > a.a && self.a <= a.b // this.b>=a.b implied
     }
 
     ///
     /// Are both ranges disjoint? I.e., no overlap?
     ///
-    public func disjoint(_ other: Interval) -> Bool {
-        return startsBeforeDisjoint(other) || startsAfterDisjoint(other)
+    public func disjoint(_ a: Interval) -> Bool {
+        return startsBeforeDisjoint(a) || startsAfterDisjoint(a)
     }
 
     ///
     /// Are two intervals adjacent such as 0..41 and 42..42?
     ///
-    public func adjacent(_ other: Interval) -> Bool {
-        return self.a == other.b + 1 || self.b == other.a - 1
+    public func adjacent(_ a: Interval) -> Bool {
+        return self.a == a.b + 1 || self.b == a.a - 1
     }
 
-    public func properlyContains(_ other: Interval) -> Bool {
-        return other.a >= self.a && other.b <= self.b
+    public func properlyContains(_ a: Interval) -> Bool {
+        return a.a >= self.a && a.b <= self.b
     }
 
     ///
-    /// Return the interval computed from combining this and other
+    /// Return the interval computed from combining this and a
     ///
     public func union(_ other: Interval) -> Interval {
         return Interval.of(min(a, other.a), max(b, other.b))
@@ -122,19 +120,19 @@ public struct Interval: Hashable {
     }
 
     ///
-    /// Return the interval with elements from this not in other;
-    /// other must not be totally enclosed (properly contained)
+    /// Return the interval with elements from this not in a;
+    /// a must not be totally enclosed (properly contained)
     /// within this, which would result in two disjoint intervals
     /// instead of the single one returned by this method.
     ///
-    public func differenceNotProperlyContained(_ other: Interval) -> Interval? {
+    public func differenceNotProperlyContained(_ a: Interval) -> Interval? {
         var diff: Interval? = nil
-        // other.a to left of this.a (or same)
-        if other.startsBeforeNonDisjoint(self) {
-            diff = Interval.of(max(self.a, other.b + 1), self.b)
+        // a.a to left of this.a (or same)
+        if a.startsBeforeNonDisjoint(self) {
+            diff = Interval.of(max(self.a, a.b + 1), self.b)
         } else {
-            if other.startsAfterNonDisjoint(self) {
-                diff = Interval.of(self.a, other.a - 1)
+            if a.startsAfterNonDisjoint(self) {
+                diff = Interval.of(self.a, a.a - 1)
             }
         }
         return diff
@@ -144,7 +142,7 @@ public struct Interval: Hashable {
         return "\(a)..\(b)"
     }
 
-    public static func ==(lhs: Interval, rhs: Interval) -> Bool {
+    public static func == (lhs: Interval, rhs: Interval) -> Bool {
         return lhs.a == rhs.a && lhs.b == rhs.b
     }
 }

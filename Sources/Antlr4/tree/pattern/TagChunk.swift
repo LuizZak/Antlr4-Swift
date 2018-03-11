@@ -93,8 +93,8 @@ public class TagChunk: Chunk, CustomStringConvertible {
         }
     }
 
-    override public func isEqual(_ other: Chunk) -> Bool {
-        guard let other = other as? TagChunk else {
+    override public func isEqual(_ a: Chunk) -> Bool {
+        guard let other = a as? TagChunk else {
             return false
         }
         return tag == other.tag && label == other.label

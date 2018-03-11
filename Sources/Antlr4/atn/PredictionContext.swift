@@ -58,7 +58,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
 
         // if we are in RuleContext of start rule, s, then PredictionContext
         // is EMPTY. Nobody called us. (if we are empty, return empty)
-        if (_outerContext.parent == nil || _outerContext === RuleContext.EMPTY) {
+        if _outerContext.parent == nil || _outerContext === RuleContext.EMPTY {
             return PredictionContext.EMPTY
         }
 
@@ -125,43 +125,43 @@ public class PredictionContext: Hashable, CustomStringConvertible {
 
     // dispatch
     public static func merge(
-        _ a: PredictionContext,
-        _ b: PredictionContext,
+        _ first: PredictionContext,
+        _ second: PredictionContext,
         _ rootIsWildcard: Bool,
         _ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?) -> PredictionContext {
-        var a = a
-        var b = b
+        var first = first
+        var second = second
         // assert ( a != nil && b != nil,"Expected: a!=null&&b!=null");
         //assert ( a!=nil && b!=nil,"Expected: a!=null&&b!=null"); // must be empty context, never null
         // share same graph if both same
 
-        if a == b {
-            return a
+        if first == second {
+            return first
         }
 
-        if let spc_a = a as? SingletonPredictionContext, let spc_b = b as? SingletonPredictionContext {
+        if let spc_a = first as? SingletonPredictionContext, let spc_b = second as? SingletonPredictionContext {
             return mergeSingletons(spc_a, spc_b, rootIsWildcard, &mergeCache)
         }
 
         // At least one of a or b is array
         // If one is $ and rootIsWildcard, return $ as * wildcard
         if rootIsWildcard {
-            if a is EmptyPredictionContext {
-                return a
+            if first is EmptyPredictionContext {
+                return first
             }
-            if b is EmptyPredictionContext {
-                return b
+            if second is EmptyPredictionContext {
+                return second
             }
         }
 
         // convert singleton so both are arrays to normalize
-        if let spc_a = a as? SingletonPredictionContext {
-            a = ArrayPredictionContext(spc_a)
+        if let spc_a = first as? SingletonPredictionContext {
+            first = ArrayPredictionContext(spc_a)
         }
-        if let spc_b = b as? SingletonPredictionContext {
-            b = ArrayPredictionContext(spc_b)
+        if let spc_b = second as? SingletonPredictionContext {
+            second = ArrayPredictionContext(spc_b)
         }
-        return mergeArrays(a as! ArrayPredictionContext, b as! ArrayPredictionContext,
+        return mergeArrays(first as! ArrayPredictionContext, second as! ArrayPredictionContext,
                            rootIsWildcard, &mergeCache)
     }
 
@@ -651,11 +651,12 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     }
 
     public var description: String {
-        return String(describing: PredictionContext.self) + "@" + String(Unmanaged.passUnretained(self).toOpaque().hashValue)
+        return String(describing: PredictionContext.self)
+            + "@" + String(Unmanaged.passUnretained(self).toOpaque().hashValue)
     }
 }
 
-public func ==(lhs: RuleContext, rhs: ParserRuleContext) -> Bool {
+public func == (lhs: RuleContext, rhs: ParserRuleContext) -> Bool {
     if let lhs = lhs as? ParserRuleContext {
         return lhs === rhs
     } else {
@@ -663,7 +664,7 @@ public func ==(lhs: RuleContext, rhs: ParserRuleContext) -> Bool {
     }
 }
 
-public func ==(lhs: PredictionContext, rhs: PredictionContext) -> Bool {
+public func == (lhs: PredictionContext, rhs: PredictionContext) -> Bool {
 
     if lhs === rhs {
         return true
@@ -683,22 +684,22 @@ public func ==(lhs: PredictionContext, rhs: PredictionContext) -> Bool {
     return false
 }
 
-public func ==(lhs: ArrayPredictionContext, rhs: SingletonPredictionContext) -> Bool {
+public func == (lhs: ArrayPredictionContext, rhs: SingletonPredictionContext) -> Bool {
     return false
 }
 
-public func ==(lhs: SingletonPredictionContext, rhs: ArrayPredictionContext) -> Bool {
+public func == (lhs: SingletonPredictionContext, rhs: ArrayPredictionContext) -> Bool {
     return false
 }
 
-public func ==(lhs: SingletonPredictionContext, rhs: EmptyPredictionContext) -> Bool {
+public func == (lhs: SingletonPredictionContext, rhs: EmptyPredictionContext) -> Bool {
     return false
 }
 
-public func ==(lhs: EmptyPredictionContext, rhs: ArrayPredictionContext) -> Bool {
+public func == (lhs: EmptyPredictionContext, rhs: ArrayPredictionContext) -> Bool {
     return lhs === rhs
 }
 
-public func ==(lhs: EmptyPredictionContext, rhs: SingletonPredictionContext) -> Bool {
+public func == (lhs: EmptyPredictionContext, rhs: SingletonPredictionContext) -> Bool {
     return lhs === rhs
 }

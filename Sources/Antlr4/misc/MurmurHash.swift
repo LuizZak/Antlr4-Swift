@@ -9,14 +9,14 @@
 /// - Author: Sam Harwell
 ///
 
-private let DEFAULT_SEED: UInt32 = 0
+private let defaultSeed: UInt32 = 0
 
-private let c1 = UInt32(0xCC9E2D51)
-private let c2 = UInt32(0x1B873593)
-private let r1 = UInt32(15)
-private let r2 = UInt32(13)
-private let m = UInt32(5)
-private let n = UInt32(0xE6546B64)
+private let _c1 = UInt32(0xCC9E2D51)
+private let _c2 = UInt32(0x1B873593)
+private let _r1 = UInt32(15)
+private let _r2 = UInt32(13)
+private let _m = UInt32(5)
+private let _n = UInt32(0xE6546B64)
 
 public enum MurmurHash {
 
@@ -26,7 +26,7 @@ public enum MurmurHash {
     /// - Returns: the intermediate hash value
     ///
     public static func initialize() -> UInt32 {
-        return initialize(DEFAULT_SEED)
+        return initialize(defaultSeed)
     }
 
     ///
@@ -41,9 +41,9 @@ public enum MurmurHash {
 
     private static func calcK(_ value: UInt32) -> UInt32 {
         var k = value
-        k = k &* c1
-        k = (k << r1) | (k >> (32 - r1))
-        k = k &* c2
+        k = k &* _c1
+        k = (k << _r1) | (k >> (32 - _r1))
+        k = k &* _c2
         return k
     }
 
@@ -58,8 +58,8 @@ public enum MurmurHash {
         let k = calcK(UInt32(truncatingIfNeeded: value))
         var hash = hashIn
         hash = hash ^ k
-        hash = (hash << r2) | (hash >> (32 - r2))
-        hash = hash &* m &+ n
+        hash = (hash << _r2) | (hash >> (32 - _r2))
+        hash = hash &* _m &+ _n
         // print("murmur update2 : \(hash)")
         return hash
     }

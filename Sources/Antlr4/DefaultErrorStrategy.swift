@@ -139,7 +139,7 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
         if lastErrorStates == nil {
             lastErrorStates = IntervalSet()
         }
-        try lastErrorStates!.add(recognizer.getState())
+        lastErrorStates!.add(recognizer.getState())
         let followSet = getErrorRecoverySet(recognizer)
         try consumeUntil(recognizer, followSet)
     }
@@ -204,29 +204,27 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
 
         // try cheaper subset first; might get lucky. seems to shave a wee bit off
         let nextToks = recognizer.getATN().nextTokens(s)
-        if nextToks.contains(CommonToken.EPSILON) || nextToks.contains(la) {
+        if nextToks.contains(CommonToken.epsilon) || nextToks.contains(la) {
             return
         }
 
         switch s.getStateType() {
-        case ATNState.BLOCK_START: fallthrough
-        case ATNState.STAR_BLOCK_START: fallthrough
-        case ATNState.PLUS_BLOCK_START: fallthrough
-        case ATNState.STAR_LOOP_ENTRY:
+        case ATNState.BLOCK_START,
+             ATNState.STAR_BLOCK_START,
+             ATNState.PLUS_BLOCK_START,
+             ATNState.STAR_LOOP_ENTRY:
             // report error and recover if possible
             if try singleTokenDeletion(recognizer) != nil {
                 return
             }
             throw ANTLRException.recognition(e: InputMismatchException(recognizer))
-
-        case ATNState.PLUS_LOOP_BACK: fallthrough
-        case ATNState.STAR_LOOP_BACK:
+            
+        case ATNState.PLUS_LOOP_BACK, ATNState.STAR_LOOP_BACK:
             //			errPrint("at loop back: "+s.getClass().getSimpleName());
             reportUnwantedToken(recognizer)
             let expecting = try recognizer.getExpectedTokens()
             let whatFollowsLoopIterationOrRule = expecting.or(getErrorRecoverySet(recognizer)) as! IntervalSet
             try consumeUntil(recognizer, whatFollowsLoopIterationOrRule)
-            break
 
         default:
             // do nothing if we can't identify the exact kind of ATN state
@@ -316,7 +314,7 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
 
         let t = try? recognizer.getCurrentToken()
         let tokenName = getTokenErrorDisplay(t)
-        let expecting = (try? getExpectedTokens(recognizer)) ?? IntervalSet.EMPTY_SET
+        let expecting = (try? getExpectedTokens(recognizer)) ?? IntervalSet.emptySet
         let msg = "extraneous input \(tokenName) expecting \(expecting.toString(recognizer.getVocabulary()))"
         recognizer.notifyErrorListeners(t, msg, nil)
     }
@@ -346,7 +344,7 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
         beginErrorCondition(recognizer)
 
         let t = try? recognizer.getCurrentToken()
-        let expecting = (try? getExpectedTokens(recognizer)) ?? IntervalSet.EMPTY_SET
+        let expecting = (try? getExpectedTokens(recognizer)) ?? IntervalSet.emptySet
         let msg = "missing \(expecting.toString(recognizer.getVocabulary())) at \(getTokenErrorDisplay(t))"
 
         recognizer.notifyErrorListeners(t, msg, nil)
@@ -537,7 +535,7 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
         let token = recognizer.getTokenFactory().create(
             current.getTokenSourceAndStream(),
             expectedTokenType, tokenText,
-            CommonToken.DEFAULT_CHANNEL,
+            CommonToken.defaultChannel,
             -1, -1,
             current.getLine(), current.getCharPositionInLine())
 
@@ -690,10 +688,10 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
             let invokingState = atn.states[ctxWrap.invokingState]!
             let rt = invokingState.transition(0) as! RuleTransition
             let follow = atn.nextTokens(rt.followState)
-            try! recoverSet.addAll(follow)
+            recoverSet.addAll(follow)
             ctx = ctxWrap.parent
         }
-        try! recoverSet.remove(CommonToken.EPSILON)
+        recoverSet.remove(CommonToken.epsilon)
         //		print("recover set "+recoverSet.toString(recognizer.getTokenNames()));
         return recoverSet
     }

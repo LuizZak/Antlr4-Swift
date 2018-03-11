@@ -86,9 +86,9 @@ public struct ParseTreePattern {
     /// regardless of the reason for the failure.
     ///
 
-    /*public func findAll(tree : ParseTree, _ xpath : String) -> Array<ParseTreeMatch> {
-     var subtrees : Array<ParseTree> = XPath.findAll(tree, xpath, matcher.getParser());
-     var matches : Array<ParseTreeMatch> = Array<ParseTreeMatch>();
+    /*public func findAll(tree : ParseTree, _ xpath : String) -> [ParseTreeMatch] {
+     var subtrees : [ParseTree] = XPath.findAll(tree, xpath, matcher.getParser());
+     var matches : [ParseTreeMatch] = [];
      for t : ParseTree in subtrees {
      var match : ParseTreeMatch = match(t);
      if ( match.succeeded() ) {

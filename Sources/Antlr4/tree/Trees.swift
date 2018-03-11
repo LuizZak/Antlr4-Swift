@@ -7,19 +7,19 @@
 
 public class Trees {
     /*
-     public class func getPS(t: Tree, _ ruleNames: Array<String>,
+     public class func getPS(t: Tree, _ ruleNames: [String],
      _ fontName: String, _ fontSize: Int) -> String {
      let psgen: TreePostScriptGenerator =
      TreePostScriptGenerator(ruleNames, t, fontName, fontSize)
      return psgen.getPS()
      }
 
-     public class func getPS(t: Tree, _ ruleNames: Array<String>) -> String {
+     public class func getPS(t: Tree, _ ruleNames: [String]) -> String {
      return getPS(t, ruleNames, "Helvetica", 11)
      }
      //TODO: write to file
 
-     public class func writePS(t: Tree, _ ruleNames: Array<String>,
+     public class func writePS(t: Tree, _ ruleNames: [String],
      _ fileName: String,
      _ fontName: String, _ fontSize: Int)
      throws {
@@ -34,7 +34,7 @@ public class Trees {
      }
      }
 
-     public class func writePS(t: Tree, _ ruleNames: Array<String>, _ fileName: String)
+     public class func writePS(t: Tree, _ ruleNames: [String], _ fileName: String)
      throws {
      writePS(t, ruleNames, fileName, "Helvetica", 11)
      }
@@ -59,7 +59,7 @@ public class Trees {
     /// node payloads to get the text for the nodes.  Detect
     /// parse trees and extract data appropriately.
     ///
-    public static func toStringTree(_ t: Tree, _ ruleNames: Array<String>?) -> String {
+    public static func toStringTree(_ t: Tree, _ ruleNames: [String]?) -> String {
         let s = Utils.escapeWhitespace(getNodeText(t, ruleNames), false)
         if t.getChildCount() == 0 {
             return s
@@ -80,7 +80,7 @@ public class Trees {
         return getNodeText(t, recog?.getRuleNames())
     }
 
-    public static func getNodeText(_ t: Tree, _ ruleNames: Array<String>?) -> String {
+    public static func getNodeText(_ t: Tree, _ ruleNames: [String]?) -> String {
         if let ruleNames = ruleNames {
             if let ruleNode = t as? RuleNode {
                 let ruleIndex: Int = ruleNode.getRuleContext().getRuleIndex()
@@ -110,8 +110,8 @@ public class Trees {
     }
 
     /// Return ordered list of all children of this node
-    public static func getChildren(_ t: Tree) -> Array<Tree> {
-        var kids: Array<Tree> = Array<Tree>()
+    public static func getChildren(_ t: Tree) -> [Tree] {
+        var kids: [Tree] = []
         let length = t.getChildCount()
         for i in 0..<length {
             kids.append(t.getChild(i)!)
@@ -123,8 +123,8 @@ public class Trees {
     /// list is the root and the last is the parent of this node.
     ///
 
-    public static func getAncestors(_ t: Tree) -> Array<Tree> {
-        var ancestors: Array<Tree> = Array<Tree>()
+    public static func getAncestors(_ t: Tree) -> [Tree] {
+        var ancestors: [Tree] = []
         if t.getParent() == nil {
 
             return ancestors
@@ -140,22 +140,22 @@ public class Trees {
         return ancestors
     }
 
-    public static func findAllTokenNodes(_ t: ParseTree, _ ttype: Int) -> Array<ParseTree> {
+    public static func findAllTokenNodes(_ t: ParseTree, _ ttype: Int) -> [ParseTree] {
         return findAllNodes(t, ttype, true)
     }
 
-    public static func findAllRuleNodes(_ t: ParseTree, _ ruleIndex: Int) -> Array<ParseTree> {
+    public static func findAllRuleNodes(_ t: ParseTree, _ ruleIndex: Int) -> [ParseTree] {
         return findAllNodes(t, ruleIndex, false)
     }
 
-    public static func findAllNodes(_ t: ParseTree, _ index: Int, _ findTokens: Bool) -> Array<ParseTree> {
-        var nodes: Array<ParseTree> = Array<ParseTree>()
+    public static func findAllNodes(_ t: ParseTree, _ index: Int, _ findTokens: Bool) -> [ParseTree] {
+        var nodes: [ParseTree] = []
         _findAllNodes(t, index, findTokens, &nodes)
         return nodes
     }
 
     public static func _findAllNodes(_ t: ParseTree,
-                                     _ index: Int, _ findTokens: Bool, _ nodes: inout Array<ParseTree>) {
+                                     _ index: Int, _ findTokens: Bool, _ nodes: inout [ParseTree]) {
         // check this node (the root) first
         if let tnode = t as? TerminalNode, findTokens {
             if tnode.getSymbol()!.getType() == index {
@@ -175,8 +175,8 @@ public class Trees {
         }
     }
 
-    public static func descendants(_ t: ParseTree) -> Array<ParseTree> {
-        var nodes: Array<ParseTree> = Array<ParseTree>()
+    public static func descendants(_ t: ParseTree) -> [ParseTree] {
+        var nodes: [ParseTree] = []
         nodes.append(t)
 
         let n: Int = t.getChildCount()

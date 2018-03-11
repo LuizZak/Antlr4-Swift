@@ -232,7 +232,7 @@ open class ParserRuleContext: RuleContext {
     override
     open func getSourceInterval() -> Interval {
         guard let start = start, let stop = stop else {
-            return Interval.INVALID
+            return Interval.invalid
         }
         return Interval.of(start.getTokenIndex(), stop.getTokenIndex())
     }

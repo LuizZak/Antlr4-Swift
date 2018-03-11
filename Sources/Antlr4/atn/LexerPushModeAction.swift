@@ -74,7 +74,7 @@ public final class LexerPushModeAction: LexerAction, CustomStringConvertible {
     }
 }
 
-public func ==(lhs: LexerPushModeAction, rhs: LexerPushModeAction) -> Bool {
+public func == (lhs: LexerPushModeAction, rhs: LexerPushModeAction) -> Bool {
 
     if lhs === rhs {
         return true

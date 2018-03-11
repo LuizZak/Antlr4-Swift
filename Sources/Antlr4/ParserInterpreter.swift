@@ -35,8 +35,7 @@ public class ParserInterpreter: Parser {
     private final var vocabulary: Vocabulary
 
     /// Tracks LR rules for adjusting the contexts
-    internal final var _parentContextStack: Array<(ParserRuleContext?, Int)> =
-        Array<(ParserRuleContext?, Int)>()
+    internal final var _parentContextStack: [(ParserRuleContext?, Int)] = []
 
     /// We need a map from (decision,inputIndex)->forced alt for computing ambiguous
     /// parse trees. For now, we allow exactly one override.
@@ -67,7 +66,7 @@ public class ParserInterpreter: Parser {
     }
 
     public init(_ grammarFileName: String, _ vocabulary: Vocabulary,
-                _ ruleNames: Array<String>, _ atn: ATN, _ input: TokenStream) throws {
+                _ ruleNames: [String], _ atn: ATN, _ input: TokenStream) throws {
 
         self.grammarFileName = grammarFileName
         self.atn = atn
@@ -79,7 +78,7 @@ public class ParserInterpreter: Parser {
         }
 
         // identify the ATN states where pushNewRecursionContext() must be called
-        self.statesNeedingLeftRecursionContext = try! BitSet(atn.states.count)
+        self.statesNeedingLeftRecursionContext = BitSet(atn.states.count)
         for  state in atn.states {
             if let state = state as? StarLoopEntryState {
                 if state.precedenceRuleDecision {
@@ -144,7 +143,6 @@ public class ParserInterpreter: Parser {
                 }
 
                 try visitRuleStopState(p)
-                break
 
             default:
                 do {
@@ -155,14 +153,13 @@ public class ParserInterpreter: Parser {
                     getErrorHandler().reportError(self, e)
                     try getErrorHandler().recover(self, e)
                 }
-
-                break
             }
         }
     }
 
     override
-    public func enterRecursionRule(_ localctx: ParserRuleContext, _ state: Int, _ ruleIndex: Int, _ precedence: Int) throws {
+    public func enterRecursionRule(_ localctx: ParserRuleContext, _ state: Int,
+                                   _ ruleIndex: Int, _ precedence: Int) throws {
         let pair: (ParserRuleContext?, Int) = (_ctx, localctx.invokingState)
         _parentContextStack.append(pair)
         try super.enterRecursionRule(localctx, state, ruleIndex, precedence)
@@ -189,7 +186,7 @@ public class ParserInterpreter: Parser {
         let transition = p.transition(altNum - 1)
         switch transition.getSerializationType() {
         case Transition.EPSILON:
-            if try statesNeedingLeftRecursionContext.get(p.stateNumber) &&
+            if statesNeedingLeftRecursionContext.get(p.stateNumber) &&
                 !(transition.target is LoopEndState) {
                 // We are at the start of a left recursive rule's (...)* loop
                 // but it's not the exit branch of loop.
@@ -198,59 +195,54 @@ public class ParserInterpreter: Parser {
                     _parentContextStack.last!.1, //peek()
 
                     _ctx!.getRuleIndex())
-                try    pushNewRecursionContext(ctx, atn.ruleToStartState[p.ruleIndex!].stateNumber, _ctx!.getRuleIndex())
+                try pushNewRecursionContext(ctx,
+                                            atn.ruleToStartState[p.ruleIndex!].stateNumber,
+                                            _ctx!.getRuleIndex())
             }
-            break
 
         case Transition.ATOM:
             try match((transition as! AtomTransition).label)
-            break
 
-        case Transition.RANGE: fallthrough
-        case Transition.SET: fallthrough
-        case Transition.NOT_SET:
-            if !transition.matches(try _input.LA(1), CommonToken.MIN_USER_TOKEN_TYPE, 65535) {
+        case Transition.RANGE, Transition.SET, Transition.NOT_SET:
+            if !transition.matches(try _input.LA(1), CommonToken.minUserTokenType, 65535) {
                 try _errHandler.recoverInline(self)
             }
             try matchWildcard()
-            break
 
         case Transition.WILDCARD:
             try matchWildcard()
-            break
 
         case Transition.RULE:
             let ruleStartState = transition.target as! RuleStartState
             let ruleIndex = ruleStartState.ruleIndex!
             let ctx = InterpreterRuleContext(_ctx, p.stateNumber, ruleIndex)
             if ruleStartState.isPrecedenceRule {
-                try enterRecursionRule(ctx, ruleStartState.stateNumber, ruleIndex, (transition as! RuleTransition).precedence)
+                try enterRecursionRule(ctx, ruleStartState.stateNumber, ruleIndex,
+                                       (transition as! RuleTransition).precedence)
             } else {
                 try enterRule(ctx, transition.target.stateNumber, ruleIndex)
             }
-            break
 
         case Transition.PREDICATE:
             let predicateTransition = transition as! PredicateTransition
             if try !sempred(_ctx!, predicateTransition.ruleIndex, predicateTransition.predIndex) {
                 throw ANTLRException.recognition(e: FailedPredicateException(self))
             }
-            break
 
         case Transition.ACTION:
             let actionTransition = transition as! ActionTransition
             try action(_ctx, actionTransition.ruleIndex, actionTransition.actionIndex)
-            break
 
         case Transition.PRECEDENCE:
             if !precpred(_ctx!, (transition as! PrecedencePredicateTransition).precedence) {
-                throw ANTLRException.recognition(e: FailedPredicateException(self, "precpred(_ctx,\((transition as! PrecedencePredicateTransition).precedence))"))
+                throw ANTLRException.recognition(e:
+                    FailedPredicateException(
+                        self,
+                        "precpred(_ctx,\((transition as! PrecedencePredicateTransition).precedence))"))
             }
-            break
 
         default:
             throw ANTLRError.unsupportedOperation(msg: "Unrecognized ATN transition type.")
-
         }
 
         setState(transition.target.stateNumber)

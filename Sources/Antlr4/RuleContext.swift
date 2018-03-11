@@ -96,7 +96,7 @@ open class RuleContext: RuleNode {
     // satisfy the ParseTree / SyntaxTree interface
 
     open func getSourceInterval() -> Interval {
-        return Interval.INVALID
+        return Interval.invalid
     }
 
     open func getRuleContext() -> RuleContext {

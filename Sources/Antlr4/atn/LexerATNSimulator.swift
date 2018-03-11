@@ -322,7 +322,9 @@ open class LexerATNSimulator: ATNSimulator {
     /// we can reach upon input `t`. Parameter `reach` is a return
     /// parameter.
     ///
-    internal func getReachableConfigSet(_ input: CharStream, _ closureConfig: ATNConfigSet, _ reach: ATNConfigSet, _ t: Int) throws {
+    internal func getReachableConfigSet(_ input: CharStream, _ closureConfig: ATNConfigSet,
+                                        _ reach: ATNConfigSet, _ t: Int) throws {
+        
         // this is used to skip processing for configs which have a lower priority
         // than a config that already reached an accept state for the same rule
         var skipAlt = ATN.INVALID_ALT_NUMBER
@@ -384,7 +386,7 @@ open class LexerATNSimulator: ATNSimulator {
     }
 
     internal func getReachableTarget(_ trans: Transition, _ t: Int) -> ATNState? {
-        if trans.matches(t, Character.MIN_VALUE, Character.MAX_VALUE) {
+        if trans.matches(t, Character.minValue, Character.maxValue) {
             return trans.target
         }
 
@@ -415,7 +417,10 @@ open class LexerATNSimulator: ATNSimulator {
     /// `false`.
     ///
     @discardableResult
-    final func closure(_ input: CharStream, _ config: LexerATNConfig, _ configs: ATNConfigSet, _ currentAltReachedAcceptState: Bool, _ speculative: Bool, _ treatEofAsEpsilon: Bool) throws -> Bool {
+    final func closure(_ input: CharStream, _ config: LexerATNConfig,
+                       _ configs: ATNConfigSet, _ currentAltReachedAcceptState: Bool,
+                       _ speculative: Bool, _ treatEofAsEpsilon: Bool) throws -> Bool {
+        
         var currentAltReachedAcceptState = currentAltReachedAcceptState
         if LexerATNSimulator.debug {
             print("closure(" + config.toString(recog, true) + ")")
@@ -447,7 +452,8 @@ open class LexerATNSimulator: ATNSimulator {
                         let newContext = configContext.getParent(i)! // "pop" return state
                         let returnState = atn.states[configContext.getReturnState(i)]
                         let c = LexerATNConfig(config, returnState!, newContext)
-                        currentAltReachedAcceptState = try closure(input, c, configs, currentAltReachedAcceptState, speculative, treatEofAsEpsilon)
+                        currentAltReachedAcceptState =
+                            try closure(input, c, configs, currentAltReachedAcceptState, speculative, treatEofAsEpsilon)
                     }
                 }
             }
@@ -467,7 +473,8 @@ open class LexerATNSimulator: ATNSimulator {
         for i in 0..<length {
             let t = p.transition(i)
             if let c = try getEpsilonTarget(input, config, t, configs, speculative, treatEofAsEpsilon) {
-                currentAltReachedAcceptState = try closure(input, c, configs, currentAltReachedAcceptState, speculative, treatEofAsEpsilon)
+                currentAltReachedAcceptState =
+                    try closure(input, c, configs, currentAltReachedAcceptState, speculative, treatEofAsEpsilon)
             }
         }
 
@@ -488,7 +495,6 @@ open class LexerATNSimulator: ATNSimulator {
             let ruleTransition = t as! RuleTransition
             let newContext = SingletonPredictionContext.create(config.context, ruleTransition.followState.stateNumber)
             c = LexerATNConfig(config, t.target, newContext)
-            break
 
         case Transition.PRECEDENCE:
             throw ANTLRError.unsupportedOperation(msg: "Precedence predicates are not supported in lexers.")
@@ -521,7 +527,6 @@ open class LexerATNSimulator: ATNSimulator {
             if try evaluatePredicate(input, pt.ruleIndex, pt.predIndex, speculative) {
                 c = LexerATNConfig(config, t.target)
             }
-            break
 
         case Transition.ACTION:
             if config.context == nil || config.context!.hasEmptyPath() {
@@ -537,30 +542,25 @@ open class LexerATNSimulator: ATNSimulator {
                 // getEpsilonTarget to return two configurations, so
                 // additional modifications are needed before we can support
                 // the split operation.
-                let lexerActionExecutor = LexerActionExecutor.append(config.getLexerActionExecutor(), atn.lexerActions[(t as! ActionTransition).actionIndex])
+                let lexerActionExecutor =
+                    LexerActionExecutor.append(config.getLexerActionExecutor(),
+                                               atn.lexerActions[(t as! ActionTransition).actionIndex])
                 c = LexerATNConfig(config, t.target, lexerActionExecutor)
-                break
             } else {
                 // ignore actions in referenced rules
                 c = LexerATNConfig(config, t.target)
-                break
             }
 
         case Transition.EPSILON:
             c = LexerATNConfig(config, t.target)
-            break
-
-        case Transition.ATOM: fallthrough
-        case Transition.RANGE: fallthrough
-        case Transition.SET:
+            
+        case Transition.ATOM, Transition.RANGE, Transition.SET:
             if treatEofAsEpsilon {
-                if t.matches(BufferedTokenStream.EOF, Character.MIN_VALUE, Character.MAX_VALUE) {
+                if t.matches(BufferedTokenStream.EOF, Character.minValue, Character.maxValue) {
                     c = LexerATNConfig(config, t.target)
-                    break
                 }
             }
-
-            break
+            
         default:
             return c
         }
@@ -589,7 +589,8 @@ open class LexerATNSimulator: ATNSimulator {
     /// - returns: `true` if the specified predicate evaluates to
     /// `true`.
     ///
-    final func evaluatePredicate(_ input: CharStream, _ ruleIndex: Int, _ predIndex: Int, _ speculative: Bool) throws -> Bool {
+    final func evaluatePredicate(_ input: CharStream, _ ruleIndex: Int,
+                                 _ predIndex: Int, _ speculative: Bool) throws -> Bool {
         // assume true if no recognizer was provided
         guard let recog = recog else {
             return true
@@ -665,7 +666,8 @@ open class LexerATNSimulator: ATNSimulator {
         dfaStateMutex.synchronized {
             if p.edges == nil {
                 //  make room for tokens 1..n and -1 masquerading as index 0
-                p.edges = [DFAState?](repeating: nil, count: LexerATNSimulator.MAX_DFA_EDGE - LexerATNSimulator.MIN_DFA_EDGE + 1)
+                let count = LexerATNSimulator.MAX_DFA_EDGE - LexerATNSimulator.MIN_DFA_EDGE + 1
+                p.edges = [DFAState?](repeating: nil, count: count)
             }
             p.edges[t - LexerATNSimulator.MIN_DFA_EDGE] = q // connect
         }

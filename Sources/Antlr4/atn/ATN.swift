@@ -146,25 +146,25 @@ public class ATN {
         var ctx: RuleContext? = context
         let s = states[stateNumber]!
         var following = nextTokens(s)
-        if !following.contains(CommonToken.EPSILON) {
+        if !following.contains(CommonToken.epsilon) {
             return following
         }
 
         let expected = IntervalSet()
-        try! expected.addAll(following)
-        try! expected.remove(CommonToken.EPSILON)
+        expected.addAll(following)
+        expected.remove(CommonToken.epsilon)
 
-        while let ctxWrap = ctx, ctxWrap.invokingState >= 0 && following.contains(CommonToken.EPSILON) {
+        while let ctxWrap = ctx, ctxWrap.invokingState >= 0 && following.contains(CommonToken.epsilon) {
             let invokingState = states[ctxWrap.invokingState]!
             let rt = invokingState.transition(0) as! RuleTransition
             following = nextTokens(rt.followState)
-            try! expected.addAll(following)
-            try! expected.remove(CommonToken.EPSILON)
+            expected.addAll(following)
+            expected.remove(CommonToken.epsilon)
             ctx = ctxWrap.parent
         }
 
-        if following.contains(CommonToken.EPSILON) {
-            try! expected.add(CommonToken.EOF)
+        if following.contains(CommonToken.epsilon) {
+            expected.add(CommonToken.EOF)
         }
 
         return expected

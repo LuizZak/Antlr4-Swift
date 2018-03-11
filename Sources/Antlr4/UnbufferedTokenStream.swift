@@ -73,7 +73,8 @@ public class UnbufferedTokenStream: TokenStream {
         // get absolute index
         let bufferStartIndex: Int = getBufferStartIndex()
         if i < bufferStartIndex || i >= bufferStartIndex + n {
-            throw ANTLRError.indexOutOfBounds(msg: "get(\(i)) outside buffer: \(bufferStartIndex)..\(bufferStartIndex + n)")
+            throw ANTLRError.indexOutOfBounds(
+                msg: "get(\(i)) outside buffer: \(bufferStartIndex)..\(bufferStartIndex + n)")
         }
         return tokens[i - bufferStartIndex]
     }
@@ -91,7 +92,8 @@ public class UnbufferedTokenStream: TokenStream {
 
         if index >= n {
             //Token.EOF
-            assert(n > 0 && tokens[n - 1].getType() == CommonToken.EOF, "Expected: n>0&&tokens[n-1].getType()==Token.EOF")
+            assert(n > 0 && tokens[n - 1].getType() == CommonToken.EOF,
+                   "Expected: n>0&&tokens[n-1].getType()==Token.EOF")
             return tokens[n - 1]
         }
 
@@ -213,7 +215,7 @@ public class UnbufferedTokenStream: TokenStream {
                 // p is last valid token; move nothing if p==n as we have no valid char
                 tokens = Array(tokens[p ... n - 1])
                 //System.arraycopy(tokens, p, tokens, 0, n - p); // shift n-p tokens from p to 0
-                n = n - p
+                n -= p
                 p = 0
             }
 
@@ -244,7 +246,8 @@ public class UnbufferedTokenStream: TokenStream {
 
         } else {
             if i >= n {
-                throw ANTLRError.unsupportedOperation(msg: "seek to index outside buffer: \(index) not in \(bufferStartIndex)..\(bufferStartIndex + n)")
+                throw ANTLRError.unsupportedOperation(
+                    msg: "seek to index outside buffer: \(index) not in \(bufferStartIndex)..\(bufferStartIndex + n)")
 
             }
         }
@@ -273,7 +276,8 @@ public class UnbufferedTokenStream: TokenStream {
         let start = interval.a
         let stop = interval.b
         if start < bufferStartIndex || stop > bufferStopIndex {
-            throw ANTLRError.unsupportedOperation(msg: "interval \(interval) not in token buffer window: \(bufferStartIndex)..bufferStopIndex)")
+            throw ANTLRError.unsupportedOperation(
+                msg: "interval \(interval) not in token buffer window: \(bufferStartIndex)..bufferStopIndex)")
         }
 
         let a = start - bufferStartIndex

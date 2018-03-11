@@ -37,7 +37,7 @@ public class CommonTokenStream: BufferedTokenStream {
     /// The default value is _org.antlr.v4.runtime.Token#DEFAULT_CHANNEL_, which matches the
     /// default channel assigned to tokens created by the lexer.
     ///
-    internal var channel = CommonToken.DEFAULT_CHANNEL
+    internal var channel = CommonToken.defaultChannel
 
     ///
     /// Constructs a new _org.antlr.v4.runtime.CommonTokenStream_ using the specified token

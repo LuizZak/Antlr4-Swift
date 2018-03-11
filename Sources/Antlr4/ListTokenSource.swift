@@ -77,11 +77,9 @@ public class ListTokenSource: TokenSource {
             return tokens[i].getCharPositionInLine()
         } else if let eofToken = eofToken {
             return eofToken.getCharPositionInLine()
-        } else if tokens.count > 0 {
+        } else if let lastToken = tokens.last {
             // have to calculate the result from the line/column of the previous
             // token, along with the text of the token.
-            let lastToken = tokens[tokens.count - 1]
-
             if let tokenText = lastToken.getText() {
                 if let lastNewLine = tokenText.lastIndex(of: "\n") {
                     return tokenText.distance(from: lastNewLine, to: tokenText.endIndex) - 1
@@ -101,8 +99,8 @@ public class ListTokenSource: TokenSource {
         if i >= tokens.count {
             if eofToken == nil {
                 var start = -1
-                if tokens.count > 0 {
-                    let previousStop = tokens[tokens.count - 1].getStopIndex()
+                if let last = tokens.last {
+                    let previousStop = last.getStopIndex()
                     if previousStop != -1 {
                         start = previousStop + 1
                     }
@@ -110,7 +108,9 @@ public class ListTokenSource: TokenSource {
 
                 let stop = max(-1, start - 1)
                 let source = TokenSourceAndStream(self, getInputStream())
-                eofToken = _factory.create(source, CommonToken.EOF, "EOF", CommonToken.DEFAULT_CHANNEL, start, stop, getLine(), getCharPositionInLine())
+                eofToken = _factory.create(source, CommonToken.EOF, "EOF",
+                                           CommonToken.defaultChannel, start,
+                                           stop, getLine(), getCharPositionInLine())
             }
 
             return eofToken!
@@ -128,28 +128,21 @@ public class ListTokenSource: TokenSource {
     public func getLine() -> Int {
         if i < tokens.count {
             return tokens[i].getLine()
-        } else {
-            if let eofToken = eofToken {
-                return eofToken.getLine()
-            } else {
-                if tokens.count > 0 {
-                    // have to calculate the result from the line/column of the previous
-                    // token, along with the text of the token.
-                    let lastToken = tokens[tokens.count - 1]
-                    var line = lastToken.getLine()
-
-                    if let tokenText = lastToken.getText() {
-                        for c in tokenText {
-                            if c == "\n" {
-                                line += 1
-                            }
-                        }
-                    }
-
-                    // if no text is available, assume the token did not contain any newline characters.
-                    return line
+        } else if let eofToken = eofToken {
+            return eofToken.getLine()
+        } else if let lastToken = tokens.last {
+            // have to calculate the result from the line/column of the previous
+            // token, along with the text of the token.
+            var line = lastToken.getLine()
+            
+            if let tokenText = lastToken.getText() {
+                for c in tokenText where c == "\n" {
+                    line += 1
                 }
             }
+            
+            // if no text is available, assume the token did not contain any newline characters.
+            return line
         }
 
         // only reach this if tokens is empty, meaning EOF occurs at the first
@@ -162,8 +155,8 @@ public class ListTokenSource: TokenSource {
             return tokens[i].getInputStream()
         } else if let eofToken = eofToken {
             return eofToken.getInputStream()
-        } else if tokens.count > 0 {
-            return tokens[tokens.count - 1].getInputStream()
+        } else if let last = tokens.last {
+            return last.getInputStream()
         }
 
         // no input stream information is available

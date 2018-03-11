@@ -81,7 +81,7 @@ public class RuleTagToken: Token, CustomStringConvertible {
     /// Rule tag tokens are always placed on the _#DEFAULT_CHANNEL_.
     ///
     public func getChannel() -> Int {
-        return RuleTagToken.DEFAULT_CHANNEL
+        return RuleTagToken.defaultChannel
     }
 
     ///

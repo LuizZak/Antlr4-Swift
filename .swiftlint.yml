@@ -1,0 +1,15 @@
+disabled_rules:
+  - type_name
+  - identifier_name
+  - trailing_whitespace
+  - function_body_length
+  - function_parameter_count
+  - cyclomatic_complexity
+  - todo
+  - type_body_length
+  - file_length
+opt_in_rules:
+  - empty_count
+
+line_length: 120
+reporter: "xcode"

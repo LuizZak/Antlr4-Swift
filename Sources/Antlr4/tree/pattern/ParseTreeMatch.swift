@@ -43,7 +43,8 @@ public struct ParseTreeMatch: CustomStringConvertible {
     /// - Throws: ANTLRError.ilegalArgument if `pattern` is `null`
     /// - Throws: ANTLRError.ilegalArgument if `labels` is `null`
     ///
-    public init(_ tree: ParseTree, _ pattern: ParseTreePattern, _ labels: MultiMap<String, ParseTree>, _ mismatchedNode: ParseTree?) {
+    public init(_ tree: ParseTree, _ pattern: ParseTreePattern,
+                _ labels: MultiMap<String, ParseTree>, _ mismatchedNode: ParseTree?) {
 
         self.tree = tree
         self.pattern = pattern
@@ -69,8 +70,8 @@ public struct ParseTreeMatch: CustomStringConvertible {
     ///
 
     public func get(_ label: String) -> ParseTree? {
-        if let parseTrees = labels.get(label), parseTrees.count > 0 {
-            return parseTrees[parseTrees.count - 1]   // return last if multiple
+        if let parseTrees = labels.get(label), let last = parseTrees.last {
+            return last   // return last if multiple
         } else {
             return nil
         }
@@ -98,10 +99,10 @@ public struct ParseTreeMatch: CustomStringConvertible {
     /// the specified `label`. If no nodes matched the label, an empty list
     /// is returned.
     ///
-    public func getAll(_ label: String) -> Array<ParseTree> {
-        let nodes: Array<ParseTree>? = labels.get(label)
+    public func getAll(_ label: String) -> [ParseTree] {
+        let nodes: [ParseTree]? = labels.get(label)
         if nodes == nil {
-            return Array<ParseTree>()
+            return []
         }
 
         return nodes!

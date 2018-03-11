@@ -28,7 +28,8 @@ public class FailedPredicateException: RecognitionException {
 
         self.predicate = predicate
 
-        super.init(recognizer, recognizer.getInputStream()!, recognizer._ctx, FailedPredicateException.formatMessage(predicate, message))
+        super.init(recognizer, recognizer.getInputStream()!, recognizer._ctx,
+                   FailedPredicateException.formatMessage(predicate, message))
         if let token = try? recognizer.getCurrentToken() {
             setOffendingToken(token)
         }

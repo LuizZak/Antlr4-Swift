@@ -59,7 +59,7 @@ public class LexerAction: Hashable {
 
 }
 
-public func ==(lhs: LexerAction, rhs: LexerAction) -> Bool {
+public func == (lhs: LexerAction, rhs: LexerAction) -> Bool {
 
     if lhs === rhs {
         return true

@@ -35,7 +35,7 @@ public class EmptyPredictionContext: SingletonPredictionContext {
     }
 }
 
-public func ==(lhs: EmptyPredictionContext, rhs: EmptyPredictionContext) -> Bool {
+public func == (lhs: EmptyPredictionContext, rhs: EmptyPredictionContext) -> Bool {
     if lhs === rhs {
         return true
     }

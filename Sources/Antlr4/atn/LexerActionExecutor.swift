@@ -55,7 +55,8 @@ public class LexerActionExecutor: Hashable {
     /// - returns: A _org.antlr.v4.runtime.atn.LexerActionExecutor_ for executing the combine actions
     /// of `lexerActionExecutor` and `lexerAction`.
     ///
-    public static func append(_ lexerActionExecutor: LexerActionExecutor?, _ lexerAction: LexerAction) -> LexerActionExecutor {
+    public static func append(_ lexerActionExecutor: LexerActionExecutor?,
+                              _ lexerAction: LexerAction) -> LexerActionExecutor {
         if lexerActionExecutor == nil {
             return LexerActionExecutor([lexerAction])
         }
@@ -177,18 +178,12 @@ public class LexerActionExecutor: Hashable {
 
 }
 
-public func ==(lhs: LexerActionExecutor, rhs: LexerActionExecutor) -> Bool {
+public func == (lhs: LexerActionExecutor, rhs: LexerActionExecutor) -> Bool {
     if lhs === rhs {
         return true
     }
-    if lhs.lexerActions.count != rhs.lexerActions.count {
+    if lhs.lexerActions != rhs.lexerActions {
         return false
-    }
-    let length = lhs.lexerActions.count
-    for i in 0..<length {
-        if !(lhs.lexerActions[i] == rhs.lexerActions[i]) {
-            return false
-        }
     }
 
     return lhs.hashCode == rhs.hashCode

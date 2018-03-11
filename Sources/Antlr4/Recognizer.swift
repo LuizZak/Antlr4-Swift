@@ -81,7 +81,7 @@ open class Recognizer<ATNInterpreter: ATNSimulator>: RecognizerProtocol {
     }()
 
     public func getTokenType(_ tokenName: String) -> Int {
-        return getTokenTypeMap()[tokenName] ?? CommonToken.INVALID_TYPE
+        return getTokenTypeMap()[tokenName] ?? CommonToken.invalidType
     }
 
     ///
@@ -154,7 +154,7 @@ open class Recognizer<ATNInterpreter: ATNSimulator>: RecognizerProtocol {
     }
 
     open func removeErrorListener(_ listener: ANTLRErrorListener) {
-        _listeners = _listeners.filter() {
+        _listeners = _listeners.filter {
             $0 !== listener
         }
     }

@@ -67,7 +67,7 @@ public final class LexerMoreAction: LexerAction, CustomStringConvertible {
     }
 }
 
-public func ==(lhs: LexerMoreAction, rhs: LexerMoreAction) -> Bool {
+public func == (lhs: LexerMoreAction, rhs: LexerMoreAction) -> Bool {
 
     return lhs === rhs
 

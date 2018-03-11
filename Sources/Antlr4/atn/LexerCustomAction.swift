@@ -102,7 +102,7 @@ public final class LexerCustomAction: LexerAction {
 
 }
 
-public func ==(lhs: LexerCustomAction, rhs: LexerCustomAction) -> Bool {
+public func == (lhs: LexerCustomAction, rhs: LexerCustomAction) -> Bool {
 
     if lhs === rhs {
         return true

@@ -17,14 +17,14 @@
 /// (inclusive).
 ///
 
-public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
-    public static let COMPLETE_CHAR_SET: IntervalSet = {
+public final class IntervalSet: IntSet, Hashable, CustomStringConvertible {
+    public static let completeCharSet: IntervalSet = {
         let set = IntervalSet.of(Lexer.MIN_CHAR_VALUE, Lexer.MAX_CHAR_VALUE)
         set.makeReadonly()
         return set
     }()
 
-    public static let EMPTY_SET: IntervalSet = {
+    public static let emptySet: IntervalSet = {
         let set = IntervalSet()
         set.makeReadonly()
         return set
@@ -43,7 +43,7 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
 
     public convenience init(_ set: IntervalSet) {
         self.init()
-        try! addAll(set)
+        addAll(set)
     }
 
     public init(_ els: Int...) {
@@ -52,7 +52,7 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
         } else {
             intervals = [Interval]()
             for e in els {
-                try! add(e)
+                add(e)
             }
         }
     }
@@ -60,15 +60,15 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     ///
     /// Create a set with all ints within range [a..b] (inclusive)
     ///
-    public static func of(_ a: Int, _ b: Int) -> IntervalSet {
+    public static func of(_ first: Int, _ second: Int) -> IntervalSet {
         let s = IntervalSet()
-        try! s.add(a, b)
+        s.add(first, second)
         return s
     }
 
-    public func clear() throws {
+    public func clear() {
         if readonly {
-            throw ANTLRError.illegalState(msg: "can't alter readonly IntervalSet")
+            fatalError("can't alter readonly IntervalSet")
         }
         intervals.removeAll()
     }
@@ -78,11 +78,11 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     /// as a range el..el.
     ///
 
-    public func add(_ el: Int) throws {
+    public func add(_ el: Int) {
         if readonly {
-            throw ANTLRError.illegalState(msg: "can't alter readonly IntervalSet")
+            fatalError("can't alter readonly IntervalSet")
         }
-        try! add(el, el)
+        add(el, el)
     }
 
     ///
@@ -93,14 +93,14 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     /// If this is {1..5, 10..20}, adding 6..7 yields
     /// {1..5, 6..7, 10..20}.  Adding 4..8 yields {1..8, 10..20}.
     ///
-    public func add(_ a: Int, _ b: Int) throws {
-        try add(Interval.of(a, b))
+    public func add(_ first: Int, _ second: Int) {
+        add(Interval.of(first, second))
     }
 
     // copy on write so we can cache a..a intervals and sets of that
-    internal func add(_ addition: Interval) throws {
+    internal func add(_ addition: Interval) {
         if readonly {
-            throw ANTLRError.illegalState(msg: "can't alter readonly IntervalSet")
+            fatalError("can't alter readonly IntervalSet")
         }
         if addition.b < addition.a {
             return
@@ -162,13 +162,13 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     public func or(_ sets: [IntervalSet]) -> IntSet {
         let r = IntervalSet()
         for s in sets {
-            try! r.addAll(s)
+            r.addAll(s)
         }
         return r
     }
 
     @discardableResult
-    public func addAll(_ set: IntSet?) throws -> IntSet {
+    public func addAll(_ set: IntSet?) -> IntSet {
 
         guard let set = set else {
             return self
@@ -176,12 +176,12 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
         if let other = set as? IntervalSet {
             // walk set and add each interval
             for interval in other.intervals {
-                try add(interval)
+                add(interval)
             }
         } else {
             let setList = set.toList()
             for value in setList {
-                try add(value)
+                add(value)
             }
         }
 
@@ -205,23 +205,23 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
             vocabularyIS = vocabulary
         } else {
             vocabularyIS = IntervalSet()
-            try! vocabularyIS.addAll(vocabulary)
+            vocabularyIS.addAll(vocabulary)
         }
 
         return vocabularyIS.subtract(self)
     }
 
     public func subtract(_ a: IntSet?) -> IntSet {
-        guard let a = a, !a.isNil() else {
+        guard let other = a, !other.isNil() else {
             return IntervalSet(self)
         }
-        if let a = a as? IntervalSet {
-            return subtract(self, a)
+        if let other = other as? IntervalSet {
+            return subtract(self, other)
         }
 
-        let other = IntervalSet()
-        try! other.addAll(a)
-        return subtract(self, other)
+        let final = IntervalSet()
+        final.addAll(other)
+        return subtract(self, final)
     }
 
     ///
@@ -307,8 +307,8 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
 
     public func or(_ a: IntSet) -> IntSet {
         let o = IntervalSet()
-        try! o.addAll(self)
-        try! o.addAll(a)
+        o.addAll(self)
+        o.addAll(a)
         return o
     }
 
@@ -316,13 +316,13 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     ///
     ///
 
-    public func and(_ other: IntSet?) -> IntSet? {
-        if other == nil {
+    public func and(_ a: IntSet?) -> IntSet? {
+        if a == nil {
             return nil // nothing in common with null set
         }
 
         var myIntervals = self.intervals
-        var theirIntervals = (other as! IntervalSet).intervals
+        var theirIntervals = (a as! IntervalSet).intervals
         var intersection: IntervalSet? = nil
         let mySize = myIntervals.count
         let theirSize = theirIntervals.count
@@ -347,7 +347,7 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
                             intersection = IntervalSet()
                         }
 
-                        try! intersection!.add(mine.intersection(theirs))
+                        intersection!.add(mine.intersection(theirs))
                         j += 1
                     } else {
                         if theirs.properlyContains(mine) {
@@ -355,7 +355,7 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
                             if intersection == nil {
                                 intersection = IntervalSet()
                             }
-                            try! intersection!.add(mine.intersection(theirs))
+                            intersection!.add(mine.intersection(theirs))
                             i += 1
                         } else {
                             if !mine.disjoint(theirs) {
@@ -363,7 +363,7 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
                                 if intersection == nil {
                                     intersection = IntervalSet()
                                 }
-                                try! intersection!.add(mine.intersection(theirs))
+                                intersection!.add(mine.intersection(theirs))
                                 // Move the iterator of lower range [a..b], but not
                                 // the upper range as it may contain elements that will collide
                                 // with the next iterator. So, if mine=[0..115] and
@@ -427,7 +427,7 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
                 return interval.a
             }
         }
-        return CommonToken.INVALID_TYPE
+        return CommonToken.invalidType
     }
 
     ///
@@ -438,7 +438,7 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     ///
     public func getMaxElement() -> Int {
         if isNil() {
-            return CommonToken.INVALID_TYPE
+            return CommonToken.invalidType
         }
         let last = intervals[intervals.count - 1]
         return last.b
@@ -452,7 +452,7 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     ///
     public func getMinElement() -> Int {
         if isNil() {
-            return CommonToken.INVALID_TYPE
+            return CommonToken.invalidType
         }
 
         return intervals[0].a
@@ -590,7 +590,7 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     internal func elementName(_ vocabulary: Vocabulary, _ a: Int) -> String {
         if a == CommonToken.EOF {
             return "<EOF>"
-        } else if a == CommonToken.EPSILON {
+        } else if a == CommonToken.epsilon {
             return "<EPSILON>"
         } else {
             return vocabulary.getDisplayName(a)
@@ -650,9 +650,9 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
         return -1
     }
 
-    public func remove(_ el: Int) throws {
+    public func remove(_ el: Int) {
         if readonly {
-            throw ANTLRError.illegalState(msg: "can't alter readonly IntervalSet")
+            fatalError("can't alter readonly IntervalSet")
         }
         for (i, interval) in intervals.enumerated() {
             let a = interval.a
@@ -680,7 +680,7 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
                 // found in this interval
                 let oldb = interval.b
                 intervals[i].b = el - 1      // [a..x-1]
-                try add(el + 1, oldb) // add [x+1..b]
+                add(el + 1, oldb) // add [x+1..b]
             }
         }
     }
@@ -694,6 +694,6 @@ public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     }
 }
 
-public func ==(lhs: IntervalSet, rhs: IntervalSet) -> Bool {
+public func == (lhs: IntervalSet, rhs: IntervalSet) -> Bool {
     return lhs.intervals == rhs.intervals
 }

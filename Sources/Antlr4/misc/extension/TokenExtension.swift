@@ -15,7 +15,7 @@ import Foundation
 
 extension Token {
 
-    static public var INVALID_TYPE: Int {
+    static public var invalidType: Int {
         return 0
     }
 
@@ -23,11 +23,11 @@ extension Token {
     /// During lookahead operations, this "token" signifies we hit rule end ATN state
     /// and did not follow it despite needing to.
     ///
-    static public var EPSILON: Int {
+    static public var epsilon: Int {
         return -2
     }
 
-    static public var MIN_USER_TOKEN_TYPE: Int {
+    static public var minUserTokenType: Int {
         return 1
     }
 
@@ -40,7 +40,7 @@ extension Token {
     /// on a particular "channel".  The parser tunes to a particular channel
     /// so that whitespace etc... can go to the parser on a "hidden" channel.
     ///
-    static public var DEFAULT_CHANNEL: Int {
+    static public var defaultChannel: Int {
         return 0
     }
 
@@ -48,7 +48,7 @@ extension Token {
     /// Anything on different channel than DEFAULT_CHANNEL is not parsed
     /// by parser.
     ///
-    static public var HIDDEN_CHANNEL: Int {
+    static public var hiddenChannel: Int {
         return 1
     }
 
@@ -63,7 +63,7 @@ extension Token {
     ///
     /// - seealso: org.antlr.v4.runtime.Token#getChannel()
     ///
-    static public var MIN_USER_CHANNEL_VALUE: Int {
+    static public var minUserChannelValue: Int {
         return 2
     }
 }

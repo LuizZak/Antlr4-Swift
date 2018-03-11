@@ -106,7 +106,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
             return "{\(ruleIndex):\(predIndex)}?"
         }
 
-        public static func ==(lhs: Predicate, rhs: Predicate) -> Bool {
+        public static func == (lhs: Predicate, rhs: Predicate) -> Bool {
             if lhs === rhs {
                 return true
             }
@@ -133,7 +133,8 @@ public class SemanticContext: Hashable, CustomStringConvertible {
         }
 
         override
-        public func evalPrecedence<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> SemanticContext? {
+        public func evalPrecedence<T>(_ parser: Recognizer<T>,
+                                      _ parserCallStack: RuleContext) throws -> SemanticContext? {
             if parser.precpred(parserCallStack, precedence) {
                 return SemanticContext.NONE
             } else {
@@ -154,7 +155,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
 
         }
 
-        public static func ==(lhs: PrecedencePredicate, rhs: PrecedencePredicate) -> Bool {
+        public static func == (lhs: PrecedencePredicate, rhs: PrecedencePredicate) -> Bool {
             if lhs === rhs {
                 return true
             }
@@ -179,7 +180,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
         /// -  4.3
         ///
 
-        public func getOperands() -> Array<SemanticContext> {
+        public func getOperands() -> [SemanticContext] {
             fatalError(#function + " must be overridden")
         }
     }
@@ -249,7 +250,8 @@ public class SemanticContext: Hashable, CustomStringConvertible {
         }
 
         override
-        public func evalPrecedence<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> SemanticContext? {
+        public func evalPrecedence<T>(_ parser: Recognizer<T>,
+                                      _ parserCallStack: RuleContext) throws -> SemanticContext? {
             var differs = false
             var operands = [SemanticContext]()
             for context in opnds {
@@ -293,7 +295,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
 
         }
 
-        public static func ==(lhs: AND, rhs: AND) -> Bool {
+        public static func == (lhs: AND, rhs: AND) -> Bool {
             if lhs === rhs {
                 return true
             }
@@ -364,7 +366,8 @@ public class SemanticContext: Hashable, CustomStringConvertible {
         }
 
         override
-        public func evalPrecedence<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> SemanticContext? {
+        public func evalPrecedence<T>(_ parser: Recognizer<T>,
+                                      _ parserCallStack: RuleContext) throws -> SemanticContext? {
             var differs = false
             var operands = [SemanticContext]()
             for context in opnds {
@@ -403,7 +406,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
 
         }
 
-        public static func ==(lhs: SemanticContext.OR, rhs: SemanticContext.OR) -> Bool {
+        public static func == (lhs: SemanticContext.OR, rhs: SemanticContext.OR) -> Bool {
             if lhs === rhs {
                 return true
             }
@@ -459,7 +462,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
     }
 }
 
-public func ==(lhs: SemanticContext, rhs: SemanticContext) -> Bool {
+public func == (lhs: SemanticContext, rhs: SemanticContext) -> Bool {
     if lhs === rhs {
         return true
     }

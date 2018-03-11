@@ -73,7 +73,7 @@ public class LexerTypeAction: LexerAction, CustomStringConvertible {
 
 }
 
-public func ==(lhs: LexerTypeAction, rhs: LexerTypeAction) -> Bool {
+public func == (lhs: LexerTypeAction, rhs: LexerTypeAction) -> Bool {
 
     if lhs === rhs {
         return true

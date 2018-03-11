@@ -17,7 +17,8 @@ public class LexerInterpreter: Lexer {
     internal final var _decisionToDFA: [DFA]
     internal final var _sharedContextCache = PredictionContextCache()
 
-    public init(_ grammarFileName: String, _ vocabulary: Vocabulary, _ ruleNames: Array<String>, _ channelNames: Array<String>, _ modeNames: Array<String>, _ atn: ATN, _ input: CharStream) throws {
+    public init(_ grammarFileName: String, _ vocabulary: Vocabulary, _ ruleNames: [String],
+                _ channelNames: [String], _ modeNames: [String], _ atn: ATN, _ input: CharStream) throws {
 
         self.grammarFileName = grammarFileName
         self.atn = atn

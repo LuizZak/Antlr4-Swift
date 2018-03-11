@@ -323,7 +323,8 @@ public class ATNDeserializer {
         return result
     }
 
-    private func readSets(_ data: [Character], _ p: inout Int, _ sets: inout [IntervalSet], _ readUnicode: ([Character], inout Int) -> Int) {
+    private func readSets(_ data: [Character], _ p: inout Int, _ sets: inout [IntervalSet],
+                          _ readUnicode: ([Character], inout Int) -> Int) {
         let nsets = toInt(data[p])
         p += 1
         for _ in 0..<nsets {
@@ -335,11 +336,11 @@ public class ATNDeserializer {
             let containsEof = (toInt(data[p]) != 0)
             p += 1
             if containsEof {
-                try! set.add(-1)
+                set.add(-1)
             }
 
             for _ in 0..<nintervals {
-                try! set.add(readUnicode(data, &p), readUnicode(data, &p))
+                set.add(readUnicode(data, &p), readUnicode(data, &p))
             }
         }
     }
@@ -350,7 +351,8 @@ public class ATNDeserializer {
         }
         if let JSONData = jsonStr.data(using: .utf8) {
             do {
-                let JSON = try JSONSerialization.jsonObject(with: JSONData, options: JSONSerialization.ReadingOptions(rawValue: 0))
+                let JSON = try JSONSerialization.jsonObject(with: JSONData,
+                                                            options: JSONSerialization.ReadingOptions(rawValue: 0))
                 guard let JSONDictionary = JSON as? [String: Any] else {
                     fatalError("deserializeFromJson Not a Dictionary")
                 }
@@ -482,13 +484,13 @@ public class ATNDeserializer {
 
             let containsEof = (setBuilder["containsEof"] as! Int) != 0
             if containsEof {
-                try! set.add(-1)
+                set.add(-1)
             }
             let intervalsBuilder = setBuilder["Intervals"] as! [[String: Any]]
 
             for j in 0..<nintervals {
                 let vals = intervalsBuilder[j]
-                try! set.add((vals["a"] as! Int), (vals["b"] as! Int))
+                set.add((vals["a"] as! Int), (vals["b"] as! Int))
             }
         }
 
@@ -678,11 +680,15 @@ public class ATNDeserializer {
             /// decision for the closure block that determines whether a
             /// precedence rule should continue or complete.
             ///
-            guard let state = state as? StarLoopEntryState, let stateRuleIndex = state.ruleIndex, atn.ruleToStartState[stateRuleIndex].isPrecedenceRule else {
+            guard let state = state as? StarLoopEntryState,
+                let stateRuleIndex = state.ruleIndex,
+                atn.ruleToStartState[stateRuleIndex].isPrecedenceRule else {
                 continue
             }
             let maybeLoopEndState = state.transition(state.getNumberOfTransitions() - 1).target
-            if maybeLoopEndState is LoopEndState && maybeLoopEndState.epsilonOnlyTransitions && maybeLoopEndState.transition(0).target is RuleStopState {
+            if maybeLoopEndState is LoopEndState
+                && maybeLoopEndState.epsilonOnlyTransitions
+                && maybeLoopEndState.transition(0).target is RuleStopState {
                 state.precedenceRuleDecision = true
             }
         }
@@ -721,7 +727,8 @@ public class ATNDeserializer {
                         continue
                     }
 
-                    if maybeLoopEndState.epsilonOnlyTransitions && maybeLoopEndState.transition(0).target is RuleStopState {
+                    if maybeLoopEndState.epsilonOnlyTransitions &&
+                        maybeLoopEndState.transition(0).target is RuleStopState {
                         endState = state
                         break
                     }
@@ -754,7 +761,9 @@ public class ATNDeserializer {
 
             // all transitions leaving the rule start state need to leave blockStart instead
             while atn.ruleToStartState[i].getNumberOfTransitions() > 0 {
-                let transition = atn.ruleToStartState[i].removeTransition(atn.ruleToStartState[i].getNumberOfTransitions() - 1)
+                let transition =
+                    atn.ruleToStartState[i]
+                        .removeTransition(atn.ruleToStartState[i].getNumberOfTransitions() - 1)
                 bypassStart.addTransition(transition)
             }
 

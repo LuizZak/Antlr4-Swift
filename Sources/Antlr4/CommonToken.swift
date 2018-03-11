@@ -26,7 +26,7 @@ public class CommonToken: WritableToken {
     /// This is the backing field for _#getChannel_ and
     /// _#setChannel_.
     ///
-    internal var channel = DEFAULT_CHANNEL
+    internal var channel = defaultChannel
 
     ///
     /// This is the backing field for _#getTokenSource_ and
@@ -101,7 +101,7 @@ public class CommonToken: WritableToken {
     ///
     public init(_ type: Int, _ text: String?) {
         self.type = type
-        self.channel = CommonToken.DEFAULT_CHANNEL
+        self.channel = CommonToken.defaultChannel
         self.text = text
         self.source = TokenSourceAndStream.EMPTY
     }

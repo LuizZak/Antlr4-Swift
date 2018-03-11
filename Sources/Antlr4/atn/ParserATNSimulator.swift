@@ -640,9 +640,10 @@ open class ParserATNSimulator: ATNSimulator {
     // comes back with reach.uniqueAlt set to a valid alt
     final func execATNWithFullContext(_ dfa: DFA,
                                       _ D: DFAState, // how far we got in SLL DFA before failing over
-        _ s0: ATNConfigSet,
-        _ input: TokenStream, _ startIndex: Int,
-        _ outerContext: ParserRuleContext) throws -> Int {
+                                      _ s0: ATNConfigSet,
+                                      _ input: TokenStream,
+                                      _ startIndex: Int,
+                                      _ outerContext: ParserRuleContext) throws -> Int {
         if debug || debug_list_atn_decisions {
             print("execATNWithFullContext \(s0)")
         }
@@ -886,7 +887,9 @@ open class ParserATNSimulator: ATNSimulator {
         /// multiple alternatives are viable.
         ///
         if let reach = reach {
-            if let skippedStopStates = skippedStopStates, (!fullCtx || !PredictionMode.hasConfigInRuleStopState(reach)) {
+            if let skippedStopStates = skippedStopStates,
+                (!fullCtx || !PredictionMode.hasConfigInRuleStopState(reach)) {
+                
                 assert(!skippedStopStates.isEmpty, "Expected: !skippedStopStates.isEmpty()")
                 for c in skippedStopStates {
                     try! reach.add(c, &mergeCache)
@@ -1143,7 +1146,7 @@ open class ParserATNSimulator: ATNSimulator {
             // unpredicated is indicated by SemanticContext.NONE
             assert(pred != nil, "Expected: pred!=null")
 
-            if let ambigAlts = ambigAlts, try! ambigAlts.get(i) {
+            if let ambigAlts = ambigAlts, ambigAlts.get(i) {
                 pairs.append(DFAState.PredPrediction(pred!, i))
             }
             if pred != SemanticContext.NONE {
@@ -1198,8 +1201,10 @@ open class ParserATNSimulator: ATNSimulator {
     /// _org.antlr.v4.runtime.atn.ATN#INVALID_ALT_NUMBER_ if a suitable alternative was not
     /// identified and _#adaptivePredict_ should report an error instead.
     ///
-    final internal func getSynValidOrSemInvalidAltThatFinishedDecisionEntryRule(_ configs: ATNConfigSet,
-                                                                                _ outerContext: ParserRuleContext) throws -> Int {
+    final internal func getSynValidOrSemInvalidAltThatFinishedDecisionEntryRule(
+        _ configs: ATNConfigSet,
+        _ outerContext: ParserRuleContext) throws -> Int {
+        
         let (semValidConfigs, semInvalidConfigs) = try splitAccordingToSemanticValidity(configs, outerContext)
         var alt = getAltThatFinishedDecisionEntryRule(semValidConfigs)
         if alt != ATN.INVALID_ALT_NUMBER {
@@ -1306,7 +1311,8 @@ open class ParserATNSimulator: ATNSimulator {
     ///
     /// - since: 4.3
     ///
-    internal func evalSemanticContext(_ pred: SemanticContext, _ parserCallStack: ParserRuleContext, _ alt: Int, _ fullCtx: Bool) throws -> Bool {
+    internal func evalSemanticContext(_ pred: SemanticContext, _ parserCallStack: ParserRuleContext,
+                                      _ alt: Int, _ fullCtx: Bool) throws -> Bool {
         return try pred.eval(parser, parserCallStack)
     }
 
@@ -1324,7 +1330,8 @@ open class ParserATNSimulator: ATNSimulator {
                                 _ fullCtx: Bool,
                                 _ treatEofAsEpsilon: Bool) throws {
         let initialDepth = 0
-        try closureCheckingStopState(config, configs, &closureBusy, collectPredicates, fullCtx, initialDepth, treatEofAsEpsilon)
+        try closureCheckingStopState(config, configs, &closureBusy, collectPredicates,
+                                     fullCtx, initialDepth, treatEofAsEpsilon)
         assert(!fullCtx || !configs.dipsIntoOuterContext, "Expected: !fullCtx||!configs.dipsIntoOuterContext")
     }
 
@@ -1661,7 +1668,8 @@ open class ParserATNSimulator: ATNSimulator {
             return ruleTransition(config, t as! RuleTransition)
 
         case Transition.PRECEDENCE:
-            return try precedenceTransition(config, t as! PrecedencePredicateTransition, collectPredicates, inContext, fullCtx)
+            return try precedenceTransition(config, t as! PrecedencePredicateTransition,
+                                            collectPredicates, inContext, fullCtx)
 
         case Transition.PREDICATE:
             return try predTransition(config, t as! PredicateTransition,
@@ -1674,10 +1682,8 @@ open class ParserATNSimulator: ATNSimulator {
 
         case Transition.EPSILON:
             return ATNConfig(config, t.target)
-
-        case Transition.ATOM: fallthrough
-        case Transition.RANGE: fallthrough
-        case Transition.SET:
+        
+        case Transition.ATOM, Transition.RANGE, Transition.SET:
             // EOF transitions act like epsilon transitions after the first EOF
             // transition is traversed
             if treatEofAsEpsilon {
@@ -2007,20 +2013,25 @@ open class ParserATNSimulator: ATNSimulator {
         }
     }
 
-    func reportAttemptingFullContext(_ dfa: DFA, _ conflictingAlts: BitSet?, _ configs: ATNConfigSet, _ startIndex: Int, _ stopIndex: Int) {
+    func reportAttemptingFullContext(_ dfa: DFA, _ conflictingAlts: BitSet?,
+                                     _ configs: ATNConfigSet, _ startIndex: Int,
+                                     _ stopIndex: Int) {
         if debug || retry_debug {
             let input = getTextInInterval(startIndex, stopIndex)
             print("reportAttemptingFullContext decision=\(dfa.decision):\(configs), input=\(input)")
         }
-        parser.getErrorListenerDispatch().reportAttemptingFullContext(parser, dfa, startIndex, stopIndex, conflictingAlts, configs)
+        parser.getErrorListenerDispatch()
+            .reportAttemptingFullContext(parser, dfa, startIndex, stopIndex, conflictingAlts, configs)
     }
 
-    func reportContextSensitivity(_ dfa: DFA, _ prediction: Int, _ configs: ATNConfigSet, _ startIndex: Int, _ stopIndex: Int) {
+    func reportContextSensitivity(_ dfa: DFA, _ prediction: Int, _ configs: ATNConfigSet,
+                                  _ startIndex: Int, _ stopIndex: Int) {
         if debug || retry_debug {
             let input = getTextInInterval(startIndex, stopIndex)
             print("reportContextSensitivity decision=\(dfa.decision):\(configs), input=\(input)")
         }
-        parser.getErrorListenerDispatch().reportContextSensitivity(parser, dfa, startIndex, stopIndex, prediction, configs)
+        parser.getErrorListenerDispatch()
+            .reportContextSensitivity(parser, dfa, startIndex, stopIndex, prediction, configs)
     }
 
     ///
@@ -2029,10 +2040,10 @@ open class ParserATNSimulator: ATNSimulator {
     // configs that LL not SLL considered conflictin
     internal func reportAmbiguity(_ dfa: DFA,
                                   _ D: DFAState, // the DFA state from execATN() that had SLL conflicts
-        _ startIndex: Int, _ stopIndex: Int,
-        _ exact: Bool,
-        _ ambigAlts: BitSet,
-        _ configs: ATNConfigSet) {
+                                  _ startIndex: Int, _ stopIndex: Int,
+                                  _ exact: Bool,
+                                  _ ambigAlts: BitSet,
+                                  _ configs: ATNConfigSet) {
         if debug || retry_debug {
             let input = getTextInInterval(startIndex, stopIndex)
             print("reportAmbiguity \(ambigAlts):\(configs), input=\(input)")

@@ -90,7 +90,7 @@ public class LexerATNConfig: ATNConfig {
 }
 
 //useless
-public func ==(lhs: LexerATNConfig, rhs: LexerATNConfig) -> Bool {
+public func == (lhs: LexerATNConfig, rhs: LexerATNConfig) -> Bool {
 
     if lhs === rhs {
         return true

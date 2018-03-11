@@ -19,10 +19,10 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
     public static let MORE = -2
     public static let SKIP = -3
 
-    public static let DEFAULT_TOKEN_CHANNEL = CommonToken.DEFAULT_CHANNEL
-    public static let HIDDEN = CommonToken.HIDDEN_CHANNEL
-    public static let MIN_CHAR_VALUE = Character.MIN_VALUE
-    public static let MAX_CHAR_VALUE = Character.MAX_VALUE
+    public static let DEFAULT_TOKEN_CHANNEL = CommonToken.defaultChannel
+    public static let HIDDEN = CommonToken.hiddenChannel
+    public static let MIN_CHAR_VALUE = Character.minValue
+    public static let MAX_CHAR_VALUE = Character.maxValue
 
     public var _input: CharStream?
     internal var _tokenFactorySourcePair: TokenSourceAndStream
@@ -105,8 +105,8 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
             try  _input.seek(0) // rewind the input
         }
         _token = nil
-        _type = CommonToken.INVALID_TYPE
-        _channel = CommonToken.DEFAULT_CHANNEL
+        _type = CommonToken.invalidType
+        _channel = CommonToken.defaultChannel
         _tokenStartCharIndex = -1
         _tokenStartCharPositionInLine = -1
         _tokenStartLine = -1
@@ -145,13 +145,13 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
                     }
 
                     _token = nil
-                    _channel = CommonToken.DEFAULT_CHANNEL
+                    _channel = CommonToken.defaultChannel
                     _tokenStartCharIndex = _input.index()
                     _tokenStartCharPositionInLine = getInterpreter().getCharPositionInLine()
                     _tokenStartLine = getInterpreter().getLine()
                     _text = nil
                     repeat {
-                        _type = CommonToken.INVALID_TYPE
+                        _type = CommonToken.invalidType
                         var ttype: Int
                         do {
                             ttype = try getInterpreter().match(_input, _mode)
@@ -163,7 +163,7 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
                         if try _input.LA(1) == BufferedTokenStream.EOF {
                             _hitEOF = true
                         }
-                        if _type == CommonToken.INVALID_TYPE {
+                        if _type == CommonToken.invalidType {
                             _type = ttype
                         }
                         if _type == Lexer.SKIP {
@@ -269,7 +269,9 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
     ///
     @discardableResult
     open func emit() -> Token {
-        let t = _factory.create(_tokenFactorySourcePair, _type, _text, _channel, _tokenStartCharIndex, getCharIndex() - 1, _tokenStartLine, _tokenStartCharPositionInLine)
+        let t = _factory.create(_tokenFactorySourcePair, _type, _text, _channel,
+                                _tokenStartCharIndex, getCharIndex() - 1,
+                                _tokenStartLine, _tokenStartCharPositionInLine)
         emit(t)
         return t
     }
@@ -283,7 +285,7 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
             _tokenFactorySourcePair,
             CommonToken.EOF,
             nil,
-            CommonToken.DEFAULT_CHANNEL,
+            CommonToken.defaultChannel,
             idx,
             idx - 1,
             line,

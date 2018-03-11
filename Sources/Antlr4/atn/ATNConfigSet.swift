@@ -181,10 +181,8 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
 
     public func getPredicates() -> [SemanticContext] {
         var preds = [SemanticContext]()
-        for config in configs {
-            if config.semanticContext != SemanticContext.NONE {
-                preds.append(config.semanticContext)
-            }
+        for config in configs where config.semanticContext != SemanticContext.NONE {
+            preds.append(config.semanticContext)
         }
         return preds
     }
@@ -361,13 +359,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
 
     //LexerATNSimulator
     public var firstConfigWithRuleStopState: ATNConfig? {
-        for config in configs {
-            if config.state is RuleStopState {
-                return config
-            }
-        }
-
-        return nil
+        return configs.first(where: { $0.state is RuleStopState })
     }
 
     //ParserATNSimulator
@@ -384,7 +376,11 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
         return alt
     }
 
-    public func removeAllConfigsNotInRuleStopState(_ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?, _ lookToEndOfRule: Bool, _ atn: ATN) -> ATNConfigSet {
+    public func removeAllConfigsNotInRuleStopState(
+        _ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?,
+        _ lookToEndOfRule: Bool,
+        _ atn: ATN) -> ATNConfigSet {
+        
         if PredictionMode.allConfigsInRuleStopStates(self) {
             return self
         }
@@ -398,7 +394,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
 
             if lookToEndOfRule && config.state.onlyHasEpsilonTransitions() {
                 let nextTokens = atn.nextTokens(config.state)
-                if nextTokens.contains(CommonToken.EPSILON) {
+                if nextTokens.contains(CommonToken.epsilon) {
                     let endOfRuleState = atn.ruleToStopState[config.state.ruleIndex!]
                     try! result.add(ATNConfig(config, endOfRuleState), &mergeCache)
                 }
@@ -408,7 +404,10 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
         return result
     }
 
-    public func applyPrecedenceFilter(_ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?, _ parser: Parser, _ _outerContext: ParserRuleContext!) throws -> ATNConfigSet {
+    public func applyPrecedenceFilter(
+        _ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?,
+        _ parser: Parser,
+        _ _outerContext: ParserRuleContext!) throws -> ATNConfigSet {
 
         let configSet = ATNConfigSet(fullCtx)
         var statesFromAlt1 = [Int: PredictionContext]()
@@ -460,7 +459,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
     internal func getPredsForAmbigAlts(_ ambigAlts: BitSet, _ nalts: Int) -> [SemanticContext?]? {
         var altToPred = [SemanticContext?](repeating: nil, count: nalts + 1)
         for config in configs {
-            if try! ambigAlts.get(config.alt) {
+            if ambigAlts.get(config.alt) {
                 altToPred[config.alt] = SemanticContext.or(altToPred[config.alt], config.semanticContext)
             }
         }
@@ -488,7 +487,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
             if config.getOuterContextDepth() > 0 ||
                 (config.state is RuleStopState &&
                     config.context!.hasEmptyPath()) {
-                try! alts.add(config.alt)
+                alts.add(config.alt)
             }
         }
         if alts.size() == 0 {
@@ -514,7 +513,9 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
         let failed = ATNConfigSet(fullCtx)
         for config in configs {
             if config.semanticContext != SemanticContext.NONE {
-                let predicateEvaluationResult = try evalSemanticContext(config.semanticContext, outerContext, config.alt, fullCtx)
+                let predicateEvaluationResult =
+                    try evalSemanticContext(config.semanticContext, outerContext, config.alt, fullCtx)
+                
                 if predicateEvaluationResult {
                     try! succeeded.add(config)
                 } else {
@@ -545,7 +546,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
     }
 }
 
-public func ==(lhs: ATNConfigSet, rhs: ATNConfigSet) -> Bool {
+public func == (lhs: ATNConfigSet, rhs: ATNConfigSet) -> Bool {
     if lhs === rhs {
         return true
     }

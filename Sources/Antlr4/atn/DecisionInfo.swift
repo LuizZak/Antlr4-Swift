@@ -111,7 +111,7 @@ public struct DecisionInfo: CustomStringConvertible {
     ///
     /// - seealso: org.antlr.v4.runtime.atn.ContextSensitivityInfo
     ///
-    public var contextSensitivities: Array<ContextSensitivityInfo> = Array<ContextSensitivityInfo>()
+    public var contextSensitivities: [ContextSensitivityInfo] = []
 
     ///
     /// A collection of _org.antlr.v4.runtime.atn.ErrorInfo_ instances describing the parse errors
@@ -120,7 +120,7 @@ public struct DecisionInfo: CustomStringConvertible {
     ///
     /// - seealso: org.antlr.v4.runtime.atn.ErrorInfo
     ///
-    public var errors: Array<ErrorInfo> = Array<ErrorInfo>()
+    public var errors: [ErrorInfo] = []
 
     ///
     /// A collection of _org.antlr.v4.runtime.atn.AmbiguityInfo_ instances describing the
@@ -128,7 +128,7 @@ public struct DecisionInfo: CustomStringConvertible {
     ///
     /// - seealso: org.antlr.v4.runtime.atn.AmbiguityInfo
     ///
-    public var ambiguities: Array<AmbiguityInfo> = Array<AmbiguityInfo>()
+    public var ambiguities: [AmbiguityInfo] = []
 
     ///
     /// A collection of _org.antlr.v4.runtime.atn.PredicateEvalInfo_ instances describing the
@@ -137,7 +137,7 @@ public struct DecisionInfo: CustomStringConvertible {
     ///
     /// - seealso: org.antlr.v4.runtime.atn.PredicateEvalInfo
     ///
-    public var predicateEvals: Array<PredicateEvalInfo> = Array<PredicateEvalInfo>()
+    public var predicateEvals: [PredicateEvalInfo] = []
 
     ///
     /// The total number of ATN transitions required during SLL prediction for

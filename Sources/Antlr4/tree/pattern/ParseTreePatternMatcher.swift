@@ -295,7 +295,7 @@ public class ParseTreePatternMatcher {
         return nil
     }
 
-    public func tokenize(_ pattern: String) throws -> Array<Token> {
+    public func tokenize(_ pattern: String) throws -> [Token] {
         // split pattern into chunks: sea (raw input) and islands (<ID>, <expr>)
         let chunks = try split(pattern)
 
@@ -307,8 +307,9 @@ public class ParseTreePatternMatcher {
                 let firstStr = String(tagChunk.getTag().first!)
                 if firstStr.lowercased() != firstStr {
                     let ttype = parser.getTokenType(tagChunk.getTag())
-                    if ttype == CommonToken.INVALID_TYPE {
-                        throw ANTLRError.illegalArgument(msg: "Unknown token " + tagChunk.getTag() + " in pattern: " + pattern)
+                    if ttype == CommonToken.invalidType {
+                        throw ANTLRError.illegalArgument(
+                            msg: "Unknown token " + tagChunk.getTag() + " in pattern: " + pattern)
                     }
                     let t = TokenTagToken(tagChunk.getTag(), ttype, tagChunk.getLabel())
                     tokens.append(t)
@@ -316,12 +317,14 @@ public class ParseTreePatternMatcher {
                     if firstStr.uppercased() != firstStr {
                         let ruleIndex: Int = parser.getRuleIndex(tagChunk.getTag())
                         if ruleIndex == -1 {
-                            throw ANTLRError.illegalArgument(msg: "Unknown rule " + tagChunk.getTag() + " in pattern: " + pattern)
+                            throw ANTLRError.illegalArgument(
+                                msg: "Unknown rule " + tagChunk.getTag() + " in pattern: " + pattern)
                         }
                         let ruleImaginaryTokenType: Int = parser.getATNWithBypassAlts().ruleToTokenType[ruleIndex]
                         tokens.append(RuleTagToken(tagChunk.getTag(), ruleImaginaryTokenType, tagChunk.getLabel()))
                     } else {
-                        throw ANTLRError.illegalArgument(msg: "invalid tag: " + tagChunk.getTag() + " in pattern: " + pattern)
+                        throw ANTLRError.illegalArgument(
+                            msg: "invalid tag: " + tagChunk.getTag() + " in pattern: " + pattern)
                     }
                 }
             } else {
@@ -380,10 +383,8 @@ public class ParseTreePatternMatcher {
         }
 
         let ntags = starts.count
-        for i in 0..<ntags {
-            if starts[i].lowerBound >= stops[i].lowerBound {
-                throw ANTLRError.illegalArgument(msg: "tag delimiters out of order in pattern: " + pattern)
-            }
+        for i in 0..<ntags where starts[i].lowerBound >= stops[i].lowerBound {
+            throw ANTLRError.illegalArgument(msg: "tag delimiters out of order in pattern: " + pattern)
         }
 
         // collect into chunks now

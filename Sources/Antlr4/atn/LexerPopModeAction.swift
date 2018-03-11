@@ -66,7 +66,7 @@ public final class LexerPopModeAction: LexerAction, CustomStringConvertible {
     }
 }
 
-public func ==(lhs: LexerPopModeAction, rhs: LexerPopModeAction) -> Bool {
+public func == (lhs: LexerPopModeAction, rhs: LexerPopModeAction) -> Bool {
 
     return lhs === rhs
 

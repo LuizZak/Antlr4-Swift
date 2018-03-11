@@ -75,7 +75,7 @@ public final class LexerChannelAction: LexerAction, CustomStringConvertible {
 
 }
 
-public func ==(lhs: LexerChannelAction, rhs: LexerChannelAction) -> Bool {
+public func == (lhs: LexerChannelAction, rhs: LexerChannelAction) -> Bool {
 
     if lhs === rhs {
         return true

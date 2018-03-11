@@ -15,7 +15,10 @@ public class SingletonPredictionContext: PredictionContext {
         self.parent = parent
         self.returnState = returnState
 
-        super.init(parent != nil ? PredictionContext.calculateHashCode(parent!, returnState) : PredictionContext.calculateEmptyHashCode())
+        super.init(
+            parent != nil
+                ? PredictionContext.calculateHashCode(parent!, returnState)
+                : PredictionContext.calculateEmptyHashCode())
     }
 
     public static func create(_ parent: PredictionContext?, _ returnState: Int) -> SingletonPredictionContext {
@@ -56,7 +59,7 @@ public class SingletonPredictionContext: PredictionContext {
     }
 }
 
-public func ==(lhs: SingletonPredictionContext, rhs: SingletonPredictionContext) -> Bool {
+public func == (lhs: SingletonPredictionContext, rhs: SingletonPredictionContext) -> Bool {
     if lhs === rhs {
         return true
     }

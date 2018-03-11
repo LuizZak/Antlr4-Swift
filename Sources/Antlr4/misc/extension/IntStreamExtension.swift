@@ -27,7 +27,7 @@ extension IntStream {
     /// The value returned by _#getSourceName_ when the actual name of the
     /// underlying source is not known.
     ///
-    public static var UNKNOWN_SOURCE_NAME: String {
+    public static var unknownSourceName: String {
         return "<unknown>"
     }
 

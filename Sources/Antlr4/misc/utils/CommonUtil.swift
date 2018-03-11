@@ -18,42 +18,43 @@ func errPrint(_ msg: String) {
 
 infix operator >>> : BitwiseShiftPrecedence
 
-func >>>(lhs: Int32, rhs: Int32) -> Int32 {
+func >>> (lhs: Int32, rhs: Int32) -> Int32 {
     let left = UInt32(bitPattern: lhs)
     let right = UInt32(bitPattern: rhs) % 32
 
     return Int32(bitPattern: left >> right)
 }
 
-func >>>(lhs: Int64, rhs: Int64) -> Int64 {
+func >>> (lhs: Int64, rhs: Int64) -> Int64 {
     let left = UInt64(bitPattern: lhs)
     let right = UInt64(bitPattern: rhs) % 64
 
     return Int64(bitPattern: left >> right)
 }
 
-func >>>(lhs: Int, rhs: Int) -> Int {
+func >>> (lhs: Int, rhs: Int) -> Int {
     let left = UInt(bitPattern: lhs)
     let right = UInt(bitPattern: rhs) % UInt(Int.bitWidth)
 
     return Int(bitPattern: left >> right)
 }
 
-func intChar2String(_ i: Int) -> String {
-    return String(Character(integerLiteral: i))
+func intChar2String(_ int: Int) -> String {
+    return String(Character(integerLiteral: int))
 }
 
 func log(_ message: String = "", file: String = #file, function: String = #function, lineNum: Int = #line) {
 
     // #if DEBUG
-    print("FILE: \(URL(fileURLWithPath: file).pathComponents.last!),FUNC: \(function), LINE: \(lineNum) MESSAGE: \(message)")
+    print("FILE: \(URL(fileURLWithPath: file).pathComponents.last!), " +
+          "FUNC: \(function), LINE: \(lineNum) MESSAGE: \(message)")
     //   #else
     // do nothing
     //   #endif
 }
 
-func toInt(_ c: Character) -> Int {
-    return c.unicodeValue
+func toInt(_ char: Character) -> Int {
+    return char.unicodeValue
 }
 
 func toInt32(_ data: [Character], _ offset: Int) -> Int {

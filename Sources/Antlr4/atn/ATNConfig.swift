@@ -181,7 +181,7 @@ public class ATNConfig: Hashable, CustomStringConvertible {
     }
 }
 
-public func ==(lhs: ATNConfig, rhs: ATNConfig) -> Bool {
+public func == (lhs: ATNConfig, rhs: ATNConfig) -> Bool {
 
     if lhs === rhs {
         return true

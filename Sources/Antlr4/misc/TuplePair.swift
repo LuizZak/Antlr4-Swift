@@ -20,7 +20,7 @@ public struct TuplePair<T: Hashable, U: Hashable>: Hashable {
         self.key2 = key2
     }
 
-    public static func ==(lhs: TuplePair, rhs: TuplePair) -> Bool {
+    public static func == (lhs: TuplePair, rhs: TuplePair) -> Bool {
         return lhs.key1 == rhs.key1 && lhs.key2 == rhs.key2
     }
 }

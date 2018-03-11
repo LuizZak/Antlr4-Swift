@@ -43,8 +43,8 @@ public class TextChunk: Chunk, CustomStringConvertible {
         return "'\(text)'"
     }
 
-    override public func isEqual(_ other: Chunk) -> Bool {
-        guard let other = other as? TextChunk else {
+    override public func isEqual(_ a: Chunk) -> Bool {
+        guard let other = a as? TextChunk else {
             return false
         }
         return text == other.text

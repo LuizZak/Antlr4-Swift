@@ -129,7 +129,7 @@ open class Parser: Recognizer<ParserATNSimulator> {
     ///
     /// - SeeAlso: #addParseListener
     ///
-    public var _parseListeners: Array<ParseTreeListener>?
+    public var _parseListeners: [ParseTreeListener]?
 
     ///
     /// The number of syntax errors reported during parsing. This value is
@@ -145,8 +145,8 @@ open class Parser: Recognizer<ParserATNSimulator> {
 
     /// reset the parser's state
     public func reset() throws {
-        if (getInputStream() != nil) {
-            try getInputStream()!.seek(0)
+        if let stream = getInputStream() {
+            try stream.seek(0)
         }
         _errHandler.reset(self)
         _ctx = nil
@@ -664,7 +664,8 @@ open class Parser: Recognizer<ParserATNSimulator> {
         try enterRecursionRule(localctx, getATN().ruleToStartState[ruleIndex].stateNumber, ruleIndex, 0)
     }
 
-    public func enterRecursionRule(_ localctx: ParserRuleContext, _ state: Int, _ ruleIndex: Int, _ precedence: Int) throws {
+    public func enterRecursionRule(_ localctx: ParserRuleContext, _ state: Int,
+                                   _ ruleIndex: Int, _ precedence: Int) throws {
         setState(state)
         _precedenceStack.push(precedence)
         _ctx = localctx
@@ -806,9 +807,9 @@ open class Parser: Recognizer<ParserATNSimulator> {
     ///
     //	public class func getAmbiguousParseTrees(originalParser : Parser,
     //																 _ ambiguityInfo : AmbiguityInfo,
-    //																 _ startRuleIndex : Int) throws -> Array<ParserRuleContext>  //; RecognitionException
+    //																 _ startRuleIndex : Int) throws -> [ParserRuleContext]  //; RecognitionException
     //	{
-    //		var trees : Array<ParserRuleContext> = Array<ParserRuleContext>();
+    //		var trees : [ParserRuleContext] = [];
     //		var saveTokenInputPosition : Int = originalParser.getTokenStream().index();
     //		//try {
     //			// Create a new parser interpreter to parse the ambiguous subphrase
@@ -879,11 +880,11 @@ open class Parser: Recognizer<ParserATNSimulator> {
             return true
         }
         //        System.out.println("following "+s+"="+following);
-        if !following.contains(CommonToken.EPSILON) {
+        if !following.contains(CommonToken.epsilon) {
             return false
         }
 
-        while let ctxWrap = ctx, ctxWrap.invokingState >= 0 && following.contains(CommonToken.EPSILON) {
+        while let ctxWrap = ctx, ctxWrap.invokingState >= 0 && following.contains(CommonToken.epsilon) {
             let invokingState = atn.states[ctxWrap.invokingState]!
             let rt = invokingState.transition(0) as! RuleTransition
             following = atn.nextTokens(rt.followState)
@@ -894,7 +895,7 @@ open class Parser: Recognizer<ParserATNSimulator> {
             ctx = ctxWrap.parent as? ParserRuleContext
         }
 
-        if following.contains(CommonToken.EPSILON) && symbol == CommonToken.EOF {
+        if following.contains(CommonToken.epsilon) && symbol == CommonToken.EOF {
             return true
         }
 
@@ -979,16 +980,14 @@ open class Parser: Recognizer<ParserATNSimulator> {
         decisionToDFAMutex.synchronized { [unowned self] in
             var seenOne = false
 
-            for dfa in _interp.decisionToDFA {
-                if !dfa.states.isEmpty {
-                    if seenOne {
-                        print("")
-                    }
-                    print("Decision \(dfa.decision):")
-
-                    print(dfa.toString(self.getVocabulary()), terminator: "")
-                    seenOne = true
+            for dfa in _interp.decisionToDFA where !dfa.states.isEmpty {
+                if seenOne {
+                    print("")
                 }
+                print("Decision \(dfa.decision):")
+
+                print(dfa.toString(self.getVocabulary()), terminator: "")
+                seenOne = true
             }
         }
     }

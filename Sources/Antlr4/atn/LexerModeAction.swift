@@ -72,7 +72,7 @@ public final class LexerModeAction: LexerAction, CustomStringConvertible {
     }
 }
 
-public func ==(lhs: LexerModeAction, rhs: LexerModeAction) -> Bool {
+public func == (lhs: LexerModeAction, rhs: LexerModeAction) -> Bool {
 
     if lhs === rhs {
         return true

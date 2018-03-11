@@ -28,8 +28,8 @@ public class BufferedTokenStream: TokenStream {
     /// considered a complete view of the input once _#fetchedEOF_ is set
     /// to `true`.
     ///
-    internal var tokens: Array<Token> = Array<Token>()
-    // Array<Token>(100
+    internal var tokens: [Token] = []
+    // [Token](100
 
     ///
     /// The index into _#tokens_ of the current token (next token to
@@ -172,13 +172,13 @@ public class BufferedTokenStream: TokenStream {
     ///
     /// Get all tokens from start..stop inclusively
     ///
-    public func get(_ start: Int, _ stop: Int) throws -> Array<Token>? {
+    public func get(_ start: Int, _ stop: Int) throws -> [Token]? {
         var stop = stop
         if start < 0 || stop < 0 {
             return nil
         }
         try lazyInit()
-        var subset: Array<Token> = Array<Token>()
+        var subset: [Token] = []
         if stop >= tokens.count {
             stop = tokens.count - 1
         }
@@ -367,7 +367,7 @@ public class BufferedTokenStream: TokenStream {
     /// the current token up until we see a token on DEFAULT_TOKEN_CHANNEL or
     /// EOF. If channel is -1, find any non default channel token.
     ///
-    public func getHiddenTokensToRight(_ tokenIndex: Int, _ channel: Int) throws -> Array<Token>? {
+    public func getHiddenTokensToRight(_ tokenIndex: Int, _ channel: Int) throws -> [Token]? {
         try lazyInit()
         if tokenIndex < 0 || tokenIndex >= tokens.count {
             throw ANTLRError.indexOutOfBounds(msg: "\(tokenIndex)   not in 0..\(tokens.count - 1)")
@@ -393,7 +393,7 @@ public class BufferedTokenStream: TokenStream {
     /// the current token up until we see a token on DEFAULT_TOKEN_CHANNEL
     /// or EOF.
     ///
-    public func getHiddenTokensToRight(_ tokenIndex: Int) throws -> Array<Token>? {
+    public func getHiddenTokensToRight(_ tokenIndex: Int) throws -> [Token]? {
         return try getHiddenTokensToRight(tokenIndex, -1)
     }
 
@@ -402,7 +402,7 @@ public class BufferedTokenStream: TokenStream {
     /// the current token up until we see a token on DEFAULT_TOKEN_CHANNEL.
     /// If channel is -1, find any non default channel token.
     ///
-    public func getHiddenTokensToLeft(_ tokenIndex: Int, _ channel: Int) throws -> Array<Token>? {
+    public func getHiddenTokensToLeft(_ tokenIndex: Int, _ channel: Int) throws -> [Token]? {
         try lazyInit()
         if tokenIndex < 0 || tokenIndex >= tokens.count {
             throw ANTLRError.indexOutOfBounds(msg: "\(tokenIndex) not in 0..\(tokens.count - 1)")

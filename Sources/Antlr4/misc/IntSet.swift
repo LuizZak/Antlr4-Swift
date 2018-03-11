@@ -18,7 +18,7 @@ public protocol IntSet {
     ///
     /// - throws: _ANTLRError.illegalState_ if the current set is read-only
     ///
-    func add(_ el: Int) throws
+    func add(_ element: Int)
 
     ///
     /// Modify the current _org.antlr.v4.runtime.misc.IntSet_ object to contain all elements that are
@@ -30,7 +30,7 @@ public protocol IntSet {
     ///
     /// - throws: _ANTLRError.illegalState_ if the current set is read-only
     ///
-    func addAll(_ set: IntSet?) throws -> IntSet
+    func addAll(_ set: IntSet?) -> IntSet
 
     ///
     /// Return a new _org.antlr.v4.runtime.misc.IntSet_ object containing all elements that are
@@ -125,7 +125,7 @@ public protocol IntSet {
     /// - parameter el: The element to check for.
     /// - returns: `true` if the set contains `el`; otherwise `false`.
     ///
-    func contains(_ el: Int) -> Bool
+    func contains(_ element: Int) -> Bool
 
     ///
     /// Removes the specified value from the current set. If the current set does
@@ -135,7 +135,7 @@ public protocol IntSet {
     ///
     /// - throws: _ANTLRError.illegalState_ if the current set is read-only
     ///
-    func remove(_ el: Int) throws
+    func remove(_ element: Int)
 
     ///
     /// Return a list containing the elements represented by the current set. The

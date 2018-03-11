@@ -20,7 +20,7 @@ public enum LookupDictionaryType: Int {
 
 public struct LookupDictionary {
     private(set) internal var type: LookupDictionaryType
-    private var cache: [Int: ATNConfig] = [Int: ATNConfig]()
+    private var cache: [Int: ATNConfig] = [:]
     public init(type: LookupDictionaryType = LookupDictionaryType.lookup) {
         self.type = type
     }
@@ -110,13 +110,8 @@ public struct LookupDictionary {
     //
     //    }
     public func contains(_ config: ATNConfig) -> Bool {
-
         let h = hash(config)
-        if let _ = cache[h] {
-            return true
-        }
-
-        return false
+        return cache[h] != nil
 
     }
     public mutating func removeAll() {

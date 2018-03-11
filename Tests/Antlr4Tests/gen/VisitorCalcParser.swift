@@ -133,7 +133,7 @@ open class VisitorCalcParser: Parser {
 		}
 	}
 	public  final class AddContext: ExprContext {
-		open func expr() -> Array<ExprContext> {
+		open func expr() -> [ExprContext] {
 			return getRuleContexts(ExprContext.self)
 		}
 		open func expr(_ i: Int) -> ExprContext? {
@@ -198,7 +198,7 @@ open class VisitorCalcParser: Parser {
 		}
 	}
 	public  final class MultiplyContext: ExprContext {
-		open func expr() -> Array<ExprContext> {
+		open func expr() -> [ExprContext] {
 			return getRuleContexts(ExprContext.self)
 		}
 		open func expr(_ i: Int) -> ExprContext? {

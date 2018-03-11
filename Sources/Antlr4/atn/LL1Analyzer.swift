@@ -9,7 +9,7 @@ public struct LL1Analyzer {
     /// Special value added to the lookahead sets to indicate that we hit
     /// a predicate during analysis if `seeThruPreds==false`.
     ///
-    public let HIT_PRED: Int = CommonToken.INVALID_TYPE
+    public let HIT_PRED: Int = CommonToken.invalidType
 
     public let atn: ATN
 
@@ -145,12 +145,12 @@ public struct LL1Analyzer {
 
         if s == stopState {
             guard let ctx = ctx else {
-                try! look.add(CommonToken.EPSILON)
+                look.add(CommonToken.epsilon)
                 return
             }
 
             if ctx.isEmpty() && addEOF {
-                try! look.add(CommonToken.EOF)
+                look.add(CommonToken.EOF)
                 return
             }
 
@@ -158,12 +158,12 @@ public struct LL1Analyzer {
 
         if s is RuleStopState {
             guard let ctx = ctx else {
-                try! look.add(CommonToken.EPSILON)
+                look.add(CommonToken.epsilon)
                 return
             }
 
             if ctx.isEmpty() && addEOF {
-                try! look.add(CommonToken.EOF)
+                look.add(CommonToken.EOF)
                 return
             }
 
@@ -172,9 +172,10 @@ public struct LL1Analyzer {
                 let length = ctx.size()
                 for i in 0..<length {
                     let returnState = atn.states[(ctx.getReturnState(i))]!
-                    let removed = try! calledRuleStack.get(returnState.ruleIndex!)
+                    let removed = calledRuleStack.get(returnState.ruleIndex!)
                     try! calledRuleStack.clear(returnState.ruleIndex!)
-                    _LOOK(returnState, stopState, ctx.getParent(i), look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
+                    _LOOK(returnState, stopState, ctx.getParent(i),
+                          look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
                     if removed {
                         try! calledRuleStack.set(returnState.ruleIndex!)
                     }
@@ -187,7 +188,7 @@ public struct LL1Analyzer {
         for i in 0..<n {
             let t = s.transition(i)
             if let rt = t as? RuleTransition {
-                if try! calledRuleStack.get(rt.target.ruleIndex!) {
+                if calledRuleStack.get(rt.target.ruleIndex!) {
                     continue
                 }
 
@@ -199,19 +200,21 @@ public struct LL1Analyzer {
                 if seeThruPreds {
                     _LOOK(t.target, stopState, ctx, look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
                 } else {
-                    try! look.add(HIT_PRED)
+                    look.add(HIT_PRED)
                 }
             } else if t.isEpsilon() {
                 _LOOK(t.target, stopState, ctx, look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
             } else if t is WildcardTransition {
-                try! look.addAll(IntervalSet.of(CommonToken.MIN_USER_TOKEN_TYPE, atn.maxTokenType))
+                look.addAll(IntervalSet.of(CommonToken.minUserTokenType, atn.maxTokenType))
             } else {
                 var set = t.labelIntervalSet()
                 if let _set = set {
                     if t is NotSetTransition {
-                        set = _set.complement(IntervalSet.of(CommonToken.MIN_USER_TOKEN_TYPE, atn.maxTokenType)) as? IntervalSet
+                        set =
+                            _set.complement(IntervalSet.of(CommonToken.minUserTokenType, atn.maxTokenType))
+                                as? IntervalSet
                     }
-                    try! look.addAll(set)
+                    look.addAll(set)
                 }
             }
         }

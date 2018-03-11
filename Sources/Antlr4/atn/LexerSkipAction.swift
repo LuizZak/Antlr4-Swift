@@ -66,7 +66,7 @@ public final class LexerSkipAction: LexerAction, CustomStringConvertible {
 
 }
 
-public func ==(lhs: LexerSkipAction, rhs: LexerSkipAction) -> Bool {
+public func == (lhs: LexerSkipAction, rhs: LexerSkipAction) -> Bool {
 
     return lhs === rhs
 }

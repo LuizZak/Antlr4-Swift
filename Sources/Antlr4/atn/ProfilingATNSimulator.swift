@@ -50,7 +50,9 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
     override
-    public func adaptivePredict(_ input: TokenStream, _ decision: Int, _ outerContext: ParserRuleContext?) throws -> Int {
+    public func adaptivePredict(_ input: TokenStream,
+                                _ decision: Int,
+                                _ outerContext: ParserRuleContext?) throws -> Int {
         var outerContext = outerContext
         self._sllStopIndex = -1
         self._llStopIndex = -1
@@ -63,7 +65,11 @@ public class ProfilingATNSimulator: ParserATNSimulator {
 
         var SLL_k: Int64 = Int64(_sllStopIndex - _startIndex + 1)
         decisions[decision].SLL_TotalLook += SLL_k
-        decisions[decision].SLL_MinLook = decisions[decision].SLL_MinLook == 0 ? SLL_k : min(decisions[decision].SLL_MinLook, SLL_k)
+        
+        decisions[decision].SLL_MinLook =
+            decisions[decision].SLL_MinLook == 0 ?
+                SLL_k : min(decisions[decision].SLL_MinLook, SLL_k)
+        
         if SLL_k > decisions[decision].SLL_MaxLook {
             decisions[decision].SLL_MaxLook = SLL_k
             decisions[decision].SLL_MaxLookEvent =
@@ -73,7 +79,10 @@ public class ProfilingATNSimulator: ParserATNSimulator {
         if _llStopIndex >= 0 {
             var LL_k: Int64 = Int64(_llStopIndex - _startIndex + 1)
             decisions[decision].LL_TotalLook += LL_k
-            decisions[decision].LL_MinLook = decisions[decision].LL_MinLook == 0 ? LL_k : min(decisions[decision].LL_MinLook, LL_k)
+            
+            decisions[decision].LL_MinLook
+                = decisions[decision].LL_MinLook == 0 ? LL_k : min(decisions[decision].LL_MinLook, LL_k)
+            
             if LL_k > decisions[decision].LL_MaxLook {
                 decisions[decision].LL_MaxLook = LL_k
                 decisions[decision].LL_MaxLookEvent =
@@ -148,7 +157,8 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
     override
-    internal func evalSemanticContext(_ pred: SemanticContext, _ parserCallStack: ParserRuleContext, _ alt: Int, _ fullCtx: Bool) throws -> Bool {
+    internal func evalSemanticContext(_ pred: SemanticContext, _ parserCallStack: ParserRuleContext,
+                                      _ alt: Int, _ fullCtx: Bool) throws -> Bool {
         let result = try super.evalSemanticContext(pred, parserCallStack, alt, fullCtx)
         if !(pred is SemanticContext.PrecedencePredicate) {
             let fullContext = _llStopIndex >= 0
@@ -162,7 +172,8 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
     override
-    internal func reportAttemptingFullContext(_ dfa: DFA, _ conflictingAlts: BitSet?, _ configs: ATNConfigSet, _ startIndex: Int, _ stopIndex: Int) {
+    internal func reportAttemptingFullContext(_ dfa: DFA, _ conflictingAlts: BitSet?,
+                                              _ configs: ATNConfigSet, _ startIndex: Int, _ stopIndex: Int) {
         if let conflictingAlts = conflictingAlts {
             conflictingAltResolvedBySLL = conflictingAlts.firstSetBit()
         } else {
@@ -174,7 +185,8 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
     override
-    internal func reportContextSensitivity(_ dfa: DFA, _ prediction: Int, _ configs: ATNConfigSet, _ startIndex: Int, _ stopIndex: Int) {
+    internal func reportContextSensitivity(_ dfa: DFA, _ prediction: Int, _ configs: ATNConfigSet,
+                                           _ startIndex: Int, _ stopIndex: Int) {
         if prediction != conflictingAltResolvedBySLL {
             decisions[currentDecision].contextSensitivities.append(
                 ContextSensitivityInfo(currentDecision, configs, _input, startIndex, stopIndex)

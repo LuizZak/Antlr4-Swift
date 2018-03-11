@@ -18,9 +18,9 @@ public class ArrayPredictionContext: PredictionContext {
     ///
     public final let returnStates: [Int]
 
-    public convenience init(_ a: SingletonPredictionContext) {
-        let parents = [a.parent]
-        self.init(parents, [a.returnState])
+    public convenience init(_ pred: SingletonPredictionContext) {
+        let parents = [pred.parent]
+        self.init(parents, [pred.returnState])
     }
 
     public init(_ parents: [PredictionContext?], _ returnStates: [Int]) {
@@ -80,8 +80,7 @@ public class ArrayPredictionContext: PredictionContext {
     internal final func combineCommonParents() {
 
         let length = parents.count
-        var uniqueParents: Dictionary<PredictionContext, PredictionContext> =
-            Dictionary<PredictionContext, PredictionContext>()
+        var uniqueParents: [PredictionContext: PredictionContext] = [:]
         for p in 0..<length {
             if let parent: PredictionContext = parents[p] {
                 // if !uniqueParents.keys.contains(parent) {
@@ -100,7 +99,7 @@ public class ArrayPredictionContext: PredictionContext {
     }
 }
 
-public func ==(lhs: ArrayPredictionContext, rhs: ArrayPredictionContext) -> Bool {
+public func == (lhs: ArrayPredictionContext, rhs: ArrayPredictionContext) -> Bool {
     if lhs === rhs {
         return true
     }

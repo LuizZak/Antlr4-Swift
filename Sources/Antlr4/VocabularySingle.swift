@@ -109,7 +109,7 @@ public extension Vocabulary {
     /// the display names of tokens.
     ///
     public static func fromTokenNames(_ tokenNames: [String?]?) -> Vocabulary {
-        guard let tokenNames = tokenNames, tokenNames.count > 0 else {
+        guard let tokenNames = tokenNames, !tokenNames.isEmpty else {
             return EMPTY_VOCABULARY
         }
 
