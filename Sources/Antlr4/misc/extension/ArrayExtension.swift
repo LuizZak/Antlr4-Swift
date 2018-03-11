@@ -49,7 +49,7 @@ extension Array {
 
         return false
     }
-    
+
     func slice(_ index: Int, isClose: Bool = false) -> (first: ArraySlice<Element>, second: ArraySlice<Element>) {
         var first = self[...index]
         var second = self[index..<count]
@@ -71,7 +71,7 @@ extension Array where Element: Equatable {
                 index = idx
             }
         }
-        
+
         if let index = index {
             self.remove(at: index)
         }

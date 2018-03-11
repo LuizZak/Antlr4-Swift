@@ -145,7 +145,7 @@ public class DFAState: Hashable, CustomStringConvertible {
         }
         return buf
     }
-    
+
     public static func ==(lhs: DFAState, rhs: DFAState) -> Bool {
         if lhs === rhs {
             return true

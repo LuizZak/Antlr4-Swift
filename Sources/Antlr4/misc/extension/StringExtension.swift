@@ -11,7 +11,7 @@ extension String {
         if target.isEmpty {
             return nil
         }
-        
+
         var result: String.Index? = nil
         var substring = self[...]
         while true {

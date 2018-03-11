@@ -2,7 +2,6 @@
 
 import Antlr4
 
-
 /**
  * This class provides an empty implementation of {@link VisitorBasicListener},
  * which can be extended to create a listener which only needs to handle a subset

@@ -11,7 +11,7 @@ open class VisitorCalcLexer: Lexer {
            return decisionToDFA
      }()
 
-	internal static let _sharedContextCache:PredictionContextCache = PredictionContextCache()
+	internal static let _sharedContextCache: PredictionContextCache = PredictionContextCache()
 	public static let INT=1, MUL=2, DIV=3, ADD=4, SUB=5, WS=6
 	public static let channelNames: [String] = [
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"

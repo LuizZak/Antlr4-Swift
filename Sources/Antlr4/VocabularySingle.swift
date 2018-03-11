@@ -28,7 +28,7 @@ public struct Vocabulary {
     private var symbolicNames: [String?]
 
     private var displayNames: [String?]
-    
+
     ///
     /// Constructs a new instance of _org.antlr.v4.runtime.Vocabulary_ from the specified
     /// literal, symbolic, and display token names.
@@ -53,7 +53,7 @@ public struct Vocabulary {
         self.symbolicNames = symbolicNames
         self.displayNames = displayNames
     }
-    
+
     public func getLiteralName(_ tokenType: Int) -> String? {
         if tokenType >= 0 && tokenType < literalNames.count {
             return literalNames[tokenType]
@@ -69,31 +69,31 @@ public struct Vocabulary {
         if tokenType == CommonToken.EOF {
             return "EOF"
         }
-        
+
         return nil
     }
-    
+
     public func getDisplayName(_ tokenType: Int) -> String {
         if tokenType >= 0 && tokenType < displayNames.count {
             if let displayName = displayNames[tokenType] {
                 return displayName
             }
         }
-        
+
         if let literalName = getLiteralName(tokenType) {
             return literalName
         }
-        
+
         if let symbolicName = getSymbolicName(tokenType) {
             return symbolicName
         }
-        
+
         return String(tokenType)
     }
 }
 
 public extension Vocabulary {
-    
+
     ///
     /// Returns a _org.antlr.v4.runtime.Vocabulary_ instance from the specified set of token
     /// names. This method acts as a compatibility layer for the single
@@ -112,7 +112,7 @@ public extension Vocabulary {
         guard let tokenNames = tokenNames, tokenNames.count > 0 else {
             return EMPTY_VOCABULARY
         }
-        
+
         var literalNames = tokenNames
         var symbolicNames = tokenNames
         let length = tokenNames.count
@@ -129,12 +129,12 @@ public extension Vocabulary {
                     continue
                 }
             }
-            
+
             // wasn't a literal or symbolic name
             literalNames[i] = nil
             symbolicNames[i] = nil
         }
-        
+
         return Vocabulary(literalNames, symbolicNames, tokenNames)
     }
 }

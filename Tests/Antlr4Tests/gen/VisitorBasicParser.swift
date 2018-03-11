@@ -68,12 +68,12 @@ open class VisitorBasicParser: Parser {
 	    return VisitorBasicParser.VOCABULARY
 	}
 
-	public override init(_ input:TokenStream)throws {
+	public override init(_ input: TokenStream)throws {
 	    RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION)
 		try super.init(input)
-		_interp = ParserATNSimulator(self,VisitorBasicParser._ATN,VisitorBasicParser._decisionToDFA, VisitorBasicParser._sharedContextCache)
+		_interp = ParserATNSimulator(self, VisitorBasicParser._ATN, VisitorBasicParser._decisionToDFA, VisitorBasicParser._sharedContextCache)
 	}
-	open class SContext:ParserRuleContext {
+	open class SContext: ParserRuleContext {
 		open func EOF() -> TerminalNode? { return getToken(VisitorBasicParser.Tokens.EOF.rawValue, 0) }
 		open override func getRuleIndex() -> Int { return VisitorBasicParser.RULE_s }
 		override
@@ -92,10 +92,9 @@ open class VisitorBasicParser: Parser {
 		open func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
 			if visitor is VisitorBasicVisitor {
 			     return (visitor as! VisitorBasicVisitor<T>).visitS(self)
-			}else if visitor is VisitorBasicBaseVisitor {
+			} else if visitor is VisitorBasicBaseVisitor {
 		    	 return (visitor as! VisitorBasicBaseVisitor<T>).visitS(self)
-		    }
-			else {
+		    } else {
 			     return visitor.visitChildren(self)
 			}
 		}
@@ -114,8 +113,7 @@ open class VisitorBasicParser: Parser {
 		 	setState(3)
 		 	try match(VisitorBasicParser.Tokens.EOF.rawValue)
 
-		}
-		catch ANTLRException.recognition(let re) {
+		} catch ANTLRException.recognition(let re) {
 			_localctx.exception = re
 			_errHandler.reportError(self, re)
 			try _errHandler.recover(self, re)
@@ -124,6 +122,6 @@ open class VisitorBasicParser: Parser {
 		return _localctx
 	}
 
-   public static let _serializedATN : String = VisitorBasicParserATN().jsonString
+   public static let _serializedATN: String = VisitorBasicParserATN().jsonString
    public static let _ATN: ATN = ATNDeserializer().deserializeFromJson(_serializedATN)
 }

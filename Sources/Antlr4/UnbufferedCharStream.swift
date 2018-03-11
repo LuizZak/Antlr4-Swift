@@ -364,12 +364,12 @@ private struct UnicodeScalarStreamIterator: IteratorProtocol {
             hasErrorOccurred = true
             return nil
         }
-        
+
         var iterator = streamIterator
         defer {
             streamIterator = iterator
         }
-        
+
         switch codec.decode(&iterator) {
         case .scalarValue(let scalar):
             return scalar

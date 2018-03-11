@@ -15,7 +15,7 @@ open class VisitorCalcVisitor<T>: ParseTreeVisitor<T> {
 	  - ctx: the parse tree
 	- returns: the visitor result
 	 */
-	open func visitS(_ ctx: VisitorCalcParser.SContext) -> T{
+	open func visitS(_ ctx: VisitorCalcParser.SContext) -> T {
 	 	fatalError(#function + " must be overridden")
 	}
 
@@ -26,7 +26,7 @@ open class VisitorCalcVisitor<T>: ParseTreeVisitor<T> {
 	  - ctx: the parse tree
 	- returns: the visitor result
 	 */
-	open func visitAdd(_ ctx: VisitorCalcParser.AddContext) -> T{
+	open func visitAdd(_ ctx: VisitorCalcParser.AddContext) -> T {
 	 	fatalError(#function + " must be overridden")
 	}
 
@@ -37,7 +37,7 @@ open class VisitorCalcVisitor<T>: ParseTreeVisitor<T> {
 	  - ctx: the parse tree
 	- returns: the visitor result
 	 */
-	open func visitNumber(_ ctx: VisitorCalcParser.NumberContext) -> T{
+	open func visitNumber(_ ctx: VisitorCalcParser.NumberContext) -> T {
 	 	fatalError(#function + " must be overridden")
 	}
 
@@ -48,7 +48,7 @@ open class VisitorCalcVisitor<T>: ParseTreeVisitor<T> {
 	  - ctx: the parse tree
 	- returns: the visitor result
 	 */
-	open func visitMultiply(_ ctx: VisitorCalcParser.MultiplyContext) -> T{
+	open func visitMultiply(_ ctx: VisitorCalcParser.MultiplyContext) -> T {
 	 	fatalError(#function + " must be overridden")
 	}
 

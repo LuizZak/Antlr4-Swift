@@ -15,7 +15,7 @@ open class VisitorBasicVisitor<T>: ParseTreeVisitor<T> {
 	  - ctx: the parse tree
 	- returns: the visitor result
 	 */
-	open func visitS(_ ctx: VisitorBasicParser.SContext) -> T{
+	open func visitS(_ ctx: VisitorBasicParser.SContext) -> T {
 	 	fatalError(#function + " must be overridden")
 	}
 

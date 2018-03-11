@@ -72,7 +72,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
         } else {
             configLookup = LookupDictionary()
         }
-        
+
         self.fullCtx = fullCtx
     }
 

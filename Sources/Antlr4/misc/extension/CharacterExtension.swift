@@ -14,7 +14,7 @@
 import Foundation
 
 extension Character {
-    
+
     public init(integerLiteral value: IntegerLiteralType) {
         self = Character(UnicodeScalar(value)!)
     }
@@ -23,7 +23,7 @@ extension Character {
     var integerValue: Int {
         return Int(String(self)) ?? 0
     }
-    
+
     var utf8Value: UInt8 {
         return String(self).utf8.first ?? 0
     }

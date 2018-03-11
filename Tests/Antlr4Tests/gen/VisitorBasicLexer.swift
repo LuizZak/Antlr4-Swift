@@ -11,7 +11,7 @@ open class VisitorBasicLexer: Lexer {
            return decisionToDFA
      }()
 
-	internal static let _sharedContextCache:PredictionContextCache = PredictionContextCache()
+	internal static let _sharedContextCache: PredictionContextCache = PredictionContextCache()
 	public static let A=1
 	public static let channelNames: [String] = [
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"

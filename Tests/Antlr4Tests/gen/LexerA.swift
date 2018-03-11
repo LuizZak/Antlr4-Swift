@@ -11,7 +11,7 @@ open class LexerA: Lexer {
            return decisionToDFA
      }()
 
-	internal static let _sharedContextCache:PredictionContextCache = PredictionContextCache()
+	internal static let _sharedContextCache: PredictionContextCache = PredictionContextCache()
 	public static let A=1, B=2, C=3
 	public static let channelNames: [String] = [
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
@@ -52,7 +52,7 @@ open class LexerA: Lexer {
 		}
 		return tokenNames
 	}()
-	
+
 	open func getTokenNames() -> [String?]? {
 		return tokenNames
 	}

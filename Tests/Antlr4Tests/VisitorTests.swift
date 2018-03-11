@@ -44,7 +44,7 @@ class VisitorTests: XCTestCase {
         let expected = """
             [@0,0:0='A',<1>,1:0]
             [@1,1:0='<EOF>',<-1>,1:1]
-            
+
             """
         XCTAssertEqual(expected, result)
     }

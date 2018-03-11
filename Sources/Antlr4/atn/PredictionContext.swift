@@ -21,7 +21,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     public static let EMPTY_RETURN_STATE = Int(Int32.max)
 
     private static let INITIAL_HASH = UInt32(1)
-    
+
     ///
     /// Stores the computed hash code of this _org.antlr.v4.runtime.atn.PredictionContext_. The hash
     /// code is computed in parts to match the following reference algorithm.
@@ -483,13 +483,13 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         // print("merge array 4 \(M)")
         return M
     }
-    
+
     // From Sam
     public static func getCachedContext(
         _ context: PredictionContext,
         _ contextCache: PredictionContextCache,
         _ visited: inout [PredictionContext: PredictionContext]) -> PredictionContext {
-        
+
         if context.isEmpty() {
             return context
         }

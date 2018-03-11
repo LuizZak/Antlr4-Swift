@@ -4,9 +4,9 @@
 /// can be found in the LICENSE.txt file in the project root.
 ///
 public class MultiMap<K: Hashable, V> {
-    
+
     private var mapping = [K: [V]]()
-    
+
     public func map(_ key: K, _ value: V) {
         mapping[key, default: []].append(value)
     }
