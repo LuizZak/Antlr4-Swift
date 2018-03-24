@@ -686,10 +686,16 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
         while let ctxWrap = ctx, ctxWrap.invokingState >= 0 {
             // compute what follows who invoked us
             let invokingState = atn.states[ctxWrap.invokingState]!
-            let rt = invokingState.transition(0) as! RuleTransition
-            let follow = atn.nextTokens(rt.followState)
-            recoverSet.addAll(follow)
-            ctx = ctxWrap.parent
+            let transition = invokingState.transition(0)
+            
+            switch transition {
+            case .rule(_, _, _, let followState):
+                let follow = atn.nextTokens(followState)
+                recoverSet.addAll(follow)
+                ctx = ctxWrap.parent
+            default:
+                fatalError("Unexpected transition kind \(transition)")
+            }
         }
         recoverSet.remove(CommonToken.epsilon)
         //		print("recover set "+recoverSet.toString(recognizer.getTokenNames()));

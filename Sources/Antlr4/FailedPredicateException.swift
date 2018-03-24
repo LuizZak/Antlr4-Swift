@@ -18,14 +18,15 @@ public class FailedPredicateException: RecognitionException {
     public init(_ recognizer: Parser, _ predicate: String? = nil, _ message: String? = nil) {
         let s = recognizer.getInterpreter().atn.states[recognizer.getState()]!
 
-        if let predex = s.transition(0) as? PredicateTransition {
-            self.ruleIndex = predex.ruleIndex
-            self.predicateIndex = predex.predIndex
-        } else {
+        switch s.transition(0) {
+        case let .predicate(_, .predicate(ruleIndex, predIndex, _)):
+            self.ruleIndex = ruleIndex
+            self.predicateIndex = predIndex
+        default:
             self.ruleIndex = 0
             self.predicateIndex = 0
         }
-
+        
         self.predicate = predicate
 
         super.init(recognizer, recognizer.getInputStream()!, recognizer._ctx,

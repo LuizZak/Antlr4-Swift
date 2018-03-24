@@ -184,8 +184,9 @@ public class ParserInterpreter: Parser {
         }
 
         let transition = p.transition(altNum - 1)
-        switch transition.getSerializationType() {
-        case Transition.EPSILON:
+        
+        switch transition {
+        case .epsilon:
             if statesNeedingLeftRecursionContext.get(p.stateNumber) &&
                 !(transition.target is LoopEndState) {
                 // We are at the start of a left recursive rule's (...)* loop
@@ -193,58 +194,51 @@ public class ParserInterpreter: Parser {
                 let ctx: InterpreterRuleContext = InterpreterRuleContext(
                     _parentContextStack.last!.0, //peek()
                     _parentContextStack.last!.1, //peek()
-
+                    
                     _ctx!.getRuleIndex())
                 try pushNewRecursionContext(ctx,
                                             atn.ruleToStartState[p.ruleIndex!].stateNumber,
                                             _ctx!.getRuleIndex())
             }
-
-        case Transition.ATOM:
-            try match((transition as! AtomTransition).label)
-
-        case Transition.RANGE, Transition.SET, Transition.NOT_SET:
+            
+        case .atom(_, let label):
+            try match(label)
+            
+        case .range, .set, .notSet:
             if !transition.matches(try _input.LA(1), CommonToken.minUserTokenType, 65535) {
                 try _errHandler.recoverInline(self)
             }
             try matchWildcard()
-
-        case Transition.WILDCARD:
+            
+        case .wildcard:
             try matchWildcard()
-
-        case Transition.RULE:
+            
+        case .rule(_, _, let precedence, _):
             let ruleStartState = transition.target as! RuleStartState
             let ruleIndex = ruleStartState.ruleIndex!
             let ctx = InterpreterRuleContext(_ctx, p.stateNumber, ruleIndex)
             if ruleStartState.isPrecedenceRule {
                 try enterRecursionRule(ctx, ruleStartState.stateNumber, ruleIndex,
-                                       (transition as! RuleTransition).precedence)
+                                       precedence)
             } else {
                 try enterRule(ctx, transition.target.stateNumber, ruleIndex)
             }
-
-        case Transition.PREDICATE:
-            let predicateTransition = transition as! PredicateTransition
-            if try !sempred(_ctx!, predicateTransition.ruleIndex, predicateTransition.predIndex) {
+            
+        case .predicate(_, let .predicate(ruleIndex, predIndex, _)):
+            if try !sempred(_ctx!, ruleIndex, predIndex) {
                 throw ANTLRException.recognition(e: FailedPredicateException(self))
             }
-
-        case Transition.ACTION:
-            let actionTransition = transition as! ActionTransition
-            try action(_ctx, actionTransition.ruleIndex, actionTransition.actionIndex)
-
-        case Transition.PRECEDENCE:
-            if !precpred(_ctx!, (transition as! PrecedencePredicateTransition).precedence) {
+            
+        case .action(_, let ruleIndex, let actionIndex, _):
+            try action(_ctx, ruleIndex, actionIndex)
+            
+        case .predicate(_, .precedence(let precedence)):
+            if !precpred(_ctx!, precedence) {
                 throw ANTLRException.recognition(e:
-                    FailedPredicateException(
-                        self,
-                        "precpred(_ctx,\((transition as! PrecedencePredicateTransition).precedence))"))
+                    FailedPredicateException(self, "precpred(_ctx,\(precedence))"))
             }
-
-        default:
-            throw ANTLRError.unsupportedOperation(msg: "Unrecognized ATN transition type.")
         }
-
+        
         setState(transition.target.stateNumber)
     }
 
@@ -257,9 +251,13 @@ public class ParserInterpreter: Parser {
         } else {
             try exitRule()
         }
-
-        let ruleTransition = atn.states[getState()]!.transition(0) as! RuleTransition
-        setState(ruleTransition.followState.stateNumber)
+        
+        switch atn.states[getState()]!.transition(0) {
+        case .rule(_, _, _, let followState):
+            setState(followState.stateNumber)
+        default:
+            fatalError("Expected .rule transition.")
+        }
     }
 
     /// Override this parser interpreters normal decision-making process

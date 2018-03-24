@@ -575,19 +575,24 @@ public class ATNDeserializer {
             let length = state.getNumberOfTransitions()
             for i in 0..<length {
                 let t = state.transition(i)
-                guard let ruleTransition = t as? RuleTransition else {
-                    continue
-                }
-                var outermostPrecedenceReturn = -1
-                if let targetRuleIndex = ruleTransition.target.ruleIndex {
-                    if atn.ruleToStartState[targetRuleIndex].isPrecedenceRule {
-                        if ruleTransition.precedence == 0 {
-                            outermostPrecedenceReturn = targetRuleIndex
+                
+                switch t {
+                case let .rule(target, _, precedence, followState):
+                    var outermostPrecedenceReturn = -1
+                    if let targetRuleIndex = target.ruleIndex {
+                        if atn.ruleToStartState[targetRuleIndex].isPrecedenceRule {
+                            if precedence == 0 {
+                                outermostPrecedenceReturn = targetRuleIndex
+                            }
                         }
+                        
+                        let returnTransition =
+                            Transition.epsilon(followState, outermostPrecedenceReturnInside: outermostPrecedenceReturn)
+                        
+                        atn.ruleToStopState[targetRuleIndex].addTransition(returnTransition)
                     }
-
-                    let returnTransition = EpsilonTransition(ruleTransition.followState, outermostPrecedenceReturn)
-                    atn.ruleToStopState[targetRuleIndex].addTransition(returnTransition)
+                default:
+                    continue
                 }
             }
         }
@@ -604,15 +609,18 @@ public class ATNDeserializer {
             }
             let length = state.getNumberOfTransitions()
             for i in 0..<length {
-                guard let transition = state.transition(i) as? ActionTransition else {
+                
+                switch state.transition(i) {
+                case let .action(target, ruleIndex, actionIndex, isCtxDependent):
+                    let lexerAction = LexerCustomAction(ruleIndex, actionIndex)
+                    
+                    //state.setTransition(i, ActionTransition(transition.target, ruleIndex, legacyLexerActions.count, false))
+                    state.setTransition(i, .action(target, ruleIndex: ruleIndex, actionIndex: legacyLexerActions.count, isCtxDependent: false))
+                    legacyLexerActions.append(lexerAction)
+                    
+                default:
                     continue
                 }
-
-                let ruleIndex = transition.ruleIndex
-                let actionIndex = transition.actionIndex
-                let lexerAction = LexerCustomAction(ruleIndex, actionIndex)
-                state.setTransition(i, ActionTransition(transition.target, ruleIndex, legacyLexerActions.count, false))
-                legacyLexerActions.append(lexerAction)
             }
         }
         atn.lexerActions = legacyLexerActions
@@ -713,11 +721,15 @@ public class ATNDeserializer {
             bypassStop.startState = bypassStart
 
             var endState: ATNState?
+            
+            // TODO: Verify validity of this change
             var excludeTransition: Transition? = nil
+            var excludeTransitionIndex = -1
+            
             if atn.ruleToStartState[i].isPrecedenceRule {
                 // wrap from the beginning of the rule to the StarLoopEntryState
                 endState = nil
-                for state in atn.states {
+                for (j, state) in atn.states.enumerated() {
                     guard let state = state, state.ruleIndex == i, state is StarLoopEntryState else {
                         continue
                     }
@@ -730,6 +742,7 @@ public class ATNDeserializer {
                     if maybeLoopEndState.epsilonOnlyTransitions &&
                         maybeLoopEndState.transition(0).target is RuleStopState {
                         endState = state
+                        excludeTransitionIndex = j
                         break
                     }
                 }
@@ -737,7 +750,7 @@ public class ATNDeserializer {
                 if endState == nil {
                     throw ANTLRError.unsupportedOperation(msg: "Couldn't identify final state of the precedence rule prefix section.")
                 }
-
+                
                 excludeTransition = (endState as? StarLoopEntryState)?.loopBackState?.transition(0)
             } else {
                 endState = atn.ruleToStopState[i]
@@ -748,13 +761,13 @@ public class ATNDeserializer {
                 guard let state = state else {
                     continue
                 }
-                for transition in state.transitions {
-                    if transition === excludeTransition! {
+                for (i, transition) in state.transitions.enumerated() {
+                    if i == excludeTransitionIndex {
                         continue
                     }
 
                     if transition.target == endState {
-                        transition.target = bypassStop
+                        state.transitions[i].target = bypassStop
                     }
                 }
             }
@@ -768,13 +781,13 @@ public class ATNDeserializer {
             }
 
             // link the new states
-            atn.ruleToStartState[i].addTransition(EpsilonTransition(bypassStart))
-            bypassStop.addTransition(EpsilonTransition(endState!))
+            atn.ruleToStartState[i].addTransition(.epsilon(bypassStart, outermostPrecedenceReturnInside: -1))
+            bypassStop.addTransition(.epsilon(endState!, outermostPrecedenceReturnInside: -1))
 
             let matchState = BasicState()
             atn.addState(matchState)
-            matchState.addTransition(AtomTransition(bypassStop, atn.ruleToTokenType[i]))
-            bypassStart.addTransition(EpsilonTransition(matchState))
+            matchState.addTransition(.atom(bypassStop, label: atn.ruleToTokenType[i]))
+            bypassStart.addTransition(.epsilon(matchState, outermostPrecedenceReturnInside: -1))
         }
     }
 
@@ -854,33 +867,37 @@ public class ATNDeserializer {
                               _ sets: [IntervalSet]) throws -> Transition {
         let target = atn.states[trg]!
         switch type {
-        case Transition.EPSILON: return EpsilonTransition(target)
+        case Transition.EPSILON:
+            return .epsilon(target, outermostPrecedenceReturnInside: -1)
         case Transition.RANGE:
             if arg3 != 0 {
-                return RangeTransition(target, CommonToken.EOF, arg2)
+                return .range(target, from: CommonToken.EOF, to: arg2)
             } else {
-                return RangeTransition(target, arg1, arg2)
+                return .range(target, from: arg1, to: arg2)
             }
         case Transition.RULE:
-            let rt = RuleTransition(atn.states[arg1] as! RuleStartState, arg2, arg3, target)
-            return rt
+            return .rule(atn.states[arg1] as! RuleStartState, ruleIndex: arg2, precedence: arg3,
+                         followState: target)
         case Transition.PREDICATE:
-            let pt = PredicateTransition(target, arg1, arg2, arg3 != 0)
-            return pt
+            return .predicate(target, .predicate(ruleIndex: arg1, predIndex: arg2,
+                                                 isCtxDependent: arg3 != 0))
         case Transition.PRECEDENCE:
-            return PrecedencePredicateTransition(target, arg1)
+            return .predicate(target, .precedence(precedence: arg1))
         case Transition.ATOM:
             if arg3 != 0 {
-                return AtomTransition(target, CommonToken.EOF)
+                return .atom(target, label: CommonToken.EOF)
             } else {
-                return AtomTransition(target, arg1)
+                return .atom(target, label: arg1)
             }
         case Transition.ACTION:
-            return ActionTransition(target, arg1, arg2, arg3 != 0)
+            return .action(target, ruleIndex: arg1, actionIndex: arg2, isCtxDependent: arg3 != 0)
 
-        case Transition.SET: return SetTransition(target, sets[arg1])
-        case Transition.NOT_SET: return NotSetTransition(target, sets[arg1])
-        case Transition.WILDCARD: return WildcardTransition(target)
+        case Transition.SET:
+            return .set(target, set: sets[arg1])
+        case Transition.NOT_SET:
+            return .notSet(target, set: sets[arg1])
+        case Transition.WILDCARD:
+            return .wildcard(target)
         default:
             throw ANTLRError.illegalState(msg: "The specified transition type is not valid.")
         }

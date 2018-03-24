@@ -43,7 +43,7 @@ public enum _PredicateTransition {
     }
 }
 
-public enum _Transition: CustomStringConvertible {
+public enum Transition: CustomStringConvertible {
     case epsilon(ATNState, outermostPrecedenceReturnInside: Int)
     case range(ATNState, from: Int, to: Int)
     case rule(ATNState, ruleIndex: Int, precedence: Int, followState: ATNState)
@@ -55,17 +55,53 @@ public enum _Transition: CustomStringConvertible {
     case wildcard(ATNState)
     
     public var target: ATNState {
-        switch self {
-        case .epsilon(let state, _),
-             .range(let state, _, _),
-             .rule(let state, _, _, _),
-             .predicate(let state, _),
-             .atom(let state, _),
-             .action(let state, _, _, _),
-             .set(let state, _),
-             .notSet(let state, _),
-             .wildcard(let state):
-            return state
+        get {
+            switch self {
+            case .epsilon(let state, _),
+                 .range(let state, _, _),
+                 .rule(let state, _, _, _),
+                 .predicate(let state, _),
+                 .atom(let state, _),
+                 .action(let state, _, _, _),
+                 .set(let state, _),
+                 .notSet(let state, _),
+                 .wildcard(let state):
+                return state
+            }
+        }
+        set {
+            switch self {
+            case .epsilon(_, let outermostPrecedenceReturnInside):
+                self = .epsilon(newValue, outermostPrecedenceReturnInside: outermostPrecedenceReturnInside)
+                
+            case let .range(_, from, to):
+                self = .range(newValue, from: from, to: to)
+                
+            case let .rule(_, ruleIndex, precedence, followState):
+                self = .rule(newValue, ruleIndex: ruleIndex,
+                             precedence: precedence,
+                             followState: followState)
+                
+            case .predicate(_, let pred):
+                self = .predicate(newValue, pred)
+                
+            case .atom(_, let label):
+                self = .atom(newValue, label: label)
+                
+            case let .action(_, ruleIndex, actionIndex, isCtxDependent):
+                self = .action(newValue, ruleIndex: ruleIndex,
+                               actionIndex: actionIndex,
+                               isCtxDependent: isCtxDependent)
+                
+            case .set(_, let set):
+                self = .set(newValue, set: set)
+                
+            case .notSet(_, let set):
+                self = .notSet(newValue, set: set)
+                
+            case .wildcard:
+                self = .wildcard(newValue)
+            }
         }
     }
     
@@ -95,25 +131,25 @@ public enum _Transition: CustomStringConvertible {
     public func getSerializationType() -> Int {
         switch self {
         case .epsilon:
-            return _Transition.EPSILON
+            return Transition.EPSILON
         case .range:
-            return _Transition.RANGE
+            return Transition.RANGE
         case .rule:
-            return _Transition.RULE
+            return Transition.RULE
         case .predicate(_, .predicate):
-            return _Transition.PREDICATE
+            return Transition.PREDICATE
         case .predicate(_, .precedence):
-            return _Transition.PRECEDENCE
+            return Transition.PRECEDENCE
         case .atom:
-            return _Transition.ATOM
+            return Transition.ATOM
         case .action:
-            return _Transition.ACTION
+            return Transition.ACTION
         case .set:
-            return _Transition.SET
+            return Transition.SET
         case .notSet:
-            return _Transition.NOT_SET
+            return Transition.NOT_SET
         case .wildcard:
-            return _Transition.WILDCARD
+            return Transition.WILDCARD
         }
     }
     
@@ -208,56 +244,4 @@ public enum _Transition: CustomStringConvertible {
     public static let NOT_SET: Int = 8
     public static let WILDCARD: Int = 9
     public static let PRECEDENCE: Int = 10
-}
-
-public class Transition {
-    // constants for serialization
-    public static let EPSILON: Int = 1
-    public static let RANGE: Int = 2
-    public static let RULE: Int = 3
-    public static let PREDICATE: Int = 4
-    // e.g., {isType(input.LT(1))}?
-    public static let ATOM: Int = 5
-    public static let ACTION: Int = 6
-    public static let SET: Int = 7
-    // ~(A|B) or ~atom, wildcard, which convert to next 2
-    public static let NOT_SET: Int = 8
-    public static let WILDCARD: Int = 9
-    public static let PRECEDENCE: Int = 10
-
-    ///
-    /// The target of this transition.
-    ///
-
-    public final var target: ATNState
-
-    init(_ target: ATNState) {
-
-        self.target = target
-    }
-
-    public func getSerializationType() -> Int {
-        fatalError(#function + " must be overridden")
-    }
-
-    ///
-    /// Determines if the transition is an "epsilon" transition.
-    ///
-    /// The default implementation returns `false`.
-    ///
-    /// - returns: `true` if traversing this transition in the ATN does not
-    /// consume an input symbol; otherwise, `false` if traversing this
-    /// transition consumes (matches) an input symbol.
-    ///
-    public func isEpsilon() -> Bool {
-        return false
-    }
-
-    public func labelIntervalSet() -> IntervalSet? {
-        return nil
-    }
-
-    public func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
-        fatalError(#function + " must be overridden")
-    }
 }

@@ -187,34 +187,38 @@ public struct LL1Analyzer {
         let n = s.getNumberOfTransitions()
         for i in 0..<n {
             let t = s.transition(i)
-            if let rt = t as? RuleTransition {
-                if calledRuleStack.get(rt.target.ruleIndex!) {
+            
+            switch t {
+            case let .rule(target, _, _, followState):
+                if calledRuleStack.get(target.ruleIndex!) {
                     continue
                 }
-
-                let newContext = SingletonPredictionContext.create(ctx, rt.followState.stateNumber)
-                calledRuleStack.set(rt.target.ruleIndex!)
+                
+                let newContext = SingletonPredictionContext.create(ctx, followState.stateNumber)
+                calledRuleStack.set(target.ruleIndex!)
                 _LOOK(t.target, stopState, newContext, look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
-                calledRuleStack.clear(rt.target.ruleIndex!)
-            } else if t is AbstractPredicateTransition {
+                calledRuleStack.clear(target.ruleIndex!)
+            case .predicate:
                 if seeThruPreds {
                     _LOOK(t.target, stopState, ctx, look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
                 } else {
                     look.add(HIT_PRED)
                 }
-            } else if t.isEpsilon() {
-                _LOOK(t.target, stopState, ctx, look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
-            } else if t is WildcardTransition {
-                look.addAll(IntervalSet.of(CommonToken.minUserTokenType, atn.maxTokenType))
-            } else {
-                var set = t.labelIntervalSet()
-                if let _set = set {
-                    if t is NotSetTransition {
-                        set =
-                            _set.complement(IntervalSet.of(CommonToken.minUserTokenType, atn.maxTokenType))
+            default:
+                if t.isEpsilon() {
+                    _LOOK(t.target, stopState, ctx, look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
+                } else if case .wildcard = t {
+                    look.addAll(IntervalSet.of(CommonToken.minUserTokenType, atn.maxTokenType))
+                } else {
+                    var set = t.labelIntervalSet()
+                    if let _set = set {
+                        if case .notSet = t {
+                            set =
+                                _set.complement(IntervalSet.of(CommonToken.minUserTokenType, atn.maxTokenType))
                                 as? IntervalSet
+                        }
+                        look.addAll(set)
                     }
-                    look.addAll(set)
                 }
             }
         }

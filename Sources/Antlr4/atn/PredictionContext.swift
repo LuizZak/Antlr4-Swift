@@ -66,8 +66,15 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         let parent = PredictionContext.fromRuleContext(atn, _outerContext.parent)
 
         let state = atn.states[_outerContext.invokingState]!
-        let transition = state.transition(0) as! RuleTransition
-        return SingletonPredictionContext.create(parent, transition.followState.stateNumber)
+        
+        let transition = state.transition(0)
+        
+        switch transition {
+        case .rule(_, _, _, let followState):
+            return SingletonPredictionContext.create(parent, followState.stateNumber)
+        default:
+            fatalError("Unexpected transition kind \(transition)")
+        }
     }
 
     public func size() -> Int {

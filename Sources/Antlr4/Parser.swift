@@ -886,13 +886,18 @@ open class Parser: Recognizer<ParserATNSimulator> {
 
         while let ctxWrap = ctx, ctxWrap.invokingState >= 0 && following.contains(CommonToken.epsilon) {
             let invokingState = atn.states[ctxWrap.invokingState]!
-            let rt = invokingState.transition(0) as! RuleTransition
-            following = atn.nextTokens(rt.followState)
-            if following.contains(symbol) {
-                return true
+            
+            switch invokingState.transition(0) {
+            case .rule(_, _, _, let followState):
+                following = atn.nextTokens(followState)
+                if following.contains(symbol) {
+                    return true
+                }
+                
+                ctx = ctxWrap.parent as? ParserRuleContext
+            default:
+                fatalError("Expected .rule transition")
             }
-
-            ctx = ctxWrap.parent as? ParserRuleContext
         }
 
         if following.contains(CommonToken.epsilon) && symbol == CommonToken.EOF {

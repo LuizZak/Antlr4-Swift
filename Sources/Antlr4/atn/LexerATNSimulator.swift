@@ -489,17 +489,17 @@ open class LexerATNSimulator: ATNSimulator {
                                 _ configs: ATNConfigSet,
                                 _ speculative: Bool,
                                 _ treatEofAsEpsilon: Bool) throws -> LexerATNConfig? {
+        
         var c: LexerATNConfig? = nil
-        switch t.getSerializationType() {
-        case Transition.RULE:
-            let ruleTransition = t as! RuleTransition
-            let newContext = SingletonPredictionContext.create(config.context, ruleTransition.followState.stateNumber)
-            c = LexerATNConfig(config, t.target, newContext)
-
-        case Transition.PRECEDENCE:
+        switch t {
+        case let .rule(target, _, _, followState):
+            let newContext = SingletonPredictionContext.create(config.context, followState.stateNumber)
+            c = LexerATNConfig(config, target, newContext)
+            
+        case .predicate(_, .precedence):
             throw ANTLRError.unsupportedOperation(msg: "Precedence predicates are not supported in lexers.")
-
-        case Transition.PREDICATE:
+            
+        case let .predicate(target, .predicate(ruleIndex, predIndex, _)):
             ///
             /// Track traversing semantic predicates. If we traverse,
             /// we cannot add a DFA state for this "reach" computation
@@ -519,16 +519,15 @@ open class LexerATNSimulator: ATNSimulator {
             /// states reached by traversing predicates. Since this is when we
             /// test them, we cannot cash the DFA state target of ID.
             ///
-            let pt = t as! PredicateTransition
             if LexerATNSimulator.debug {
-                print("EVAL rule \(pt.ruleIndex):\(pt.predIndex)")
+                print("EVAL rule \(ruleIndex):\(predIndex)")
             }
             configs.hasSemanticContext = true
-            if try evaluatePredicate(input, pt.ruleIndex, pt.predIndex, speculative) {
-                c = LexerATNConfig(config, t.target)
+            if try evaluatePredicate(input, ruleIndex, predIndex, speculative) {
+                c = LexerATNConfig(config, target)
             }
-
-        case Transition.ACTION:
+            
+        case let .action(target, _, actionIndex, _):
             if config.context == nil || config.context!.hasEmptyPath() {
                 // execute actions anywhere in the start rule for a token.
                 //
@@ -544,27 +543,29 @@ open class LexerATNSimulator: ATNSimulator {
                 // the split operation.
                 let lexerActionExecutor =
                     LexerActionExecutor.append(config.getLexerActionExecutor(),
-                                               atn.lexerActions[(t as! ActionTransition).actionIndex])
-                c = LexerATNConfig(config, t.target, lexerActionExecutor)
+                                               atn.lexerActions[actionIndex])
+                c = LexerATNConfig(config, target, lexerActionExecutor)
             } else {
                 // ignore actions in referenced rules
-                c = LexerATNConfig(config, t.target)
+                c = LexerATNConfig(config, target)
             }
-
-        case Transition.EPSILON:
-            c = LexerATNConfig(config, t.target)
             
-        case Transition.ATOM, Transition.RANGE, Transition.SET:
-            if treatEofAsEpsilon {
-                if t.matches(BufferedTokenStream.EOF, Character.minValue, Character.maxValue) {
-                    c = LexerATNConfig(config, t.target)
-                }
+        case .epsilon(let target, _):
+            c = LexerATNConfig(config, target)
+            
+        case .atom, .range, .set:
+            guard treatEofAsEpsilon else {
+                break
+            }
+            
+            if t.matches(BufferedTokenStream.EOF, Character.minValue, Character.maxValue) {
+                c = LexerATNConfig(config, t.target)
             }
             
         default:
             return c
         }
-
+        
         return c
     }
 

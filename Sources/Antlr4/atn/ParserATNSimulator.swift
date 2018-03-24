@@ -1427,7 +1427,18 @@ open class ParserATNSimulator: ATNSimulator {
                 continue
             }
             let t = p.transition(i)
-            let continueCollecting = !(t is ActionTransition) && collectPredicates
+            
+            var continueCollecting: Bool
+            
+            switch t {
+            case .action:
+                continueCollecting = false
+            default:
+                continueCollecting = true
+            }
+                
+            continueCollecting = continueCollecting && collectPredicates
+            
             let c = try getEpsilonTarget(config, t, continueCollecting, depth == 0, fullCtx, treatEofAsEpsilon)
             if let c = c {
                 if !t.isEpsilon() {
@@ -1456,9 +1467,14 @@ open class ParserATNSimulator: ATNSimulator {
                     }
 
                     if let _dfa = _dfa, _dfa.isPrecedenceDfa() {
-                        let outermostPrecedenceReturn: Int = (t as! EpsilonTransition).outermostPrecedenceReturn()
-                        if outermostPrecedenceReturn == _dfa.atnStartState.ruleIndex {
-                            c.setPrecedenceFilterSuppressed(true)
+                        
+                        switch t {
+                        case .epsilon(_, let outermostPrecedenceReturn):
+                            if outermostPrecedenceReturn == _dfa.atnStartState.ruleIndex {
+                                c.setPrecedenceFilterSuppressed(true)
+                            }
+                        default:
+                            fatalError("Expected epsilon transition")
                         }
                     }
 
@@ -1471,12 +1487,11 @@ open class ParserATNSimulator: ATNSimulator {
                     if debug {
                         print("dips into outer ctx: \(c)")
                     }
-                } else if t is RuleTransition {
+                } else if case .range = t {
                     // latch when newDepth goes negative - once we step out of the entry context we can't return
                     if newDepth >= 0 {
                         newDepth += 1
                     }
-
                 }
 
                 try closureCheckingStopState(c, configs, &closureBusy, continueCollecting,
@@ -1663,27 +1678,39 @@ open class ParserATNSimulator: ATNSimulator {
                                 _ inContext: Bool,
                                 _ fullCtx: Bool,
                                 _ treatEofAsEpsilon: Bool) throws -> ATNConfig? {
-        switch t.getSerializationType() {
-        case Transition.RULE:
-            return ruleTransition(config, t as! RuleTransition)
-
-        case Transition.PRECEDENCE:
-            return try precedenceTransition(config, t as! PrecedencePredicateTransition,
-                                            collectPredicates, inContext, fullCtx)
-
-        case Transition.PREDICATE:
-            return try predTransition(config, t as! PredicateTransition,
-                                      collectPredicates,
-                                      inContext,
-                                      fullCtx)
-
-        case Transition.ACTION:
-            return actionTransition(config, t as! ActionTransition)
-
-        case Transition.EPSILON:
-            return ATNConfig(config, t.target)
         
-        case Transition.ATOM, Transition.RANGE, Transition.SET:
+        switch t {
+        case let .rule(target, ruleIndex, precedence, followState):
+            return ruleTransition(config, target: target, ruleIndex: ruleIndex,
+                                  precedence: precedence, followState: followState)
+            
+        case let .predicate(target, pred):
+            
+            switch pred {
+            case .precedence(let precedence):
+                return
+                    try precedenceTransition(config, target: target, precedence: precedence,
+                                             predicate: pred.getPredicate(),
+                                             collectPredicates, inContext, fullCtx)
+            case let .predicate(ruleIndex, predIndex, isCtxDependent):
+                return
+                    try predTransition(config, target: target,
+                                       ruleIndex: ruleIndex,
+                                       predIndex: predIndex,
+                                       isCtxDependent: isCtxDependent,
+                                       predicate: pred.getPredicate(),
+                                       collectPredicates,
+                                       inContext,
+                                       fullCtx)
+            }
+            
+        case let .action(target, ruleIndex, actionIndex, _):
+            return actionTransition(config, target: target, ruleIndex: ruleIndex, actionIndex: actionIndex)
+            
+        case let .epsilon(target, _):
+            return ATNConfig(config, target)
+            
+        case .atom, .range, .set:
             // EOF transitions act like epsilon transitions after the first EOF
             // transition is traversed
             if treatEofAsEpsilon {
@@ -1691,31 +1718,30 @@ open class ParserATNSimulator: ATNSimulator {
                     return ATNConfig(config, t.target)
                 }
             }
-
+            
             return nil
-
+            
         default:
             return nil
         }
-
-        //return nil;
-
     }
-
-    final func actionTransition(_ config: ATNConfig, _ t: ActionTransition) -> ATNConfig {
+    
+    final func actionTransition(_ config: ATNConfig, target: ATNState, ruleIndex: Int, actionIndex: Int) -> ATNConfig {
         if debug {
-            print("ACTION edge \(t.ruleIndex):\(t.actionIndex)")
+            print("ACTION edge \(ruleIndex):\(actionIndex)")
         }
-        return ATNConfig(config, t.target)
+        return ATNConfig(config, target)
     }
 
     final func precedenceTransition(_ config: ATNConfig,
-                                    _ pt: PrecedencePredicateTransition,
+                                    target: ATNState,
+                                    precedence: Int,
+                                    predicate: SemanticContext,
                                     _ collectPredicates: Bool,
                                     _ inContext: Bool,
                                     _ fullCtx: Bool) throws -> ATNConfig {
         if debug {
-            print("PRED (collectPredicates=\(collectPredicates)) \(pt.precedence)>=_p, ctx dependent=true")
+            print("PRED (collectPredicates=\(collectPredicates)) \(precedence)>=_p, ctx dependent=true")
             //if ( parser != nil ) {
             print("context surrounding pred is \(parser.getRuleInvocationStack())")
             // }
@@ -1730,19 +1756,19 @@ open class ParserATNSimulator: ATNSimulator {
                 // later during conflict resolution.
                 let currentPosition = _input.index()
                 try _input.seek(_startIndex)
-                let predSucceeds = try evalSemanticContext(pt.getPredicate(), _outerContext, config.alt, fullCtx)
+                let predSucceeds = try evalSemanticContext(predicate, _outerContext, config.alt, fullCtx)
                 try _input.seek(currentPosition)
                 if predSucceeds {
-                    c = ATNConfig(config, pt.target) // no pred context
+                    c = ATNConfig(config, target) // no pred context
                 } else {
-                    c = ATNConfig(config, pt.target)
+                    c = ATNConfig(config, target)
                 }
             } else {
-                let newSemCtx = SemanticContext.and(config.semanticContext, pt.getPredicate())
-                c = ATNConfig(config, pt.target, newSemCtx)
+                let newSemCtx = SemanticContext.and(config.semanticContext, predicate)
+                c = ATNConfig(config, target, newSemCtx)
             }
         } else {
-            c = ATNConfig(config, pt.target)
+            c = ATNConfig(config, target)
         }
 
         if debug {
@@ -1750,14 +1776,18 @@ open class ParserATNSimulator: ATNSimulator {
         }
         return c!
     }
-
+// (ruleIndex: Int, predIndex: Int, isCtxDependent: Bool)
     final func predTransition(_ config: ATNConfig,
-                              _ pt: PredicateTransition,
+                              target: ATNState,
+                              ruleIndex: Int,
+                              predIndex: Int,
+                              isCtxDependent: Bool,
+                              predicate: SemanticContext,
                               _ collectPredicates: Bool,
                               _ inContext: Bool,
                               _ fullCtx: Bool) throws -> ATNConfig? {
         if debug {
-            print("PRED (collectPredicates=\(collectPredicates)) \(pt.ruleIndex):\(pt.predIndex), ctx dependent=\(pt.isCtxDependent)")
+            print("PRED (collectPredicates=\(collectPredicates)) \(ruleIndex):\(predIndex), ctx dependent=\(isCtxDependent)")
             //if ( parser != nil ) {
             print("context surrounding pred is \(parser.getRuleInvocationStack())")
             //}
@@ -1765,7 +1795,7 @@ open class ParserATNSimulator: ATNSimulator {
 
         var c: ATNConfig? = nil
         if collectPredicates &&
-            (!pt.isCtxDependent || (pt.isCtxDependent && inContext)) {
+            (!isCtxDependent || (isCtxDependent && inContext)) {
             if fullCtx {
                 // In full context mode, we can evaluate predicates on-the-fly
                 // during closure, which dramatically reduces the size of
@@ -1773,17 +1803,17 @@ open class ParserATNSimulator: ATNSimulator {
                 // later during conflict resolution.
                 let currentPosition = _input.index()
                 try _input.seek(_startIndex)
-                let predSucceeds = try evalSemanticContext(pt.getPredicate(), _outerContext, config.alt, fullCtx)
+                let predSucceeds = try evalSemanticContext(predicate, _outerContext, config.alt, fullCtx)
                 try _input.seek(currentPosition)
                 if predSucceeds {
-                    c = ATNConfig(config, pt.target) // no pred context
+                    c = ATNConfig(config, target) // no pred context
                 }
             } else {
-                let newSemCtx = SemanticContext.and(config.semanticContext, pt.getPredicate())
-                c = ATNConfig(config, pt.target, newSemCtx)
+                let newSemCtx = SemanticContext.and(config.semanticContext, predicate)
+                c = ATNConfig(config, target, newSemCtx)
             }
         } else {
-            c = ATNConfig(config, pt.target)
+            c = ATNConfig(config, target)
         }
 
         if debug {
@@ -1792,14 +1822,14 @@ open class ParserATNSimulator: ATNSimulator {
         return c
     }
 
-    final func ruleTransition(_ config: ATNConfig, _ t: RuleTransition) -> ATNConfig {
+    final func ruleTransition(_ config: ATNConfig, target: ATNState, ruleIndex: Int, precedence: Int, followState: ATNState) -> ATNConfig {
         if debug {
-            print("CALL rule \(getRuleName(t.target.ruleIndex!)), ctx=\(String(describing: config.context))")
+            print("CALL rule \(getRuleName(target.ruleIndex!)), ctx=\(String(describing: config.context))")
         }
 
-        let returnState = t.followState
+        let returnState = followState
         let newContext = SingletonPredictionContext.create(config.context, returnState.stateNumber)
-        return ATNConfig(config, t.target, newContext)
+        return ATNConfig(config, target, newContext)
     }
 
     ///
@@ -1891,11 +1921,16 @@ open class ParserATNSimulator: ATNSimulator {
             var trans = "no edges"
             if c.state.getNumberOfTransitions() > 0 {
                 let t = c.state.transition(0)
-                if let at = t as? AtomTransition {
-                    trans = "Atom " + getTokenName(at.label)
-                } else if let st = t as? SetTransition {
-                    let not = st is NotSetTransition
-                    trans = (not ? "~" : "") + "Set " + st.set.description
+                
+                switch t {
+                case .atom(_, let label):
+                    trans = "Atom " + getTokenName(label)
+                case .set(_, let set):
+                    trans = "Set " + set.description
+                case .notSet(_, let set):
+                    trans = "~Set " + set.description
+                default:
+                    break
                 }
             }
             errPrint("\(c.toString(parser, true)):\(trans)")

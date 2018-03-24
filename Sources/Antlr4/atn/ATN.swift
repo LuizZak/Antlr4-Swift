@@ -156,11 +156,17 @@ public class ATN {
 
         while let ctxWrap = ctx, ctxWrap.invokingState >= 0 && following.contains(CommonToken.epsilon) {
             let invokingState = states[ctxWrap.invokingState]!
-            let rt = invokingState.transition(0) as! RuleTransition
-            following = nextTokens(rt.followState)
-            expected.addAll(following)
-            expected.remove(CommonToken.epsilon)
-            ctx = ctxWrap.parent
+            let transition = invokingState.transition(0)
+            
+            switch transition {
+            case .rule(_, _, _, let followState):
+                following = nextTokens(followState)
+                expected.addAll(following)
+                expected.remove(CommonToken.epsilon)
+                ctx = ctxWrap.parent
+            default:
+                fatalError("Unexpected transition kind \(transition)")
+            }
         }
 
         if following.contains(CommonToken.epsilon) {
