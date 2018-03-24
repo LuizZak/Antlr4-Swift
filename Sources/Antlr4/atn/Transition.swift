@@ -20,6 +20,196 @@
 
 import Foundation
 
+public enum _PredicateTransition {
+    case predicate(ruleIndex: Int, predIndex: Int, isCtxDependent: Bool)
+    case precedence(precedence: Int)
+    
+    public func getPredicate() -> SemanticContext {
+        switch self {
+        case let .predicate(ruleIndex, predIndex, isCtxDependent):
+            return SemanticContext.Predicate(ruleIndex, predIndex, isCtxDependent)
+        case .precedence(let precedence):
+            return SemanticContext.PrecedencePredicate(precedence)
+        }
+    }
+    
+    public var description: String {
+        switch self {
+        case let .predicate(ruleIndex, predIndex, _):
+            return "pred_\(ruleIndex):\(predIndex)"
+        case .precedence(let precedence):
+            return "\(precedence)  >= _p"
+        }
+    }
+}
+
+public enum _Transition: CustomStringConvertible {
+    case epsilon(ATNState, outermostPrecedenceReturnInside: Int)
+    case range(ATNState, from: Int, to: Int)
+    case rule(ATNState, ruleIndex: Int, precedence: Int, followState: ATNState)
+    case predicate(ATNState, _PredicateTransition)
+    case atom(ATNState, label: Int)
+    case action(ATNState, ruleIndex: Int, actionIndex: Int, isCtxDependent: Bool)
+    case set(ATNState, set: IntervalSet)
+    case notSet(ATNState, set: IntervalSet)
+    case wildcard(ATNState)
+    
+    public var target: ATNState {
+        switch self {
+        case .epsilon(let state, _),
+             .range(let state, _, _),
+             .rule(let state, _, _, _),
+             .predicate(let state, _),
+             .atom(let state, _),
+             .action(let state, _, _, _),
+             .set(let state, _),
+             .notSet(let state, _),
+             .wildcard(let state):
+            return state
+        }
+    }
+    
+    public var description: String {
+        switch self {
+        case .epsilon:
+            return "epsilon"
+        case let .range(_, from, to):
+            return "'\(from)'..'\(to)'"
+        case .rule:
+            return "\(self)"
+        case .predicate(_, let transition):
+            return transition.description
+        case .atom(_, let label):
+            return String(label)
+        case let .action(_, ruleIndex, actionIndex, _):
+            return "action_\(ruleIndex):\(actionIndex)"
+        case .set(_, let set):
+            return set.description
+        case .notSet(_, let set):
+            return "~" + set.description
+        case .wildcard:
+            return "."
+        }
+    }
+    
+    public func getSerializationType() -> Int {
+        switch self {
+        case .epsilon:
+            return _Transition.EPSILON
+        case .range:
+            return _Transition.RANGE
+        case .rule:
+            return _Transition.RULE
+        case .predicate(_, .predicate):
+            return _Transition.PREDICATE
+        case .predicate(_, .precedence):
+            return _Transition.PRECEDENCE
+        case .atom:
+            return _Transition.ATOM
+        case .action:
+            return _Transition.ACTION
+        case .set:
+            return _Transition.SET
+        case .notSet:
+            return _Transition.NOT_SET
+        case .wildcard:
+            return _Transition.WILDCARD
+        }
+    }
+    
+    ///
+    /// Determines if the transition is an "epsilon" transition.
+    ///
+    /// - returns: `true` if traversing this transition in the ATN does not
+    /// consume an input symbol; otherwise, `false` if traversing this
+    /// transition consumes (matches) an input symbol.
+    ///
+    public func isEpsilon() -> Bool {
+        switch self {
+        case .epsilon:
+            return true
+        case .range:
+            return false
+        case .rule:
+            return true
+        case .predicate:
+            return true
+        case .atom:
+            return false
+        case .action:
+            return true // we are to be ignored by analysis 'cept for predicates
+        case .set:
+            return false
+        case .notSet:
+            return false
+        case .wildcard:
+            return false
+        }
+    }
+    
+    public func labelIntervalSet() -> IntervalSet? {
+        switch self {
+        case .epsilon:
+            return nil
+        case let .range(_, from, to):
+            return .of(from, to)
+        case .rule:
+            return nil
+        case .predicate:
+            return nil
+        case .atom(_, let label):
+            return IntervalSet(label)
+        case .action:
+            return nil
+        case .set(_, let set):
+            return set
+        case .notSet(_, let set):
+            return set
+        case .wildcard:
+            return nil
+        }
+    }
+    
+    public func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
+        switch self {
+        case .epsilon:
+            return false
+        case let .range(_, from, to):
+            return symbol >= from && symbol <= to
+        case .rule:
+            return false
+        case .predicate:
+            return false
+        case .atom(_, let label):
+            return label == symbol
+        case .action:
+            return false
+        case .set(_, let set):
+            return set.contains(symbol)
+        case .notSet(_, let set):
+            return symbol >= minVocabSymbol
+                && symbol <= maxVocabSymbol
+                && !set.contains(symbol)
+        case .wildcard:
+            return symbol >= minVocabSymbol && symbol <= maxVocabSymbol
+        }
+    }
+    
+    // constants for serialization
+    public static let EPSILON: Int = 1
+    public static let RANGE: Int = 2
+    public static let RULE: Int = 3
+    public static let PREDICATE: Int = 4
+    // e.g., {isType(input.LT(1))}?
+    public static let ATOM: Int = 5
+    public static let ACTION: Int = 6
+    public static let SET: Int = 7
+    // ~(A|B) or ~atom, wildcard, which convert to next 2
+    public static let NOT_SET: Int = 8
+    public static let WILDCARD: Int = 9
+    public static let PRECEDENCE: Int = 10
+}
+
 public class Transition {
     // constants for serialization
     public static let EPSILON: Int = 1
@@ -34,33 +224,6 @@ public class Transition {
     public static let NOT_SET: Int = 8
     public static let WILDCARD: Int = 9
     public static let PRECEDENCE: Int = 10
-
-    public let serializationNames: [String] = [
-        "INVALID",
-        "EPSILON",
-        "RANGE",
-        "RULE",
-        "PREDICATE",
-        "ATOM",
-        "ACTION",
-        "SET",
-        "NOT_SET",
-        "WILDCARD",
-        "PRECEDENCE"
-    ]
-
-    public static let serializationTypes: [String: Int] = [
-        "\(EpsilonTransition.self)": EPSILON,
-        "\(RangeTransition.self)": RANGE,
-        "\(RuleTransition.self)": RULE,
-        "\(PredicateTransition.self)": PREDICATE,
-        "\(AtomTransition.self)": ATOM,
-        "\(ActionTransition.self)": ACTION,
-        "\(SetTransition.self)": SET,
-        "\(NotSetTransition.self)": NOT_SET,
-        "\(WildcardTransition.self)": WILDCARD,
-        "\(PrecedencePredicateTransition.self)": PRECEDENCE
-    ]
 
     ///
     /// The target of this transition.
