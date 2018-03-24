@@ -722,14 +722,12 @@ public class ATNDeserializer {
 
             var endState: ATNState?
             
-            // TODO: Verify validity of this change
-            var excludeTransition: Transition? = nil
-            var excludeTransitionIndex = -1
+            var excludedLoopbackState: ATNState?
             
             if atn.ruleToStartState[i].isPrecedenceRule {
                 // wrap from the beginning of the rule to the StarLoopEntryState
                 endState = nil
-                for (j, state) in atn.states.enumerated() {
+                for state in atn.states {
                     guard let state = state, state.ruleIndex == i, state is StarLoopEntryState else {
                         continue
                     }
@@ -742,7 +740,6 @@ public class ATNDeserializer {
                     if maybeLoopEndState.epsilonOnlyTransitions &&
                         maybeLoopEndState.transition(0).target is RuleStopState {
                         endState = state
-                        excludeTransitionIndex = j
                         break
                     }
                 }
@@ -751,7 +748,7 @@ public class ATNDeserializer {
                     throw ANTLRError.unsupportedOperation(msg: "Couldn't identify final state of the precedence rule prefix section.")
                 }
                 
-                excludeTransition = (endState as? StarLoopEntryState)?.loopBackState?.transition(0)
+                excludedLoopbackState = (endState as? StarLoopEntryState)?.loopBackState
             } else {
                 endState = atn.ruleToStopState[i]
             }
@@ -762,7 +759,7 @@ public class ATNDeserializer {
                     continue
                 }
                 for (i, transition) in state.transitions.enumerated() {
-                    if i == excludeTransitionIndex {
+                    if state === excludedLoopbackState && i == 0 {
                         continue
                     }
 
