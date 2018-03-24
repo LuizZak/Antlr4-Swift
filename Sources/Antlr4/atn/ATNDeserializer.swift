@@ -611,7 +611,7 @@ public class ATNDeserializer {
             for i in 0..<length {
                 
                 switch state.transition(i) {
-                case let .action(target, ruleIndex, actionIndex, isCtxDependent):
+                case let .action(target, ruleIndex, actionIndex, _):
                     let lexerAction = LexerCustomAction(ruleIndex, actionIndex)
                     
                     //state.setTransition(i, ActionTransition(transition.target, ruleIndex, legacyLexerActions.count, false))
