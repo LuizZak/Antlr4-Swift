@@ -82,9 +82,8 @@ public class ATN {
         if let nextTokenWithinRule = s.nextTokenWithinRule {
             return nextTokenWithinRule
         }
-        var intervalSet = nextTokens(s, nil)
+        let intervalSet = nextTokens(s, nil)
         s.nextTokenWithinRule = intervalSet
-        intervalSet.makeReadonly()
         return intervalSet
     }
 

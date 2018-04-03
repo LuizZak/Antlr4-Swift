@@ -18,25 +18,14 @@
 ///
 
 public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
-    public static let completeCharSet: IntervalSet = {
-        var set = IntervalSet.of(Lexer.MIN_CHAR_VALUE, Lexer.MAX_CHAR_VALUE)
-        set.makeReadonly()
-        return set
-    }()
-
-    public static let emptySet: IntervalSet = {
-        var set = IntervalSet()
-        set.makeReadonly()
-        return set
-    }()
+    public static let completeCharSet: IntervalSet = IntervalSet.of(Lexer.MIN_CHAR_VALUE, Lexer.MAX_CHAR_VALUE)
+    public static let emptySet: IntervalSet = IntervalSet()
 
     ///
     /// The list of sorted, disjoint intervals.
     ///
     internal var intervals: [Interval]
-
-    internal var readonly = false
-
+    
     public init(_ intervals: [Interval]) {
         self.intervals = intervals
     }
@@ -67,9 +56,6 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     }
 
     public mutating func clear() {
-        if readonly {
-            fatalError("can't alter readonly IntervalSet")
-        }
         intervals.removeAll()
     }
 
@@ -79,9 +65,6 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     ///
 
     public mutating func add(_ el: Int) {
-        if readonly {
-            fatalError("can't alter readonly IntervalSet")
-        }
         add(el, el)
     }
 
@@ -99,9 +82,6 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
 
     // copy on write so we can cache a..a intervals and sets of that
     internal mutating func add(_ addition: Interval) {
-        if readonly {
-            fatalError("can't alter readonly IntervalSet")
-        }
         if addition.b < addition.a {
             return
         }
@@ -650,9 +630,6 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     }
 
     public mutating func remove(_ el: Int) {
-        if readonly {
-            fatalError("can't alter readonly IntervalSet")
-        }
         for (i, interval) in intervals.enumerated() {
             let a = interval.a
             let b = interval.b
@@ -682,14 +659,6 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
                 add(el + 1, oldb) // add [x+1..b]
             }
         }
-    }
-
-    public func isReadonly() -> Bool {
-        return readonly
-    }
-
-    public mutating func makeReadonly() {
-        readonly = true
     }
 }
 
