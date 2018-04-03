@@ -881,7 +881,7 @@ open class ParserATNSimulator: ATNSimulator {
             /// already guaranteed to meet this condition whether or not it's
             /// required.
             ///
-            reach = removeAllConfigsNotInRuleStopState(reach!, true)
+            reach = removeAllConfigsNotInRuleStopState(reach!, isIntermediate)
         }
 
         ///
