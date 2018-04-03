@@ -39,7 +39,7 @@ public struct LL1Analyzer {
             var lookBusy = Set<ATNConfig>()
             let seeThruPreds = false // fail to get lookahead upon pred
             _LOOK(s.transition(alt).target, nil, PredictionContext.EMPTY,
-                  look[alt]!, &lookBusy, BitSet(), seeThruPreds, false)
+                  &look[alt]!, &lookBusy, BitSet(), seeThruPreds, false)
             // Wipe out lookahead for this alternative if we found nothing
             // or we had a predicate when we !seeThruPreds
             if look[alt]!.size() == 0 || look[alt]!.contains(HIT_PRED) {
@@ -89,11 +89,11 @@ public struct LL1Analyzer {
     ///
 
     public func LOOK(_ s: ATNState, _ stopState: ATNState?, _ ctx: RuleContext?) -> IntervalSet {
-        let r = IntervalSet()
+        var r = IntervalSet()
         let seeThruPreds = true // ignore preds; get all lookahead
         let lookContext = ctx != nil ? PredictionContext.fromRuleContext(s.atn!, ctx) : nil
         var config = Set<ATNConfig>()
-        _LOOK(s, stopState, lookContext, r, &config, BitSet(), seeThruPreds, true)
+        _LOOK(s, stopState, lookContext, &r, &config, BitSet(), seeThruPreds, true)
         return r
     }
 
@@ -130,7 +130,7 @@ public struct LL1Analyzer {
     internal func _LOOK(_ s: ATNState,
                         _ stopState: ATNState?,
                         _ ctx: PredictionContext?,
-                        _ look: IntervalSet,
+                        _ look: inout IntervalSet,
                         _ lookBusy: inout Set<ATNConfig>,
                         _ calledRuleStack: BitSet,
                         _ seeThruPreds: Bool,
@@ -175,7 +175,7 @@ public struct LL1Analyzer {
                     let removed = calledRuleStack.get(returnState.ruleIndex!)
                     calledRuleStack.clear(returnState.ruleIndex!)
                     _LOOK(returnState, stopState, ctx.getParent(i),
-                          look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
+                          &look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
                     if removed {
                         calledRuleStack.set(returnState.ruleIndex!)
                     }
@@ -196,17 +196,17 @@ public struct LL1Analyzer {
                 
                 let newContext = SingletonPredictionContext.create(ctx, followState.stateNumber)
                 calledRuleStack.set(target.ruleIndex!)
-                _LOOK(t.target, stopState, newContext, look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
+                _LOOK(t.target, stopState, newContext, &look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
                 calledRuleStack.clear(target.ruleIndex!)
             case .predicate:
                 if seeThruPreds {
-                    _LOOK(t.target, stopState, ctx, look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
+                    _LOOK(t.target, stopState, ctx, &look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
                 } else {
                     look.add(HIT_PRED)
                 }
             default:
                 if t.isEpsilon() {
-                    _LOOK(t.target, stopState, ctx, look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
+                    _LOOK(t.target, stopState, ctx, &look, &lookBusy, calledRuleStack, seeThruPreds, addEOF)
                 } else if case .wildcard = t {
                     look.addAll(IntervalSet.of(CommonToken.minUserTokenType, atn.maxTokenType))
                 } else {

@@ -330,7 +330,7 @@ public class ATNDeserializer {
         for _ in 0..<nsets {
             let nintervals = toInt(data[p])
             p += 1
-            let set = IntervalSet()
+            var set = IntervalSet()
 
             let containsEof = (toInt(data[p]) != 0)
             p += 1
@@ -480,7 +480,7 @@ public class ATNDeserializer {
             let setBuilder = intervalSet[i]
             let nintervals = setBuilder["size"] as! Int
 
-            let set = IntervalSet()
+            var set = IntervalSet()
             
             let containsEof = (setBuilder["containsEof"] as! Int) != 0
             if containsEof {

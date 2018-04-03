@@ -17,15 +17,15 @@
 /// (inclusive).
 ///
 
-public final class IntervalSet: IntSet, Hashable, CustomStringConvertible {
+public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     public static let completeCharSet: IntervalSet = {
-        let set = IntervalSet.of(Lexer.MIN_CHAR_VALUE, Lexer.MAX_CHAR_VALUE)
+        var set = IntervalSet.of(Lexer.MIN_CHAR_VALUE, Lexer.MAX_CHAR_VALUE)
         set.makeReadonly()
         return set
     }()
 
     public static let emptySet: IntervalSet = {
-        let set = IntervalSet()
+        var set = IntervalSet()
         set.makeReadonly()
         return set
     }()
@@ -41,8 +41,8 @@ public final class IntervalSet: IntSet, Hashable, CustomStringConvertible {
         self.intervals = intervals
     }
 
-    public convenience init(_ set: IntervalSet) {
-        self.init()
+    public init(_ set: IntervalSet) {
+        self.intervals = []
         addAll(set)
     }
 
@@ -61,12 +61,12 @@ public final class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     /// Create a set with all ints within range [a..b] (inclusive)
     ///
     public static func of(_ first: Int, _ second: Int) -> IntervalSet {
-        let s = IntervalSet()
+        var s = IntervalSet()
         s.add(first, second)
         return s
     }
 
-    public func clear() {
+    public mutating func clear() {
         if readonly {
             fatalError("can't alter readonly IntervalSet")
         }
@@ -78,7 +78,7 @@ public final class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     /// as a range el..el.
     ///
 
-    public func add(_ el: Int) {
+    public mutating func add(_ el: Int) {
         if readonly {
             fatalError("can't alter readonly IntervalSet")
         }
@@ -93,12 +93,12 @@ public final class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     /// If this is {1..5, 10..20}, adding 6..7 yields
     /// {1..5, 6..7, 10..20}.  Adding 4..8 yields {1..8, 10..20}.
     ///
-    public func add(_ first: Int, _ second: Int) {
+    public mutating func add(_ first: Int, _ second: Int) {
         add(Interval.of(first, second))
     }
 
     // copy on write so we can cache a..a intervals and sets of that
-    internal func add(_ addition: Interval) {
+    internal mutating func add(_ addition: Interval) {
         if readonly {
             fatalError("can't alter readonly IntervalSet")
         }
@@ -160,7 +160,7 @@ public final class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     /// combine all sets in the array returned the or'd value
     ///
     public func or(_ sets: [IntervalSet]) -> IntSet {
-        let r = IntervalSet()
+        var r = IntervalSet()
         for s in sets {
             r.addAll(s)
         }
@@ -168,7 +168,7 @@ public final class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     }
 
     @discardableResult
-    public func addAll(_ set: IntSet?) -> IntSet {
+    public mutating func addAll(_ set: IntSet?) -> IntSet {
 
         guard let set = set else {
             return self
@@ -219,7 +219,7 @@ public final class IntervalSet: IntSet, Hashable, CustomStringConvertible {
             return subtract(self, other)
         }
 
-        let final = IntervalSet()
+        var final = IntervalSet()
         final.addAll(other)
         return subtract(self, final)
     }
@@ -235,7 +235,7 @@ public final class IntervalSet: IntSet, Hashable, CustomStringConvertible {
             return IntervalSet()
         }
 
-        let result = IntervalSet(left)
+        var result = IntervalSet(left)
 
         guard let right = right, !right.isNil() else {
             // right set has no elements; just return the copy of the current set
@@ -305,7 +305,7 @@ public final class IntervalSet: IntSet, Hashable, CustomStringConvertible {
     }
 
     public func or(_ a: IntSet) -> IntSet {
-        let o = IntervalSet()
+        var o = IntervalSet()
         o.addAll(self)
         o.addAll(a)
         return o
@@ -649,7 +649,7 @@ public final class IntervalSet: IntSet, Hashable, CustomStringConvertible {
         return -1
     }
 
-    public func remove(_ el: Int) {
+    public mutating func remove(_ el: Int) {
         if readonly {
             fatalError("can't alter readonly IntervalSet")
         }
@@ -688,7 +688,7 @@ public final class IntervalSet: IntSet, Hashable, CustomStringConvertible {
         return readonly
     }
 
-    public func makeReadonly() {
+    public mutating func makeReadonly() {
         readonly = true
     }
 }

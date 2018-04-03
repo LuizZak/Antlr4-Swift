@@ -682,7 +682,7 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
     open func getErrorRecoverySet(_ recognizer: Parser) -> IntervalSet {
         let atn = recognizer.getInterpreter().atn
         var ctx: RuleContext? = recognizer._ctx
-        let recoverSet = IntervalSet()
+        var recoverSet = IntervalSet()
         while let ctxWrap = ctx, ctxWrap.invokingState >= 0 {
             // compute what follows who invoked us
             let invokingState = atn.states[ctxWrap.invokingState]!
