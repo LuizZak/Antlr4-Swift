@@ -166,6 +166,12 @@ public class ATNState: Hashable, CustomStringConvertible {
     }
 
     public final func setTransition(_ i: Int, _ e: Transition) {
+        if epsilonOnlyTransitions != e.isEpsilon() {
+            
+            print("ATN state %d has both epsilon and non-epsilon transitions.\n", String(stateNumber))
+            epsilonOnlyTransitions = false
+        }
+        
         transitions[i] = e
     }
 

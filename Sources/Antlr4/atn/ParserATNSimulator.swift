@@ -1327,41 +1327,7 @@ open class ParserATNSimulator: ATNSimulator {
                                       _ alt: Int, _ fullCtx: Bool) throws -> Bool {
         return try pred.eval(parser, parserCallStack)
     }
-
-    struct ClosureState {
-        class BoxedATNConfigSet {
-            var atnSet: Set<ATNConfig>
-            
-            init() {
-                self.atnSet = []
-            }
-            
-            init(atnSet: Set<ATNConfig>) {
-                self.atnSet = atnSet
-            }
-        }
-        
-        var config: ATNConfig
-        var configs: ATNConfigSet
-        var closureBusy: BoxedATNConfigSet
-        var collectPredicates: Bool
-        var fullCtx: Bool
-        var depth: Int
-        var treatEofAsEpsilon: Bool
-        
-        func withConfig(_ config: ATNConfig) -> ClosureState {
-            var state = self
-            state.config = config
-            return state
-        }
-        
-        func withDepth(_ depth: Int) -> ClosureState {
-            var state = self
-            state.depth = depth
-            return state
-        }
-    }
-
+    
     ///
     /// TODO: If we are doing predicates, there is no point in pursuing
     /// closure operations if we reach a DFA state that uniquely predicts
@@ -1375,8 +1341,11 @@ open class ParserATNSimulator: ATNSimulator {
         assert(!state.fullCtx || !state.configs.dipsIntoOuterContext, "Expected: !fullCtx||!configs.dipsIntoOuterContext")
     }
     
+    final internal func _closureCheckingStopState(_ state: ClosureState) throws {
+        
+    }
+    
     final internal func closureCheckingStopState(_ state: ClosureState) throws {
-
         if debug {
             print("closure(" + state.config.toString(parser, true) + ")")
         }
@@ -1437,20 +1406,15 @@ open class ParserATNSimulator: ATNSimulator {
     /// Do the actual work of walking epsilon edges
     ///
     final internal func closure_(_ state: ClosureState) throws {
-        // print(__FUNCTION__)
-        //long startTime = System.currentTimeMillis();
         let p = state.config.state
-        // optimization
         if !p.onlyHasEpsilonTransitions() {
             state.configs.add(state.config, &mergeCache)
             // make sure to not return here, because EOF transitions can act as
             // both epsilon transitions and non-epsilon transitions.
-            //            if ( debug ) print("added config "+configs);
         }
         let length = p.getNumberOfTransitions()
         for i in 0..<length {
-            if i == 0 &&
-                canDropLoopEntryEdgeInLeftRecursiveRule(state.config) {
+            if i == 0 && canDropLoopEntryEdgeInLeftRecursiveRule(state.config) {
                 continue
             }
             let t = p.transition(i)
@@ -1466,63 +1430,65 @@ open class ParserATNSimulator: ATNSimulator {
                 
             continueCollecting = continueCollecting && state.collectPredicates
             
-            let c = try getEpsilonTarget(state.config, t, continueCollecting, state.depth == 0, state.fullCtx, state.treatEofAsEpsilon)
-            if let c = c {
-                if !t.isEpsilon() {
-                    // avoid infinite recursion for EOF* and EOF+
-                    if state.closureBusy.atnSet.contains(c) {
-                        continue
-                    } else {
-                        state.closureBusy.atnSet.insert(c)
-                    }
-                }
-
-                var newDepth = state.depth
-                if state.config.state is RuleStopState {
-                    assert(!state.fullCtx, "Expected: !fullCtx")
-                    // target fell off end of rule; mark resulting c as having dipped into outer context
-                    // We can't get here if incoming config was rule stop and we had context
-                    // track how far we dip into outer context.  Might
-                    // come in handy and we avoid evaluating context dependent
-                    // preds if this is > 0.
-                    if state.closureBusy.atnSet.contains(c) {
-                        //if (!closureBusy.insert(c)) {
-                        // avoid infinite recursion for right-recursive rules
-                        continue
-                    } else {
-                        state.closureBusy.atnSet.insert(c)
-                    }
-
-                    if let _dfa = _dfa, _dfa.isPrecedenceDfa() {
-                        
-                        switch t {
-                        case .epsilon(_, let outermostPrecedenceReturn):
-                            if outermostPrecedenceReturn == _dfa.atnStartState.ruleIndex {
-                                c.setPrecedenceFilterSuppressed(true)
-                            }
-                        default:
-                            fatalError("Expected epsilon transition")
-                        }
-                    }
-
-                    c.reachesIntoOuterContext += 1
-                    state.configs.dipsIntoOuterContext = true // TODO: can remove? only care when we add to set per middle of this method
-                    //print("newDepth=>\(newDepth)")
-                    assert(newDepth > Int.min, "Expected: newDepth>Integer.MIN_VALUE")
-                    newDepth -= 1
-
-                    if debug {
-                        print("dips into outer ctx: \(c)")
-                    }
-                } else if case .range = t {
-                    // latch when newDepth goes negative - once we step out of the entry context we can't return
-                    if newDepth >= 0 {
-                        newDepth += 1
-                    }
-                }
-
-                try closureCheckingStopState(state.withConfig(c).withDepth(newDepth))
+            let _c = try getEpsilonTarget(state.config, t, continueCollecting, state.depth == 0, state.fullCtx, state.treatEofAsEpsilon)
+            guard let c = _c else {
+                continue
             }
+            
+            if !t.isEpsilon() {
+                // avoid infinite recursion for EOF* and EOF+
+                if state.closureBusy.atnSet.contains(c) {
+                    continue
+                } else {
+                    state.closureBusy.atnSet.insert(c)
+                }
+            }
+
+            var newDepth = state.depth
+            if state.config.state is RuleStopState {
+                assert(!state.fullCtx, "Expected: !fullCtx")
+                // target fell off end of rule; mark resulting c as having dipped into outer context
+                // We can't get here if incoming config was rule stop and we had context
+                // track how far we dip into outer context.  Might
+                // come in handy and we avoid evaluating context dependent
+                // preds if this is > 0.
+                if state.closureBusy.atnSet.contains(c) {
+                    //if (!closureBusy.insert(c)) {
+                    // avoid infinite recursion for right-recursive rules
+                    continue
+                } else {
+                    state.closureBusy.atnSet.insert(c)
+                }
+
+                if let _dfa = _dfa, _dfa.isPrecedenceDfa() {
+                    
+                    switch t {
+                    case .epsilon(_, let outermostPrecedenceReturn):
+                        if outermostPrecedenceReturn == _dfa.atnStartState.ruleIndex {
+                            c.setPrecedenceFilterSuppressed(true)
+                        }
+                    default:
+                        fatalError("Expected epsilon transition")
+                    }
+                }
+
+                c.reachesIntoOuterContext += 1
+                state.configs.dipsIntoOuterContext = true // TODO: can remove? only care when we add to set per middle of this method
+                //print("newDepth=>\(newDepth)")
+                assert(newDepth > Int.min, "Expected: newDepth>Integer.MIN_VALUE")
+                newDepth -= 1
+
+                if debug {
+                    print("dips into outer ctx: \(c)")
+                }
+            } else if case .range = t {
+                // latch when newDepth goes negative - once we step out of the entry context we can't return
+                if newDepth >= 0 {
+                    newDepth += 1
+                }
+            }
+
+            try closureCheckingStopState(state.withConfig(c).withDepth(newDepth))
         }
         //long finishTime = System.currentTimeMillis();
         //  if ((finishTime-startTime)>1)
@@ -2132,5 +2098,39 @@ open class ParserATNSimulator: ATNSimulator {
 
     public final func getParser() -> Parser {
         return parser
+    }
+    
+    struct ClosureState {
+        class BoxedATNConfigSet {
+            var atnSet: Set<ATNConfig>
+            
+            init() {
+                self.atnSet = []
+            }
+            
+            init(atnSet: Set<ATNConfig>) {
+                self.atnSet = atnSet
+            }
+        }
+        
+        var config: ATNConfig
+        var configs: ATNConfigSet
+        var closureBusy: BoxedATNConfigSet
+        var collectPredicates: Bool
+        var fullCtx: Bool
+        var depth: Int
+        var treatEofAsEpsilon: Bool
+        
+        func withConfig(_ config: ATNConfig) -> ClosureState {
+            var state = self
+            state.config = config
+            return state
+        }
+        
+        func withDepth(_ depth: Int) -> ClosureState {
+            var state = self
+            state.depth = depth
+            return state
+        }
     }
 }

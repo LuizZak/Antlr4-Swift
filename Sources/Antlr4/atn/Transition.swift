@@ -27,9 +27,9 @@ public enum _PredicateTransition {
     public func getPredicate() -> SemanticContext {
         switch self {
         case let .predicate(ruleIndex, predIndex, isCtxDependent):
-            return SemanticContext.Predicate(ruleIndex, predIndex, isCtxDependent)
+            return .Predicate(ruleIndex, predIndex, isCtxDependent)
         case .precedence(let precedence):
-            return SemanticContext.PrecedencePredicate(precedence)
+            return .PrecedencePredicate(precedence)
         }
     }
     
@@ -162,64 +162,36 @@ public enum Transition: CustomStringConvertible {
     ///
     public func isEpsilon() -> Bool {
         switch self {
-        case .epsilon:
+        case .epsilon, .rule, .predicate:
             return true
-        case .range:
-            return false
-        case .rule:
-            return true
-        case .predicate:
-            return true
-        case .atom:
-            return false
         case .action:
             return true // we are to be ignored by analysis 'cept for predicates
-        case .set:
-            return false
-        case .notSet:
-            return false
-        case .wildcard:
+        case .range, .atom, .set, .notSet, .wildcard:
             return false
         }
     }
     
     public func labelIntervalSet() -> IntervalSet? {
         switch self {
-        case .epsilon:
+        case .epsilon, .rule, .predicate, .action, .wildcard:
             return nil
         case let .range(_, from, to):
             return .of(from, to)
-        case .rule:
-            return nil
-        case .predicate:
-            return nil
         case .atom(_, let label):
             return IntervalSet(label)
-        case .action:
-            return nil
-        case .set(_, let set):
+        case .set(_, let set), .notSet(_, let set):
             return set
-        case .notSet(_, let set):
-            return set
-        case .wildcard:
-            return nil
         }
     }
     
     public func matches(_ symbol: Int, _ minVocabSymbol: Int, _ maxVocabSymbol: Int) -> Bool {
         switch self {
-        case .epsilon:
+        case .epsilon, .rule, .predicate, .action:
             return false
         case let .range(_, from, to):
             return symbol >= from && symbol <= to
-        case .rule:
-            return false
-        case .predicate:
-            return false
         case .atom(_, let label):
             return label == symbol
-        case .action:
-            return false
         case .set(_, let set):
             return set.contains(symbol)
         case .notSet(_, let set):

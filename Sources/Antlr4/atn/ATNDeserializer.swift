@@ -331,7 +331,6 @@ public class ATNDeserializer {
             let nintervals = toInt(data[p])
             p += 1
             let set = IntervalSet()
-            sets.append(set)
 
             let containsEof = (toInt(data[p]) != 0)
             p += 1
@@ -342,6 +341,8 @@ public class ATNDeserializer {
             for _ in 0..<nintervals {
                 set.add(readUnicode(data, &p), readUnicode(data, &p))
             }
+            
+            sets.append(set)
         }
     }
 
@@ -480,8 +481,7 @@ public class ATNDeserializer {
             let nintervals = setBuilder["size"] as! Int
 
             let set = IntervalSet()
-            sets.append(set)
-
+            
             let containsEof = (setBuilder["containsEof"] as! Int) != 0
             if containsEof {
                 set.add(-1)
@@ -492,6 +492,8 @@ public class ATNDeserializer {
                 let vals = intervalsBuilder[j]
                 set.add((vals["a"] as! Int), (vals["b"] as! Int))
             }
+            
+            sets.append(set)
         }
 
         //
@@ -614,8 +616,9 @@ public class ATNDeserializer {
                 case let .action(target, ruleIndex, actionIndex, _):
                     let lexerAction = LexerCustomAction(ruleIndex, actionIndex)
                     
-                    //state.setTransition(i, ActionTransition(transition.target, ruleIndex, legacyLexerActions.count, false))
-                    state.setTransition(i, .action(target, ruleIndex: ruleIndex, actionIndex: legacyLexerActions.count, isCtxDependent: false))
+                    state.setTransition(i, .action(target, ruleIndex: ruleIndex,
+                                                   actionIndex: legacyLexerActions.count,
+                                                   isCtxDependent: false))
                     legacyLexerActions.append(lexerAction)
                     
                 default:
