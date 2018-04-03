@@ -815,6 +815,7 @@ open class ParserATNSimulator: ATNSimulator {
         // Now figure out where the reach operation can take us...
 
         var reach: ATNConfigSet? = nil
+        var isIntermediate = false
 
         ///
         /// This block optimizes the reach operation for intermediate sets which
@@ -833,12 +834,12 @@ open class ParserATNSimulator: ATNSimulator {
                 // Also don't pursue the closure if there is unique alternative
                 // among the configurations.
                 reach = intermediate
-            } else {
-                if ParserATNSimulator.getUniqueAlt(intermediate) != ATN.INVALID_ALT_NUMBER {
-                    // Also don't pursue the closure if there is unique alternative
-                    // among the configurations.
-                    reach = intermediate
-                }
+                isIntermediate = true
+            } else if ParserATNSimulator.getUniqueAlt(intermediate) != ATN.INVALID_ALT_NUMBER {
+                // Also don't pursue the closure if there is unique alternative
+                // among the configurations.
+                reach = intermediate
+                isIntermediate = true
             }
         }
 
@@ -880,7 +881,7 @@ open class ParserATNSimulator: ATNSimulator {
             /// already guaranteed to meet this condition whether or not it's
             /// required.
             ///
-            reach = removeAllConfigsNotInRuleStopState(reach!, reach! === intermediate)
+            reach = removeAllConfigsNotInRuleStopState(reach!, true)
         }
 
         ///
