@@ -150,11 +150,11 @@ open class LexerATNSimulator: ATNSimulator {
 
         let old_mode = mode
 
-        let s0_closure = try computeStartState(input, startState)
+        var s0_closure = try computeStartState(input, startState)
         let suppressEdge = s0_closure.hasSemanticContext
         s0_closure.hasSemanticContext = false
 
-        let next = addDFAState(s0_closure)
+        let next = addDFAState(&s0_closure)
         if !suppressEdge {
             decisionToDFA[mode].s0 = next
         }
@@ -278,12 +278,12 @@ open class LexerATNSimulator: ATNSimulator {
     ///
 
     internal func computeTargetState(_ input: CharStream, _ s: DFAState, _ t: Int) throws -> DFAState {
-        let reach = ATNConfigSet(ordered: true)
+        var reach = ATNConfigSet(ordered: true)
 
         // if we don't find an existing DFA state
         // Fill reach starting from closure, following t transitions
 
-        try getReachableConfigSet(input, s.configs, reach, t)
+        try getReachableConfigSet(input, s.configs, &reach, t)
 
         if reach.isEmpty() {
             // we got nowhere on t from s
@@ -298,7 +298,7 @@ open class LexerATNSimulator: ATNSimulator {
         }
 
         // Add an edge from s to target DFA found/created for reach
-        return addDFAEdge(s, t, reach)
+        return addDFAEdge(s, t, &reach)
     }
 
     internal func failOrAccept(_ prevAccept: SimState, _ input: CharStream,
@@ -323,7 +323,7 @@ open class LexerATNSimulator: ATNSimulator {
     /// parameter.
     ///
     internal func getReachableConfigSet(_ input: CharStream, _ closureConfig: ATNConfigSet,
-                                        _ reach: ATNConfigSet, _ t: Int) throws {
+                                        _ reach: inout ATNConfigSet, _ t: Int) throws {
         
         // this is used to skip processing for configs which have a lower priority
         // than a config that already reached an accept state for the same rule
@@ -355,7 +355,7 @@ open class LexerATNSimulator: ATNSimulator {
                     let treatEofAsEpsilon = (t == BufferedTokenStream.EOF)
                     if try closure(input,
                                    LexerATNConfig(c, target, lexerActionExecutor),
-                                   reach,
+                                   &reach,
                                    currentAltReachedAcceptState,
                                    true,
                                    treatEofAsEpsilon) {
@@ -396,12 +396,12 @@ open class LexerATNSimulator: ATNSimulator {
     final func computeStartState(_ input: CharStream,
                                  _ p: ATNState) throws -> ATNConfigSet {
         let initialContext = PredictionContext.EMPTY
-        let configs = ATNConfigSet(ordered: true)
+        var configs = ATNConfigSet(ordered: true)
         let length = p.getNumberOfTransitions()
         for i in 0..<length {
             let target = p.transition(i).target
             let c = LexerATNConfig(target, i + 1, initialContext)
-            try closure(input, c, configs, false, false, false)
+            try closure(input, c, &configs, false, false, false)
         }
         return configs
     }
@@ -418,7 +418,7 @@ open class LexerATNSimulator: ATNSimulator {
     ///
     @discardableResult
     final func closure(_ input: CharStream, _ config: LexerATNConfig,
-                       _ configs: ATNConfigSet, _ currentAltReachedAcceptState: Bool,
+                       _ configs: inout ATNConfigSet, _ currentAltReachedAcceptState: Bool,
                        _ speculative: Bool, _ treatEofAsEpsilon: Bool) throws -> Bool {
         
         var currentAltReachedAcceptState = currentAltReachedAcceptState
@@ -453,7 +453,7 @@ open class LexerATNSimulator: ATNSimulator {
                         let returnState = atn.states[configContext.getReturnState(i)]
                         let c = LexerATNConfig(config, returnState!, newContext)
                         currentAltReachedAcceptState =
-                            try closure(input, c, configs, currentAltReachedAcceptState, speculative, treatEofAsEpsilon)
+                            try closure(input, c, &configs, currentAltReachedAcceptState, speculative, treatEofAsEpsilon)
                     }
                 }
             }
@@ -472,9 +472,9 @@ open class LexerATNSimulator: ATNSimulator {
         let length = p.getNumberOfTransitions()
         for i in 0..<length {
             let t = p.transition(i)
-            if let c = try getEpsilonTarget(input, config, t, configs, speculative, treatEofAsEpsilon) {
+            if let c = try getEpsilonTarget(input, config, t, &configs, speculative, treatEofAsEpsilon) {
                 currentAltReachedAcceptState =
-                    try closure(input, c, configs, currentAltReachedAcceptState, speculative, treatEofAsEpsilon)
+                    try closure(input, c, &configs, currentAltReachedAcceptState, speculative, treatEofAsEpsilon)
             }
         }
 
@@ -486,7 +486,7 @@ open class LexerATNSimulator: ATNSimulator {
     final func getEpsilonTarget(_ input: CharStream,
                                 _ config: LexerATNConfig,
                                 _ t: Transition,
-                                _ configs: ATNConfigSet,
+                                _ configs: inout ATNConfigSet,
                                 _ speculative: Bool,
                                 _ treatEofAsEpsilon: Bool) throws -> LexerATNConfig? {
         
@@ -629,7 +629,7 @@ open class LexerATNSimulator: ATNSimulator {
 
     final func addDFAEdge(_ from: DFAState,
                           _ t: Int,
-                          _ q: ATNConfigSet) -> DFAState {
+                          _ q: inout ATNConfigSet) -> DFAState {
         ///
         /// leading to this call, ATNConfigSet.hasSemanticContext is used as a
         /// marker indicating dynamic predicate evaluation makes this edge
@@ -644,7 +644,7 @@ open class LexerATNSimulator: ATNSimulator {
         ///
         let suppressEdge = q.hasSemanticContext
         q.hasSemanticContext = false
-        let to = addDFAState(q)
+        let to = addDFAState(&q)
 
         if suppressEdge {
             return to
@@ -681,7 +681,7 @@ open class LexerATNSimulator: ATNSimulator {
     /// traversing the DFA, we will know which rule to accept.
     ///
 
-    final func addDFAState(_ configs: ATNConfigSet) -> DFAState {
+    final func addDFAState(_ configs: inout ATNConfigSet) -> DFAState {
         ///
         /// the lexer evaluates predicates on-the-fly; by this point configs
         /// should not contain any configurations with unevaluated predicates.

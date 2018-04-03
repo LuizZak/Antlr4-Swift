@@ -9,7 +9,7 @@
 /// info about the set, with support for combining similar configurations using a
 /// graph-structured stack.
 ///
-public final class ATNConfigSet: Hashable, CustomStringConvertible {
+public struct ATNConfigSet: Hashable, CustomStringConvertible {
     ///
     /// The reason that we need this is because we don't want the hash map to use
     /// the standard hash code and equals. We need all configurations with the same
@@ -74,20 +74,31 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
         }
 
         self.fullCtx = fullCtx
+        
+        cachedHashCode = configsHashValue
     }
 
-    public convenience init(_ old: ATNConfigSet) {
-        self.init(old.fullCtx, ordered: old.configLookup.type == .ordered)
+    public init(_ old: ATNConfigSet) {
+        if old.configLookup.type == .ordered {
+            configLookup = LookupDictionary(type: LookupDictionaryType.ordered)
+        } else {
+            configLookup = LookupDictionary()
+        }
+        
+        self.fullCtx = old.fullCtx
+        
         addAll(old)
         self.uniqueAlt = old.uniqueAlt
         self.conflictingAlts = old.conflictingAlts
         self.hasSemanticContext = old.hasSemanticContext
         self.dipsIntoOuterContext = old.dipsIntoOuterContext
+        
+        cachedHashCode = configsHashValue
     }
 
     //override
     @discardableResult
-    public func add(_ config: ATNConfig) -> Bool {
+    public mutating func add(_ config: ATNConfig) -> Bool {
         var mergeCache: [TuplePair<PredictionContext, PredictionContext>: PredictionContext]? = nil
         return add(config, &mergeCache)
     }
@@ -104,7 +115,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
     /// - precondition: This set is not readonly.
     ///
     @discardableResult
-    public func add(
+    public mutating func add(
         _ config: ATNConfig,
         _ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?) -> Bool {
         precondition(!readonly, "This set is readonly")
@@ -142,7 +153,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
         return true
     }
 
-    public func getOrAdd(_ config: ATNConfig) -> ATNConfig {
+    public mutating func getOrAdd(_ config: ATNConfig) -> ATNConfig {
 
         return configLookup.getOrAdd(config)
     }
@@ -203,7 +214,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
     }
 
     @discardableResult
-    public func addAll(_ coll: ATNConfigSet) -> Bool {
+    public mutating func addAll(_ coll: ATNConfigSet) -> Bool {
         for c in coll.configs {
             add(c)
         }
@@ -211,15 +222,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
     }
 
     public var hashValue: Int {
-        if isReadonly() {
-            if cachedHashCode == -1 {
-                cachedHashCode = configsHashValue//configs.hashValue ;
-            }
-
-            return cachedHashCode
-        }
-
-        return configsHashValue // configs.hashValue;
+        return configsHashValue
     }
 
     private var configsHashValue: Int {
@@ -247,7 +250,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
         return configLookup.contains(o)
     }
 
-    public func clear() throws {
+    public mutating func clear() throws {
         if readonly {
             throw ANTLRError.illegalState(msg: "This set is readonly")
         }
@@ -260,7 +263,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
         return readonly
     }
 
-    public func setReadonly(_ readonly: Bool) {
+    public mutating func setReadonly(_ readonly: Bool) {
         self.readonly = readonly
         configLookup.removeAll()
 
@@ -383,7 +386,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
             return self
         }
 
-        let result = ATNConfigSet(fullCtx)
+        var result = ATNConfigSet(fullCtx)
         for config in configs {
             if config.state is RuleStopState {
                 result.add(config, &mergeCache)
@@ -407,7 +410,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
         _ parser: Parser,
         _ _outerContext: ParserRuleContext!) throws -> ATNConfigSet {
 
-        let configSet = ATNConfigSet(fullCtx)
+        var configSet = ATNConfigSet(fullCtx)
         var statesFromAlt1 = [Int: PredictionContext]()
         for config in configs {
             // handle alt 1 first
@@ -507,8 +510,8 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
     public func splitAccordingToSemanticValidity(
         _ outerContext: ParserRuleContext,
         _ evalSemanticContext: (SemanticContext, ParserRuleContext, Int, Bool) throws -> Bool) rethrows -> (ATNConfigSet, ATNConfigSet) {
-        let succeeded = ATNConfigSet(fullCtx)
-        let failed = ATNConfigSet(fullCtx)
+        var succeeded = ATNConfigSet(fullCtx)
+        var failed = ATNConfigSet(fullCtx)
         for config in configs {
             if config.semanticContext != SemanticContext.NONE {
                 let predicateEvaluationResult =
@@ -527,7 +530,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
     }
 
     public func dupConfigsWithoutSemanticPredicates() -> ATNConfigSet {
-        let dup = ATNConfigSet()
+        var dup = ATNConfigSet()
         for config in configs {
             let c = ATNConfig(config, SemanticContext.NONE)
             dup.add(c)
@@ -545,10 +548,6 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
 }
 
 public func == (lhs: ATNConfigSet, rhs: ATNConfigSet) -> Bool {
-    if lhs === rhs {
-        return true
-    }
-
     return
         lhs.configs == rhs.configs && // includes stack context
             lhs.fullCtx == rhs.fullCtx &&

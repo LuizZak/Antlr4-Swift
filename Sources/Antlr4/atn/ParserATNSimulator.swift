@@ -677,16 +677,19 @@ open class ParserATNSimulator: ATNSimulator {
                 throw ANTLRException.recognition(e: e)
 
             }
-            if let reach = reach {
-                let altSubSets = PredictionMode.getConflictingAltSubsets(reach)
+            if var _reach = reach {
+                defer {
+                    reach = _reach
+                }
+                let altSubSets = PredictionMode.getConflictingAltSubsets(_reach)
                 if debug {
                     print("LL altSubSets=\(altSubSets), predict=\(PredictionMode.getUniqueAlt(altSubSets)), resolvesToJustOneViableAlt=\(PredictionMode.resolvesToJustOneViableAlt(altSubSets))")
                 }
-
-                reach.uniqueAlt = ParserATNSimulator.getUniqueAlt(reach)
+                
+                _reach.uniqueAlt = ParserATNSimulator.getUniqueAlt(_reach)
                 // unique prediction?
-                if reach.uniqueAlt != ATN.INVALID_ALT_NUMBER {
-                    predictedAlt = reach.uniqueAlt
+                if _reach.uniqueAlt != ATN.INVALID_ALT_NUMBER {
+                    predictedAlt = _reach.uniqueAlt
                     break
                 }
                 if mode != PredictionMode.LL_EXACT_AMBIG_DETECTION {
@@ -708,7 +711,7 @@ open class ParserATNSimulator: ATNSimulator {
                     // So, keep going.
                 }
 
-                previous = reach
+                previous = _reach
                 if t != BufferedTokenStream.EOF {
                     try input.consume()
                     t = try input.LA(1)
@@ -768,7 +771,7 @@ open class ParserATNSimulator: ATNSimulator {
             mergeCache = [:]
         }
 
-        let intermediate = ATNConfigSet(fullCtx)
+        var intermediate = ATNConfigSet(fullCtx)
 
         ///
         /// Configurations already in a rule stop state indicate reaching the end
@@ -851,10 +854,14 @@ open class ParserATNSimulator: ATNSimulator {
             reach = ATNConfigSet(fullCtx)
             let treatEofAsEpsilon = (t == CommonToken.EOF)
             for config in intermediate.configs {
-                let closureBusy = ParserATNSimulator.ClosureState.BoxedATNConfigSet()
+                let closureBusy = ParserATNSimulator.ClosureState.BoxedSetOfATNConfig()
+                let boxedReach = ParserATNSimulator.ClosureState.BoxedATNConfigSet(atnSet: reach!)
+                defer {
+                    reach = boxedReach.atnSet
+                }
                 
                 let state =
-                    ClosureState(config: config, configs: reach!, closureBusy: closureBusy,
+                    ClosureState(config: config, configs: boxedReach, closureBusy: closureBusy,
                                  collectPredicates: false, fullCtx: fullCtx, depth: 0,
                                  treatEofAsEpsilon: treatEofAsEpsilon)
                 
@@ -893,17 +900,21 @@ open class ParserATNSimulator: ATNSimulator {
         /// chooses an alternative matching the longest overall sequence when
         /// multiple alternatives are viable.
         ///
-        if let reach = reach {
+        if var _reach = reach {
+            defer {
+                reach = _reach
+            }
+            
             if let skippedStopStates = skippedStopStates,
-                (!fullCtx || !PredictionMode.hasConfigInRuleStopState(reach)) {
+                (!fullCtx || !PredictionMode.hasConfigInRuleStopState(_reach)) {
                 
                 assert(!skippedStopStates.isEmpty, "Expected: !skippedStopStates.isEmpty()")
                 for c in skippedStopStates {
-                    reach.add(c, &mergeCache)
+                    _reach.add(c, &mergeCache)
                 }
             }
 
-            if reach.isEmpty() {
+            if _reach.isEmpty() {
                 return nil
             }
         }
@@ -936,15 +947,19 @@ open class ParserATNSimulator: ATNSimulator {
 
     final func computeStartState(_ p: ATNState, _ ctx: RuleContext, _ fullCtx: Bool) throws -> ATNConfigSet {
         let initialContext = PredictionContext.fromRuleContext(atn, ctx)
-        let configs = ATNConfigSet(fullCtx)
+        var configs = ATNConfigSet(fullCtx)
         let length = p.getNumberOfTransitions()
         for i in 0..<length {
             let target = p.transition(i).target
             let c = ATNConfig(target, i + 1, initialContext)
-            let closureBusy = ParserATNSimulator.ClosureState.BoxedATNConfigSet()
+            let closureBusy = ParserATNSimulator.ClosureState.BoxedSetOfATNConfig()
+            let boxedConfigs = ParserATNSimulator.ClosureState.BoxedATNConfigSet(atnSet: configs)
+            defer {
+                configs = boxedConfigs.atnSet
+            }
             
             let state =
-                ClosureState(config: c, configs: configs, closureBusy: closureBusy,
+                ClosureState(config: c, configs: boxedConfigs, closureBusy: closureBusy,
                              collectPredicates: true, fullCtx: fullCtx, depth: 0,
                              treatEofAsEpsilon: false)
             
@@ -1339,7 +1354,7 @@ open class ParserATNSimulator: ATNSimulator {
     final internal func closure(_ state: ClosureState) throws {
         let initialDepth = 0
         try closureCheckingStopState(state.withDepth(initialDepth))
-        assert(!state.fullCtx || !state.configs.dipsIntoOuterContext, "Expected: !fullCtx||!configs.dipsIntoOuterContext")
+        assert(!state.fullCtx || !state.configs.atnSet.dipsIntoOuterContext, "Expected: !fullCtx||!configs.dipsIntoOuterContext")
     }
     
     final internal func _closureCheckingStopState(_ state: ClosureState) throws {
@@ -1360,7 +1375,7 @@ open class ParserATNSimulator: ATNSimulator {
                 for i in 0..<length {
                     if configContext.getReturnState(i) == PredictionContext.EMPTY_RETURN_STATE {
                         if state.fullCtx {
-                            state.configs.add(ATNConfig(state.config, state.config.state, PredictionContext.EMPTY), &mergeCache)
+                            state.configs.atnSet.add(ATNConfig(state.config, state.config.state, PredictionContext.EMPTY), &mergeCache)
                             continue
                         } else {
                             // we have no context info, just chase follow links (if greedy)
@@ -1390,7 +1405,7 @@ open class ParserATNSimulator: ATNSimulator {
                 return
             } else if state.fullCtx {
                 // reached end of start rule
-                state.configs.add(state.config, &mergeCache)
+                state.configs.atnSet.add(state.config, &mergeCache)
                 return
             } else {
                 // else if we have no context info, just chase follow links (if greedy)
@@ -1409,7 +1424,7 @@ open class ParserATNSimulator: ATNSimulator {
     final internal func closure_(_ state: ClosureState) throws {
         let p = state.config.state
         if !p.onlyHasEpsilonTransitions() {
-            state.configs.add(state.config, &mergeCache)
+            state.configs.atnSet.add(state.config, &mergeCache)
             // make sure to not return here, because EOF transitions can act as
             // both epsilon transitions and non-epsilon transitions.
         }
@@ -1474,7 +1489,7 @@ open class ParserATNSimulator: ATNSimulator {
                 }
 
                 c.reachesIntoOuterContext += 1
-                state.configs.dipsIntoOuterContext = true // TODO: can remove? only care when we add to set per middle of this method
+                state.configs.atnSet.dipsIntoOuterContext = true // TODO: can remove? only care when we add to set per middle of this method
                 //print("newDepth=>\(newDepth)")
                 assert(newDepth > Int.min, "Expected: newDepth>Integer.MIN_VALUE")
                 newDepth -= 1
@@ -2102,7 +2117,7 @@ open class ParserATNSimulator: ATNSimulator {
     }
     
     struct ClosureState {
-        class BoxedATNConfigSet {
+        class BoxedSetOfATNConfig {
             var atnSet: Set<ATNConfig>
             
             init() {
@@ -2114,9 +2129,21 @@ open class ParserATNSimulator: ATNSimulator {
             }
         }
         
+        class BoxedATNConfigSet {
+            var atnSet: ATNConfigSet
+            
+            init() {
+                self.atnSet = ATNConfigSet()
+            }
+            
+            init(atnSet: ATNConfigSet) {
+                self.atnSet = atnSet
+            }
+        }
+        
         var config: ATNConfig
-        var configs: ATNConfigSet
-        var closureBusy: BoxedATNConfigSet
+        var configs: BoxedATNConfigSet
+        var closureBusy: BoxedSetOfATNConfig
         var collectPredicates: Bool
         var fullCtx: Bool
         var depth: Int
