@@ -706,7 +706,7 @@ open class LexerATNSimulator: ATNSimulator {
 
             let newState = proposed
             newState.stateNumber = dfa.states.count
-            configs.setReadonly(true)
+            configs.configLookup.removeAll()
             newState.configs = configs
             dfa.states[newState] = newState
             return newState

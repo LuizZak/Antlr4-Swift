@@ -17,16 +17,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
     /// the number of objects associated with ATNConfigs. The other solution is to
     /// use a hash table that lets us specify the equals/hashcode operation.
     ///
-
-    ///
-    /// Indicates that the set of configurations is read-only. Do not
-    /// allow any code to manipulate the set; DFA states will point at
-    /// the sets and they must not change. This does not protect the other
-    /// fields; in particular, conflictingAlts is set after
-    /// we've made this readonly.
-    ///
-    internal var readonly = false
-
+    
     ///
     /// All configs but hashed by (s, i, _, pi) not including context. Wiped out
     /// when we go readonly as this set becomes a DFA state.
@@ -118,8 +109,6 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
     public mutating func add(
         _ config: ATNConfig,
         _ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?) -> Bool {
-        precondition(!readonly, "This set is readonly")
-
         if config.semanticContext != SemanticContext.NONE {
             hasSemanticContext = true
         }
@@ -202,8 +191,6 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
     }
 
     public func optimizeConfigs(_ interpreter: ATNSimulator) {
-        precondition(!readonly, "This set is readonly")
-        
         if configLookup.isEmpty {
             return
         }
@@ -250,25 +237,12 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
         return configLookup.contains(o)
     }
 
-    public mutating func clear() throws {
-        if readonly {
-            throw ANTLRError.illegalState(msg: "This set is readonly")
-        }
+    public mutating func clear() {
         configs.removeAll()
         cachedHashCode = -1
         configLookup.removeAll()
     }
-
-    public func isReadonly() -> Bool {
-        return readonly
-    }
-
-    public mutating func setReadonly(_ readonly: Bool) {
-        self.readonly = readonly
-        configLookup.removeAll()
-
-    }
-
+    
     public var description: String {
         var buf = ""
         buf += String(describing: elements())

@@ -2042,10 +2042,7 @@ open class ParserATNSimulator: ATNSimulator {
 
             D.stateNumber = dfa.states.count
 
-            if !D.configs.isReadonly() {
-                D.configs.optimizeConfigs(self)
-                D.configs.setReadonly(true)
-            }
+            D.configs.optimizeConfigs(self)
 
             dfa.states[D] = D
             if debug {
