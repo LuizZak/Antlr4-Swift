@@ -171,7 +171,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
     /// - since: 4.3
     ///
     public func getAlts() -> BitSet {
-        let alts = BitSet()
+        var alts = BitSet()
         for config in configs {
             alts.set(config.alt)
         }
@@ -279,15 +279,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
 
         for i in 0..<length {
             let hash = configHash(configs[i].state.stateNumber, configs[i].context)
-            var alts: BitSet
-            if let configToAlt = configToAlts[hash] {
-                alts = configToAlt
-            } else {
-                alts = BitSet()
-                configToAlts[hash] = alts
-            }
-
-            alts.set(configs[i].alt)
+            configToAlts[hash, default: BitSet()].set(configs[i].alt)
         }
 
         return Array(configToAlts.values)
@@ -298,15 +290,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
         var m = [ATNState: BitSet]()
 
         for i in 0..<length {
-            var alts: BitSet
-            if let mAlts =  m[configs[i].state] {
-                alts = mAlts
-            } else {
-                alts = BitSet()
-                m[configs[i].state] = alts
-            }
-
-            alts.set(configs[i].alt)
+            m[configs[i].state, default: BitSet()].set(configs[i].alt)
         }
         return m
     }
@@ -325,7 +309,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
 
     //for DiagnosticErrorListener
     public func getAltBitSet() -> BitSet {
-        let result = BitSet()
+        var result = BitSet()
         for config in configs {
             result.set(config.alt)
         }

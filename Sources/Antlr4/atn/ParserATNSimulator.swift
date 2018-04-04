@@ -1282,7 +1282,7 @@ open class ParserATNSimulator: ATNSimulator {
     final internal func evalSemanticContext(_ predPredictions: [DFAState.PredPrediction],
                                             _ outerContext: ParserRuleContext,
                                             _ complete: Bool) throws -> BitSet {
-        let predictions = BitSet()
+        var predictions = BitSet()
         for pair in predPredictions {
             if pair.pred == SemanticContext.NONE {
                 predictions.set(pair.alt)
