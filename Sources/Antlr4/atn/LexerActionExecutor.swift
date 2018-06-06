@@ -32,14 +32,12 @@ public class LexerActionExecutor: Hashable {
     public init(_ lexerActions: [LexerAction]) {
         self.lexerActions = lexerActions
 
-        var hasher = Hasher()
+        var hash = MurmurHash.initialize()
         for lexerAction: LexerAction in lexerActions {
-            hasher.combine(lexerAction)
+            hash = MurmurHash.update(hash, lexerAction)
         }
-        
-        hasher.combine(lexerActions.count)
 
-        self.hashCode = hasher.finalize()
+        self.hashCode = MurmurHash.finish(hash, lexerActions.count)
     }
 
     ///

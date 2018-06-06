@@ -58,8 +58,8 @@ public class SemanticContext: Hashable, CustomStringConvertible {
     public func evalPrecedence<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> SemanticContext? {
         return self
     }
-    
-    public func hash(into hasher: inout Hasher) {
+
+    public var hashValue: Int {
         fatalError(#function + " must be overridden")
     }
 
@@ -91,13 +91,16 @@ public class SemanticContext: Hashable, CustomStringConvertible {
             let localctx = isCtxDependent ? parserCallStack : nil
             return try parser.sempred(localctx, ruleIndex, predIndex)
         }
-        
-        public override func hash(into hasher: inout Hasher) {
-            hasher.combine(ruleIndex)
-            hasher.combine(predIndex)
-            hasher.combine(isCtxDependent ? 1 : 0)
+
+        override
+        public var hashValue: Int {
+            var hashCode = MurmurHash.initialize()
+            hashCode = MurmurHash.update(hashCode, ruleIndex)
+            hashCode = MurmurHash.update(hashCode, predIndex)
+            hashCode = MurmurHash.update(hashCode, isCtxDependent ? 1 : 0)
+            return MurmurHash.finish(hashCode, 3)
         }
-        
+
         override
         public var description: String {
             return "{\(ruleIndex):\(predIndex)}?"
@@ -138,9 +141,12 @@ public class SemanticContext: Hashable, CustomStringConvertible {
                 return nil
             }
         }
-        
-        public override func hash(into hasher: inout Hasher) {
-            hasher.combine(precedence)
+
+        override
+        public var hashValue: Int {
+            var hashCode: Int = 1
+            hashCode = 31 * hashCode + precedence
+            return hashCode
         }
 
         override
@@ -217,9 +223,13 @@ public class SemanticContext: Hashable, CustomStringConvertible {
         public func getOperands() -> [SemanticContext] {
             return opnds
         }
-        
-        public override func hash(into hasher: inout Hasher) {
-            hasher.combine(opnds)
+
+        override
+        public var hashValue: Int {
+            //MurmurHash.hashCode(opnds, AND.class.hashCode());
+            let seed = 1554547125
+            //NSStringFromClass(AND.self).hashValue
+            return MurmurHash.hashCode(opnds, seed)
         }
 
         ///
@@ -331,12 +341,13 @@ public class SemanticContext: Hashable, CustomStringConvertible {
         public func getOperands() -> [SemanticContext] {
             return opnds
         }
-        
-        public override func hash(into hasher: inout Hasher) {
-            hasher.combine(opnds)
-            hasher.combine(NSStringFromClass(OR.self))
+
+        override
+        public var hashValue: Int {
+
+            return MurmurHash.hashCode(opnds, NSStringFromClass(OR.self).hashValue)
         }
-        
+
         ///
         ///
         ///

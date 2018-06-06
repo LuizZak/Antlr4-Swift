@@ -118,6 +118,12 @@ public class DFAState: Hashable, CustomStringConvertible {
         hasher.combine(configs.hashValue)
     }
 
+//    public var hashValue: Int {
+//        var hash = MurmurHash.initialize(7)
+//        hash = MurmurHash.update(hash, configs.hashValue)
+//        return MurmurHash.finish(hash, 1)
+//    }
+
     ///
     /// Two _org.antlr.v4.runtime.dfa.DFAState_ instances are equal if their ATN configuration sets
     /// are the same. This method is used to see if a state already exists.

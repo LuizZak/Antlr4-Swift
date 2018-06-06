@@ -65,6 +65,15 @@ public final class LexerPushModeAction: LexerAction, CustomStringConvertible {
         hasher.combine(getActionType().rawValue)
         hasher.combine(mode)
     }
+
+//    override
+//    public var hashValue: Int {
+//        var hash = MurmurHash.initialize()
+//        hash = MurmurHash.update(hash, getActionType().rawValue)
+//        hash = MurmurHash.update(hash, mode)
+//        return MurmurHash.finish(hash, 2)
+//
+//    }
     
     public var description: String {
         return "pushMode(\(mode))"

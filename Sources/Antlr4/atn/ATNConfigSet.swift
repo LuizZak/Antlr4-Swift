@@ -207,9 +207,9 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
         }
         return false
     }
-    
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(configsHashValue)
+
+    public var hashValue: Int {
+        return configsHashValue
     }
 
     private var configsHashValue: Int {
@@ -267,12 +267,12 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
     /// return configLookup.toArray(a);
     ///
     private func configHash(_ stateNumber: Int, _ context: PredictionContext?) -> Int {
-        var hash = Hasher()
-        hash.combine(stateNumber)
-        hash.combine(context)
-        return hash.finalize()
+        var hashCode = MurmurHash.initialize(7)
+        hashCode = MurmurHash.update(hashCode, stateNumber)
+        hashCode = MurmurHash.update(hashCode, context)
+        return MurmurHash.finish(hashCode, 2)
     }
-    
+
     public func getConflictingAltSubsets() -> [BitSet] {
         let length = configs.count
         var configToAlts = [Int: BitSet]()

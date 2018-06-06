@@ -64,6 +64,14 @@ public class LexerTypeAction: LexerAction, CustomStringConvertible {
         hasher.combine(getActionType().rawValue)
         hasher.combine(type)
     }
+
+//    override
+//    public var hashValue: Int {
+//        var hash = MurmurHash.initialize()
+//        hash = MurmurHash.update(hash, getActionType().rawValue)
+//        hash = MurmurHash.update(hash, type)
+//        return MurmurHash.finish(hash, 2)
+//    }
     
     public var description: String {
         return "type(\(type))"

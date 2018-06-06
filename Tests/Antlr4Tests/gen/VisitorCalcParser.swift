@@ -133,32 +133,32 @@ open class VisitorCalcParser: Parser {
 		}
 	}
 	public  final class AddContext: ExprContext {
-		public func expr() -> [ExprContext] {
+		open func expr() -> [ExprContext] {
 			return getRuleContexts(ExprContext.self)
 		}
-		public func expr(_ i: Int) -> ExprContext? {
+		open func expr(_ i: Int) -> ExprContext? {
 			return getRuleContext(ExprContext.self, i)
 		}
-		public func ADD() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.ADD.rawValue, 0) }
-		public func SUB() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.SUB.rawValue, 0) }
+		open func ADD() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.ADD.rawValue, 0) }
+		open func SUB() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.SUB.rawValue, 0) }
 		public init(_ ctx: ExprContext) {
 			super.init()
 			copyFrom(ctx)
 		}
 		override
-		public func enterRule(_ listener: ParseTreeListener) {
+		open func enterRule(_ listener: ParseTreeListener) {
 			if listener is VisitorCalcListener {
 			 	(listener as! VisitorCalcListener).enterAdd(self)
 			}
 		}
 		override
-		public func exitRule(_ listener: ParseTreeListener) {
+		open func exitRule(_ listener: ParseTreeListener) {
 			if listener is VisitorCalcListener {
 			 	(listener as! VisitorCalcListener).exitAdd(self)
 			}
 		}
 		override
-		public func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
+		open func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
 			if visitor is VisitorCalcVisitor {
 			     return (visitor as! VisitorCalcVisitor<T>).visitAdd(self)
 			} else if visitor is VisitorCalcBaseVisitor {
@@ -169,25 +169,25 @@ open class VisitorCalcParser: Parser {
 		}
 	}
 	public  final class NumberContext: ExprContext {
-		public func INT() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.INT.rawValue, 0) }
+		open func INT() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.INT.rawValue, 0) }
 		public init(_ ctx: ExprContext) {
 			super.init()
 			copyFrom(ctx)
 		}
 		override
-		public func enterRule(_ listener: ParseTreeListener) {
+		open func enterRule(_ listener: ParseTreeListener) {
 			if listener is VisitorCalcListener {
 			 	(listener as! VisitorCalcListener).enterNumber(self)
 			}
 		}
 		override
-		public func exitRule(_ listener: ParseTreeListener) {
+		open func exitRule(_ listener: ParseTreeListener) {
 			if listener is VisitorCalcListener {
 			 	(listener as! VisitorCalcListener).exitNumber(self)
 			}
 		}
 		override
-		public func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
+		open func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
 			if visitor is VisitorCalcVisitor {
 			     return (visitor as! VisitorCalcVisitor<T>).visitNumber(self)
 			} else if visitor is VisitorCalcBaseVisitor {
@@ -198,32 +198,32 @@ open class VisitorCalcParser: Parser {
 		}
 	}
 	public  final class MultiplyContext: ExprContext {
-		public func expr() -> [ExprContext] {
+		open func expr() -> [ExprContext] {
 			return getRuleContexts(ExprContext.self)
 		}
-		public func expr(_ i: Int) -> ExprContext? {
+		open func expr(_ i: Int) -> ExprContext? {
 			return getRuleContext(ExprContext.self, i)
 		}
-		public func MUL() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.MUL.rawValue, 0) }
-		public func DIV() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.DIV.rawValue, 0) }
+		open func MUL() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.MUL.rawValue, 0) }
+		open func DIV() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.DIV.rawValue, 0) }
 		public init(_ ctx: ExprContext) {
 			super.init()
 			copyFrom(ctx)
 		}
 		override
-		public func enterRule(_ listener: ParseTreeListener) {
+		open func enterRule(_ listener: ParseTreeListener) {
 			if listener is VisitorCalcListener {
 			 	(listener as! VisitorCalcListener).enterMultiply(self)
 			}
 		}
 		override
-		public func exitRule(_ listener: ParseTreeListener) {
+		open func exitRule(_ listener: ParseTreeListener) {
 			if listener is VisitorCalcListener {
 			 	(listener as! VisitorCalcListener).exitMultiply(self)
 			}
 		}
 		override
-		public func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
+		open func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
 			if visitor is VisitorCalcVisitor {
 			     return (visitor as! VisitorCalcVisitor<T>).visitMultiply(self)
 			} else if visitor is VisitorCalcBaseVisitor {
