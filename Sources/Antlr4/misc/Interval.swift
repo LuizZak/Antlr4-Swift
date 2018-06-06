@@ -45,13 +45,12 @@ public struct Interval: Hashable {
         }
         return b - a + 1
     }
-
-    public var hashValue: Int {
-        var hash: Int = 23
-        hash = hash * 31 + a
-        hash = hash * 31 + b
-        return hash
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(a)
+        hasher.combine(b)
     }
+    
     ///
     /// Does this start completely before a? Disjoint
     ///

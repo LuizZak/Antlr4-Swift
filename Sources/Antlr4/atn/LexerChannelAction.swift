@@ -60,13 +60,10 @@ public final class LexerChannelAction: LexerAction, CustomStringConvertible {
     public override func execute(_ lexer: Lexer) {
         lexer.setChannel(channel)
     }
-
-    override
-    public var hashValue: Int {
-        var hash = MurmurHash.initialize()
-        hash = MurmurHash.update(hash, getActionType().rawValue)
-        hash = MurmurHash.update(hash, channel)
-        return MurmurHash.finish(hash, 2)
+    
+    public override func hash(into hasher: inout Hasher) {
+        hasher.combine(getActionType().rawValue)
+        hasher.combine(channel)
     }
 
     public var description: String {

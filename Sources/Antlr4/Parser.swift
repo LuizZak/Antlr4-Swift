@@ -422,7 +422,7 @@ open class Parser: Recognizer<ParserATNSimulator> {
         bypassAltsAtnCacheMutex.synchronized { [unowned self] in
             if result == nil {
                 var deserializationOptions = ATNDeserializationOptions()
-                try! deserializationOptions.setGenerateRuleBypassTransitions(true)
+                deserializationOptions.generateRuleBypassTransitions = true
                 result = try! ATNDeserializer(deserializationOptions).deserialize(Array(serializedAtn))
                 self.bypassAltsAtnCache[serializedAtn] = result!
             }

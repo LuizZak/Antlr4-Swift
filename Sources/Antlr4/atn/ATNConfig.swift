@@ -146,17 +146,14 @@ public class ATNConfig: Hashable, CustomStringConvertible {
     /// the same state, they predict the same alternative, and
     /// syntactic/semantic contexts are the same.
     ///
-
-    public var hashValue: Int {
-        var hashCode = MurmurHash.initialize(7)
-        hashCode = MurmurHash.update(hashCode, state.stateNumber)
-        hashCode = MurmurHash.update(hashCode, alt)
-        hashCode = MurmurHash.update(hashCode, context)
-        hashCode = MurmurHash.update(hashCode, semanticContext)
-        return MurmurHash.finish(hashCode, 4)
-
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(state.stateNumber)
+        hasher.combine(alt)
+        hasher.combine(context)
+        hasher.combine(semanticContext)
     }
-
+    
     public var description: String {
         //return "MyClass \(string)"
         return toString(nil, true)

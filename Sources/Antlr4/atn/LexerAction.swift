@@ -52,11 +52,11 @@ public class LexerAction: Hashable {
     public func execute(_ lexer: Lexer) throws {
         fatalError(#function + " must be overridden")
     }
-
-    public var hashValue: Int {
+    
+    public func hash(into hasher: inout Hasher) {
         fatalError(#function + " must be overridden")
     }
-
+    
 }
 
 public func == (lhs: LexerAction, rhs: LexerAction) -> Bool {

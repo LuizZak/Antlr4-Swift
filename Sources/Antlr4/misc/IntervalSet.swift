@@ -443,25 +443,16 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     public func getIntervals() -> [Interval] {
         return intervals
     }
-
-    public func hashCode() -> Int {
-        var hash = MurmurHash.initialize()
+    
+    public func hash(into hasher: inout Hasher) {
         for I: Interval in intervals {
-            hash = MurmurHash.update(hash, I.a)
-            hash = MurmurHash.update(hash, I.b)
+            hasher.combine(I.a)
+            hasher.combine(I.b)
         }
-
-        return MurmurHash.finish(hash, intervals.count * 2)
+        
+        hasher.combine(intervals.count * 2)
     }
-    public var hashValue: Int {
-        var hash = MurmurHash.initialize()
-        for I: Interval in intervals {
-            hash = MurmurHash.update(hash, I.a)
-            hash = MurmurHash.update(hash, I.b)
-        }
-
-        return MurmurHash.finish(hash, intervals.count * 2)
-    }
+    
     ///
     /// Are two IntervalSets equal?  Because all intervals are sorted
     /// and disjoint, equals is a simple linear walk over both lists
