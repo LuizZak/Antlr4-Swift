@@ -78,7 +78,7 @@ public class ATNConfig: Hashable, CustomStringConvertible {
     public convenience init(_ state: ATNState,
                             _ alt: Int,
                             _ context: PredictionContext?) {
-        self.init(state, alt, context, SemanticContext.NONE)
+        self.init(state, alt, context, SemanticContext.none)
     }
 
     public init(_ state: ATNState,
@@ -166,7 +166,7 @@ public class ATNConfig: Hashable, CustomStringConvertible {
         if let context = context {
             buf += ",[\(context)]"
         }
-        if semanticContext != SemanticContext.NONE {
+        if semanticContext != SemanticContext.none {
             buf += ",\(semanticContext)"
         }
         let outerDepth = getOuterContextDepth()

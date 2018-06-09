@@ -631,7 +631,7 @@ open class ParserATNSimulator: ATNSimulator {
             dfaState.prediction = ATN.INVALID_ALT_NUMBER // make sure we use preds
         } else {
             // There are preds in configs but they might go away
-            // when OR'd together like {p}? || NONE == NONE. If neither
+            // when OR'd together like {p}? || none == none. If neither
             // alt has preds, resolve to min alt
             dfaState.prediction = altsToCollectPredsFrom.firstSetBit()
         }
@@ -1171,13 +1171,13 @@ open class ParserATNSimulator: ATNSimulator {
         for i in 1..<length {
             let pred = altToPred[i]
 
-            // unpredicated is indicated by SemanticContext.NONE
+            // unpredicated is indicated by SemanticContext.none
             assert(pred != nil, "Expected: pred!=null")
 
             if let ambigAlts = ambigAlts, ambigAlts.get(i) {
                 pairs.append(DFAState.PredPrediction(pred!, i))
             }
-            if pred != SemanticContext.NONE {
+            if pred != SemanticContext.none {
                 containsPredicate = true
             }
         }
@@ -1274,7 +1274,7 @@ open class ParserATNSimulator: ATNSimulator {
 
     ///
     /// Look through a list of predicate/alt pairs, returning alts for the
-    /// pairs that win. A `NONE` predicate indicates an alt containing an
+    /// pairs that win. A `none` predicate indicates an alt containing an
     /// unpredicated config which behaves as "always true." If !complete
     /// then we stop at the first predicate that evaluates to true. This
     /// includes pairs with null predicates.
@@ -1284,7 +1284,7 @@ open class ParserATNSimulator: ATNSimulator {
                                             _ complete: Bool) throws -> BitSet {
         var predictions = BitSet()
         for pair in predPredictions {
-            if pair.pred == SemanticContext.NONE {
+            if pair.pred == SemanticContext.none {
                 predictions.set(pair.alt)
                 if !complete {
                     break

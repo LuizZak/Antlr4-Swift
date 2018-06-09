@@ -20,16 +20,19 @@
 
 import Foundation
 
-public enum _PredicateTransition {
+public enum PredicateTransition {
     case predicate(ruleIndex: Int, predIndex: Int, isCtxDependent: Bool)
     case precedence(precedence: Int)
     
     public func getPredicate() -> SemanticContext {
         switch self {
         case let .predicate(ruleIndex, predIndex, isCtxDependent):
-            return .Predicate(ruleIndex, predIndex, isCtxDependent)
+            return .predicate(ruleIndex: ruleIndex,
+                              predIndex: predIndex,
+                              isCtxDependent: isCtxDependent)
+            
         case .precedence(let precedence):
-            return .PrecedencePredicate(precedence)
+            return .precedence(precedence)
         }
     }
     
@@ -47,7 +50,7 @@ public enum Transition: CustomStringConvertible {
     case epsilon(ATNState, outermostPrecedenceReturnInside: Int)
     case range(ATNState, from: Int, to: Int)
     case rule(ATNState, ruleIndex: Int, precedence: Int, followState: ATNState)
-    case predicate(ATNState, _PredicateTransition)
+    case predicate(ATNState, PredicateTransition)
     case atom(ATNState, label: Int)
     case action(ATNState, ruleIndex: Int, actionIndex: Int, isCtxDependent: Bool)
     case set(ATNState, set: IntervalSet)

@@ -160,7 +160,10 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     internal func evalSemanticContext(_ pred: SemanticContext, _ parserCallStack: ParserRuleContext,
                                       _ alt: Int, _ fullCtx: Bool) throws -> Bool {
         let result = try super.evalSemanticContext(pred, parserCallStack, alt, fullCtx)
-        if !(pred is SemanticContext.PrecedencePredicate) {
+        
+        if case .predicate = pred {
+            
+        } else {
             let fullContext = _llStopIndex >= 0
             let stopIndex = fullContext ? _llStopIndex : _sllStopIndex
             decisions[currentDecision].predicateEvals.append(

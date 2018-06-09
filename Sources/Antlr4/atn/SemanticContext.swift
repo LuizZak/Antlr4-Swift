@@ -15,13 +15,33 @@
 
 import Foundation
 
-public class SemanticContext: Hashable, CustomStringConvertible {
-    ///
-    /// The default _org.antlr.v4.runtime.atn.SemanticContext_, which is semantically equivalent to
-    /// a predicate of the form `{true`?}.
-    ///
-    public static let NONE: SemanticContext = Predicate()
-
+public enum SemanticContext: Hashable, CustomStringConvertible {
+    
+    public var description: String {
+        switch self {
+        case .none:
+            return "{-1:-1}?"
+            
+        case let .predicate(ruleIndex, predIndex, _):
+            return "{\(ruleIndex):\(predIndex)}?"
+            
+        case .precedence(let precedence):
+            return "{\(precedence)>=prec}?"
+            
+        case .operatorAnd(let opnds):
+            return opnds.map({ $0.description }).joined(separator: "&&")
+            
+        case .operatorOr(let opnds):
+            return opnds.map({ $0.description }).joined(separator: "||")
+        }
+    }
+    
+    case none
+    case predicate(ruleIndex: Int, predIndex: Int, isCtxDependent: Bool)
+    case precedence(Int)
+    case operatorAnd([SemanticContext])
+    case operatorOr([SemanticContext])
+    
     ///
     /// For context independent predicates, we evaluate them without a local
     /// context (i.e., null context). That way, we can evaluate them without
@@ -36,9 +56,35 @@ public class SemanticContext: Hashable, CustomStringConvertible {
     /// dependent predicate evaluation.
     ///
     public func eval<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> Bool {
-        fatalError(#function + " must be overridden")
+        switch self {
+        case .none:
+            return try parser.sempred(nil, -1, -1)
+            
+        case let .predicate(ruleIndex, predIndex, isCtxDependent):
+            let localctx = isCtxDependent ? parserCallStack : nil
+            return try parser.sempred(localctx, ruleIndex, predIndex)
+            
+        case .precedence(let precedence):
+            return parser.precpred(parserCallStack, precedence)
+            
+        case .operatorAnd(let opnds):
+            for opnd in opnds {
+                if try !opnd.eval(parser, parserCallStack) {
+                    return false
+                }
+            }
+            return true
+            
+        case .operatorOr(let opnds):
+            for opnd in opnds {
+                if try opnd.eval(parser, parserCallStack) {
+                    return true
+                }
+            }
+            return false
+        }
     }
-
+    
     ///
     /// Evaluate the precedence predicates for the context and reduce the result.
     ///
@@ -56,193 +102,18 @@ public class SemanticContext: Hashable, CustomStringConvertible {
     /// semantic context after precedence predicates are evaluated.
     ///
     public func evalPrecedence<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> SemanticContext? {
-        return self
-    }
-    
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(hashValue)
-    }
-
-    public var description: String {
-        fatalError(#function + " must be overridden")
-    }
-
-    public class Predicate: SemanticContext {
-        public let ruleIndex: Int
-        public let predIndex: Int
-        public let isCtxDependent: Bool
-        // e.g., $i ref in pred
-
-        override
-        public init() {
-            self.ruleIndex = -1
-            self.predIndex = -1
-            self.isCtxDependent = false
-        }
-
-        public init(_ ruleIndex: Int, _ predIndex: Int, _ isCtxDependent: Bool) {
-            self.ruleIndex = ruleIndex
-            self.predIndex = predIndex
-            self.isCtxDependent = isCtxDependent
-        }
-
-        override
-        public func eval<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> Bool {
-            let localctx = isCtxDependent ? parserCallStack : nil
-            return try parser.sempred(localctx, ruleIndex, predIndex)
-        }
-        
-        public override func hash(into hasher: inout Hasher) {
-            hasher.combine(ruleIndex)
-            hasher.combine(predIndex)
-            hasher.combine(isCtxDependent)
-        }
-
-        override
-        public var description: String {
-            return "{\(ruleIndex):\(predIndex)}?"
-        }
-
-        public static func == (lhs: Predicate, rhs: Predicate) -> Bool {
-            if lhs === rhs {
-                return true
-            }
-            return lhs.ruleIndex == rhs.ruleIndex &&
-                lhs.predIndex == rhs.predIndex &&
-                lhs.isCtxDependent == rhs.isCtxDependent
-        }
-    }
-
-    public class PrecedencePredicate: SemanticContext {
-        public let precedence: Int
-        override
-        init() {
-            self.precedence = 0
-        }
-
-        public init(_ precedence: Int) {
-            self.precedence = precedence
-        }
-
-        override
-        public func eval<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> Bool {
-            return parser.precpred(parserCallStack, precedence)
-        }
-
-        override
-        public func evalPrecedence<T>(_ parser: Recognizer<T>,
-                                      _ parserCallStack: RuleContext) throws -> SemanticContext? {
+        switch self {
+        case .none, .predicate:
+            return self
+            
+        case .precedence(let precedence):
             if parser.precpred(parserCallStack, precedence) {
-                return SemanticContext.NONE
+                return SemanticContext.none
             } else {
                 return nil
             }
-        }
-        
-        public override func hash(into hasher: inout Hasher) {
-            hasher.combine(precedence)
-        }
-
-        override
-        public var description: String {
-            return "{" + String(precedence) + ">=prec}?"
-
-        }
-
-        public static func == (lhs: PrecedencePredicate, rhs: PrecedencePredicate) -> Bool {
-            if lhs === rhs {
-                return true
-            }
-            return lhs.precedence == rhs.precedence
-        }
-    }
-
-    ///
-    /// This is the base class for semantic context "operators", which operate on
-    /// a collection of semantic context "operands".
-    ///
-    /// -  4.3
-    ///
-
-    public class Operator: SemanticContext {
-        ///
-        /// Gets the operands for the semantic context operator.
-        ///
-        /// - returns: a collection of _org.antlr.v4.runtime.atn.SemanticContext_ operands for the
-        /// operator.
-        ///
-        /// -  4.3
-        ///
-
-        public func getOperands() -> [SemanticContext] {
-            fatalError(#function + " must be overridden")
-        }
-    }
-
-    ///
-    /// A semantic context which is true whenever none of the contained contexts
-    /// is false.
-    ///
-
-    public class AND: Operator {
-        public let opnds: [SemanticContext]
-
-        public init(_ a: SemanticContext, _ b: SemanticContext) {
-            var operands = Set<SemanticContext>()
-            if let aAnd = a as? AND {
-                operands.formUnion(aAnd.opnds)
-            } else {
-                operands.insert(a)
-            }
-            if let bAnd = b as? AND {
-                operands.formUnion(bAnd.opnds)
-            } else {
-                operands.insert(b)
-            }
-
-            let precedencePredicates = SemanticContext.filterPrecedencePredicates(&operands)
-            if !precedencePredicates.isEmpty {
-                // interested in the transition with the lowest precedence
-
-                let reduced = precedencePredicates.sorted {
-                    $0.precedence < $1.precedence
-                }
-                operands.insert(reduced[0])
-            }
-
-            opnds = Array(operands)
-        }
-
-        override
-        public func getOperands() -> [SemanticContext] {
-            return opnds
-        }
-        
-        public override func hash(into hasher: inout Hasher) {
-            hasher.combine("\(AND.self)")
-            hasher.combine(opnds)
-        }
-
-        ///
-        ///
-        ///
-        ///
-        /// The evaluation of predicates by this context is short-circuiting, but
-        /// unordered.
-        ///
-        override
-        public func eval<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> Bool {
-            for opnd in opnds {
-                if try !opnd.eval(parser, parserCallStack) {
-                    return false
-                }
-            }
-            return true
-        }
-
-        override
-        public func evalPrecedence<T>(_ parser: Recognizer<T>,
-                                      _ parserCallStack: RuleContext) throws -> SemanticContext? {
+            
+        case .operatorAnd(let opnds):
             var differs = false
             var operands = [SemanticContext]()
             for context in opnds {
@@ -250,175 +121,87 @@ public class SemanticContext: Hashable, CustomStringConvertible {
                 //TODO differs |= (evaluated != context)
                 //differs |= (evaluated != context);
                 differs = differs || (evaluated != context)
-
+                
                 if let evaluated = evaluated {
                     // Reduce the result by skipping true elements
-                    if evaluated != SemanticContext.NONE {
+                    if evaluated != .none {
                         operands.append(evaluated)
                     }
-                } else if evaluated != SemanticContext.NONE {
+                } else if evaluated != .none {
                     // The AND context is false if any element is false
                     return nil
                 }
             }
-
+            
             if !differs {
                 return self
             }
-
+            
             if operands.isEmpty {
                 // all elements were true, so the AND context is true
-                return SemanticContext.NONE
+                return .none
             }
-
+            
             var result = operands[0]
             let length = operands.count
             for i in 1..<length {
-                result = SemanticContext.and(result, operands[i])
+                result = .and(result, operands[i])
             }
-
+            
             return result
-        }
-
-        override
-        public var description: String {
-            return opnds.map({ $0.description }).joined(separator: "&&")
-
-        }
-
-        public static func == (lhs: AND, rhs: AND) -> Bool {
-            if lhs === rhs {
-                return true
-            }
-            return lhs.opnds == rhs.opnds
-        }
-    }
-
-    ///
-    /// A semantic context which is true whenever at least one of the contained
-    /// contexts is true.
-    ///
-
-    public class OR: Operator {
-        public final let opnds: [SemanticContext]
-
-        public init(_ a: SemanticContext, _ b: SemanticContext) {
-            var operands: Set<SemanticContext> = Set<SemanticContext>()
-            if let aOr = a as? OR {
-                operands.formUnion(aOr.opnds)
-            } else {
-                operands.insert(a)
-            }
-            if let bOr = b as? OR {
-                operands.formUnion(bOr.opnds)
-            } else {
-                operands.insert(b)
-            }
-
-            let precedencePredicates = SemanticContext.filterPrecedencePredicates(&operands)
-            if !precedencePredicates.isEmpty {
-                // interested in the transition with the highest precedence
-
-                let reduced = precedencePredicates.sorted {
-                    $0.precedence > $1.precedence
-                }
-                operands.insert(reduced[0])
-            }
-
-            self.opnds = Array(operands)
-        }
-
-        override
-        public func getOperands() -> [SemanticContext] {
-            return opnds
-        }
-        
-        public override func hash(into hasher: inout Hasher) {
-            hasher.combine("\(OR.self)")
-            hasher.combine(opnds)
-        }
-
-        ///
-        ///
-        ///
-        ///
-        /// The evaluation of predicates by this context is short-circuiting, but
-        /// unordered.
-        ///
-        override
-        public func eval<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> Bool {
-            for opnd in opnds {
-                if try opnd.eval(parser, parserCallStack) {
-                    return true
-                }
-            }
-            return false
-        }
-
-        override
-        public func evalPrecedence<T>(_ parser: Recognizer<T>,
-                                      _ parserCallStack: RuleContext) throws -> SemanticContext? {
+            
+        case .operatorOr(let opnds):
+            
             var differs = false
             var operands = [SemanticContext]()
             for context in opnds {
                 let evaluated = try context.evalPrecedence(parser, parserCallStack)
                 differs = differs || (evaluated != context)
-                if evaluated == SemanticContext.NONE {
+                if evaluated == .none {
                     // The OR context is true if any element is true
-                    return SemanticContext.NONE
+                    return .none
                 } else if let evaluated = evaluated {
                     // Reduce the result by skipping false elements
                     operands.append(evaluated)
                 }
             }
-
+            
             if !differs {
                 return self
             }
-
+            
             if operands.isEmpty {
                 // all elements were false, so the OR context is false
                 return nil
             }
-
+            
             var result = operands[0]
             let length = operands.count
             for i in 1..<length {
-                result = SemanticContext.or(result, operands[i])
+                result = .or(result, operands[i])
             }
-
+            
             return result
         }
-
-        override
-        public var description: String {
-            return opnds.map({ $0.description }).joined(separator: "||")
-
-        }
-
-        public static func == (lhs: SemanticContext.OR, rhs: SemanticContext.OR) -> Bool {
-            if lhs === rhs {
-                return true
-            }
-            return lhs.opnds == rhs.opnds
-        }
     }
-
+    
     public static func and(_ a: SemanticContext?, _ b: SemanticContext?) -> SemanticContext {
-        guard let a = a, a != SemanticContext.NONE else {
+        guard let a = a, a != .none else {
             return b!
         }
-        guard let b = b, b != SemanticContext.NONE else {
+        guard let b = b, b != .none else {
             return a
         }
-        let result: AND = AND(a, b)
-        if result.opnds.count == 1 {
-            return result.opnds[0]
+        
+        let result = AND(a, b)
+        switch result {
+        case .operatorAnd(let opnds) where opnds.count == 1:
+            return opnds[0]
+        default:
+            return result
         }
-
-        return result
     }
-
+    
     ///
     ///
     /// - seealso: org.antlr.v4.runtime.atn.ParserATNSimulator#getPredsForAmbigAlts
@@ -430,48 +213,92 @@ public class SemanticContext: Hashable, CustomStringConvertible {
         guard let b = b else {
             return a
         }
-        if a == SemanticContext.NONE || b == SemanticContext.NONE {
-            return SemanticContext.NONE
+        if a == .none || b == .none {
+            return .none
         }
-        let result: OR = OR(a, b)
-        if result.opnds.count == 1 {
-            return result.opnds[0]
+        
+        let result = OR(a, b)
+        switch result {
+        case .operatorOr(let opnds) where opnds.count == 1:
+            return opnds[0]
+        default:
+            return result
         }
-
-        return result
     }
-
-    private static func filterPrecedencePredicates(_ collection: inout Set<SemanticContext>) -> [PrecedencePredicate] {
-        let result = collection.compactMap {
-            $0 as? PrecedencePredicate
+    
+    private static func AND(_ a: SemanticContext, _ b: SemanticContext) -> SemanticContext {
+        var operands = Set<SemanticContext>()
+        switch a {
+        case .operatorAnd(let opnds):
+            operands.formUnion(opnds)
+        default:
+            operands.insert(a)
+        }
+        
+        switch b {
+        case .operatorAnd(let opnds):
+            operands.formUnion(opnds)
+        default:
+            operands.insert(b)
+        }
+        
+        let precedencePredicates = SemanticContext.filterPrecedencePredicates(&operands)
+        if !precedencePredicates.isEmpty {
+            // interested in the transition with the lowest precedence
+            
+            let reduced = precedencePredicates.sorted {
+                $0.precedence < $1.precedence
+            }
+            operands.insert(reduced[0].1)
+        }
+        
+        return .operatorAnd(Array(operands))
+    }
+    
+    private static func OR(_ a: SemanticContext, _ b: SemanticContext) -> SemanticContext {
+        var operands: Set<SemanticContext> = Set<SemanticContext>()
+        switch a {
+        case .operatorOr(let opnds):
+            operands.formUnion(opnds)
+        default:
+            operands.insert(a)
+        }
+        
+        switch b {
+        case .operatorOr(let opnds):
+            operands.formUnion(opnds)
+        default:
+            operands.insert(b)
+        }
+        
+        let precedencePredicates = SemanticContext.filterPrecedencePredicates(&operands)
+        if !precedencePredicates.isEmpty {
+            // interested in the transition with the highest precedence
+            
+            let reduced = precedencePredicates.sorted {
+                $0.precedence > $1.precedence
+            }
+            operands.insert(reduced[0].1)
+        }
+        
+        return .operatorOr(Array(operands))
+    }
+    
+    private static func filterPrecedencePredicates(_ collection: inout Set<SemanticContext>) -> [(precedence: Int, SemanticContext)] {
+        let result: [(Int, SemanticContext)] = collection.compactMap {
+            if case .precedence(let prec) = $0 {
+                return (prec, $0)
+            } else {
+                return nil
+            }
         }
         collection = Set<SemanticContext>(collection.filter {
-            !($0 is PrecedencePredicate)
+            if case .precedence = $0 {
+                return false
+            } else {
+                return true
+            }
         })
         return result
     }
-}
-
-public func == (lhs: SemanticContext, rhs: SemanticContext) -> Bool {
-    if lhs === rhs {
-        return true
-    }
-
-    if let lhs = lhs as? SemanticContext.Predicate, let rhs = rhs as? SemanticContext.Predicate {
-        return lhs == rhs
-    }
-
-    if let lhs = lhs as? SemanticContext.PrecedencePredicate, let rhs = rhs as? SemanticContext.PrecedencePredicate {
-        return lhs == rhs
-    }
-
-    if let lhs = lhs as? SemanticContext.AND, let rhs = rhs as? SemanticContext.AND {
-        return lhs == rhs
-    }
-
-    if let lhs = lhs as? SemanticContext.OR, let rhs = rhs as? SemanticContext.OR {
-        return lhs == rhs
-    }
-
-    return false
 }

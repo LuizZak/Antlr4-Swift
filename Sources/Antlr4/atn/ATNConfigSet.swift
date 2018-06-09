@@ -109,7 +109,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
     public mutating func add(
         _ config: ATNConfig,
         _ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?) -> Bool {
-        if config.semanticContext != SemanticContext.NONE {
+        if config.semanticContext != SemanticContext.none {
             hasSemanticContext = true
         }
         if config.getOuterContextDepth() > 0 {
@@ -180,7 +180,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
 
     public func getPredicates() -> [SemanticContext] {
         var preds = [SemanticContext]()
-        for config in configs where config.semanticContext != SemanticContext.NONE {
+        for config in configs where config.semanticContext != SemanticContext.none {
             preds.append(config.semanticContext)
         }
         return preds
@@ -425,8 +425,8 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
         var nPredAlts = 0
         for i in 1...nalts {
             if altToPred[i] == nil {
-                altToPred[i] = SemanticContext.NONE
-            } else if altToPred[i] != SemanticContext.NONE {
+                altToPred[i] = SemanticContext.none
+            } else if altToPred[i] != SemanticContext.none {
                 nPredAlts += 1
             }
         }
@@ -471,7 +471,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
         var succeeded = ATNConfigSet(fullCtx)
         var failed = ATNConfigSet(fullCtx)
         for config in configs {
-            if config.semanticContext != SemanticContext.NONE {
+            if config.semanticContext != SemanticContext.none {
                 let predicateEvaluationResult =
                     try evalSemanticContext(config.semanticContext, outerContext, config.alt, fullCtx)
                 
@@ -490,7 +490,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
     public func dupConfigsWithoutSemanticPredicates() -> ATNConfigSet {
         var dup = ATNConfigSet()
         for config in configs {
-            let c = ATNConfig(config, SemanticContext.NONE)
+            let c = ATNConfig(config, SemanticContext.none)
             dup.add(c)
         }
         return dup
