@@ -23,7 +23,7 @@ public class LexerActionExecutor: Hashable {
     /// Caches the result of _#hashCode_ since the hash code is an element
     /// of the performance-critical _org.antlr.v4.runtime.atn.LexerATNConfig#hashCode_ operation.
     ///
-    fileprivate final var hashCode: Int
+    fileprivate final let hashCode: Int
 
     ///
     /// Constructs an executor for a sequence of _org.antlr.v4.runtime.atn.LexerAction_ actions.

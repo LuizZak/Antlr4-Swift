@@ -1475,7 +1475,7 @@ open class ParserATNSimulator: ATNSimulator {
                 } else {
                     state.closureBusy.atnSet.insert(c)
                 }
-
+                
                 if let _dfa = _dfa, _dfa.isPrecedenceDfa() {
                     
                     switch t {

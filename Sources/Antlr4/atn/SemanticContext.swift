@@ -309,7 +309,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
     ///
 
     public class OR: Operator {
-        public final var opnds: [SemanticContext]
+        public final let opnds: [SemanticContext]
 
         public init(_ a: SemanticContext, _ b: SemanticContext) {
             var operands: Set<SemanticContext> = Set<SemanticContext>()

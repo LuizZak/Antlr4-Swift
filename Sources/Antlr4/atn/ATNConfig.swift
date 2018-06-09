@@ -197,11 +197,7 @@ public func == (lhs: ATNConfig, rhs: ATNConfig) -> Bool {
     if lhs.alt != rhs.alt {
         return false
     }
-
-    if lhs.isPrecedenceFilterSuppressed() != rhs.isPrecedenceFilterSuppressed() {
-        return false
-    }
-
+    
     if lhs.context != rhs.context {
         return false
     }
