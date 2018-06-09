@@ -451,16 +451,6 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
         }
     }
     
-//    public var hashValue: Int {
-//        var hash = MurmurHash.initialize()
-//        for I: Interval in intervals {
-//            hash = MurmurHash.update(hash, I.a)
-//            hash = MurmurHash.update(hash, I.b)
-//        }
-//
-//        return MurmurHash.finish(hash, intervals.count * 2)
-//    }
-    
     ///
     /// Are two IntervalSets equal?  Because all intervals are sorted
     /// and disjoint, equals is a simple linear walk over both lists

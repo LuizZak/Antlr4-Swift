@@ -115,14 +115,8 @@ public class DFAState: Hashable, CustomStringConvertible {
     }
     
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(configs.hashValue)
+        hasher.combine(configs)
     }
-
-//    public var hashValue: Int {
-//        var hash = MurmurHash.initialize(7)
-//        hash = MurmurHash.update(hash, configs.hashValue)
-//        return MurmurHash.finish(hash, 1)
-//    }
 
     ///
     /// Two _org.antlr.v4.runtime.dfa.DFAState_ instances are equal if their ATN configuration sets

@@ -27,12 +27,12 @@ public struct LookupDictionary {
 
     private func hash(_ config: ATNConfig) -> Int {
         if type == LookupDictionaryType.lookup {
-
-            var hashCode: Int = 7
-            hashCode = 31 * hashCode + config.state.stateNumber
-            hashCode = 31 * hashCode + config.alt
-            hashCode = 31 * hashCode + config.semanticContext.hashValue
-            return hashCode
+            
+            var hash = Hasher()
+            hash.combine(config.state.stateNumber)
+            hash.combine(config.alt)
+            hash.combine(config.semanticContext)
+            return hash.finalize()
 
         } else {
             //Ordered

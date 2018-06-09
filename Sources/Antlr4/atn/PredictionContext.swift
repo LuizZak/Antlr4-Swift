@@ -105,29 +105,32 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     }
 
     static func calculateEmptyHashCode() -> Int {
-        let hash = MurmurHash.initialize(INITIAL_HASH)
-        return MurmurHash.finish(hash, 0)
+        var hash = Hasher()
+        hash.combine(INITIAL_HASH)
+        return hash.finalize()
     }
 
     static func calculateHashCode(_ parent: PredictionContext?, _ returnState: Int) -> Int {
-        var hash = MurmurHash.initialize(INITIAL_HASH)
-        hash = MurmurHash.update(hash, parent)
-        hash = MurmurHash.update(hash, returnState)
-        return MurmurHash.finish(hash, 2)
+        var hash = Hasher()
+        hash.combine(INITIAL_HASH)
+        hash.combine(parent)
+        hash.combine(returnState)
+        return hash.finalize()
     }
 
     static func calculateHashCode(_ parents: [PredictionContext?], _ returnStates: [Int]) -> Int {
-        var hash = MurmurHash.initialize(INITIAL_HASH)
+        var hash = Hasher()
+        hash.combine(INITIAL_HASH)
         var length = parents.count
         for i in 0..<length {
-            hash = MurmurHash.update(hash, parents[i])
+            hash.combine(parents[i])
         }
         length = returnStates.count
         for i in 0..<length {
-            hash = MurmurHash.update(hash, returnStates[i])
+            hash.combine(returnStates[i])
         }
 
-        return  MurmurHash.finish(hash, 2 * parents.count)
+        return hash.finalize()
     }
 
     // dispatch

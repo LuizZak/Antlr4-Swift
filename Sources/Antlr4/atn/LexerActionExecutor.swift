@@ -31,13 +31,13 @@ public class LexerActionExecutor: Hashable {
     ///
     public init(_ lexerActions: [LexerAction]) {
         self.lexerActions = lexerActions
-
-        var hash = MurmurHash.initialize()
+        
+        var hash = Hasher()
         for lexerAction: LexerAction in lexerActions {
-            hash = MurmurHash.update(hash, lexerAction)
+            hash.combine(lexerAction)
         }
 
-        self.hashCode = MurmurHash.finish(hash, lexerActions.count)
+        self.hashCode = hash.finalize()
     }
 
     ///
