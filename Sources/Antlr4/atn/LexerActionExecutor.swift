@@ -33,7 +33,7 @@ public class LexerActionExecutor: Hashable {
         self.lexerActions = lexerActions
         
         var hash = Hasher()
-        for lexerAction: LexerAction in lexerActions {
+        for lexerAction in lexerActions {
             hash.combine(lexerAction)
         }
 
@@ -60,11 +60,9 @@ public class LexerActionExecutor: Hashable {
         if lexerActionExecutor == nil {
             return LexerActionExecutor([lexerAction])
         }
-
-        //var lexerActions : [LexerAction] = lexerActionExecutor.lexerActions, //lexerActionExecutor.lexerActions.length + 1);
-        var lexerActions: [LexerAction] = lexerActionExecutor!.lexerActions
+        
+        var lexerActions = lexerActionExecutor!.lexerActions
         lexerActions.append(lexerAction)
-        //lexerActions[lexerActions.length - 1] = lexerAction;
         return LexerActionExecutor(lexerActions)
     }
 
@@ -101,12 +99,16 @@ public class LexerActionExecutor: Hashable {
         var updatedLexerActions: [LexerAction]? = nil
         let length = lexerActions.count
         for i in 0..<length {
-            if lexerActions[i].isPositionDependent() && !(lexerActions[i] is LexerIndexedCustomAction) {
+            if case .indexedCustomAction = lexerActions[i] {
+                continue
+            }
+            
+            if lexerActions[i].isPositionDependent() {
                 if updatedLexerActions == nil {
-                    updatedLexerActions = lexerActions   //lexerActions.clone();
+                    updatedLexerActions = lexerActions
                 }
 
-                updatedLexerActions![i] = LexerIndexedCustomAction(offset, lexerActions[i])
+                updatedLexerActions![i] = LexerAction.indexedCustomAction(offset: offset, action: lexerActions[i])
             }
         }
 
@@ -153,13 +155,14 @@ public class LexerActionExecutor: Hashable {
             }
         }
         //try {
-        for var lexerAction: LexerAction in self.lexerActions {
-            if let runLexerAction = lexerAction as? LexerIndexedCustomAction {
-                let offset: Int = runLexerAction.getOffset()
+        for var lexerAction in self.lexerActions {
+            
+            switch lexerAction {
+            case let .indexedCustomAction(offset, action):
                 try input.seek(startIndex + offset)
-                lexerAction = runLexerAction.getAction()
+                lexerAction = action
                 requiresSeek = (startIndex + offset) != stopIndex
-            } else {
+            default:
                 if lexerAction.isPositionDependent() {
                     try input.seek(stopIndex)
                     requiresSeek = false

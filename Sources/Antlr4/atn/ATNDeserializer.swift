@@ -614,7 +614,9 @@ public class ATNDeserializer {
                 
                 switch state.transition(i) {
                 case let .action(target, ruleIndex, actionIndex, _):
-                    let lexerAction = LexerCustomAction(ruleIndex, actionIndex)
+                    let lexerAction =
+                        LexerAction.customRule(ruleIndex: ruleIndex,
+                                                actionIndex: actionIndex)
                     
                     state.setTransition(i, .action(target, ruleIndex: ruleIndex,
                                                    actionIndex: legacyLexerActions.count,
@@ -932,28 +934,28 @@ public class ATNDeserializer {
     internal func lexerActionFactory(_ type: LexerActionType, _ data1: Int, _ data2: Int) -> LexerAction {
         switch type {
         case .channel:
-            return LexerChannelAction(data1)
+            return .channel(data1)
 
         case .custom:
-            return LexerCustomAction(data1, data2)
+            return .customRule(ruleIndex: data1, actionIndex: data2)
 
         case .mode:
-            return LexerModeAction(data1)
+            return .mode(data1)
 
         case .more:
-            return LexerMoreAction.INSTANCE
+            return .more
 
         case .popMode:
-            return LexerPopModeAction.INSTANCE
+            return .popMode
 
         case .pushMode:
-            return LexerPushModeAction(data1)
+            return .pushMode(mode: data1)
 
         case .skip:
-            return LexerSkipAction.INSTANCE
+            return .skip
 
         case .type:
-            return LexerTypeAction(data1)
+            return .type(data1)
         }
     }
 }
