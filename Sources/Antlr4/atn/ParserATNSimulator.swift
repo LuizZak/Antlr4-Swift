@@ -387,7 +387,7 @@ open class ParserATNSimulator: ATNSimulator {
             }
             mergeCache = nil // wack cache after each prediction
             _dfa = nil
-            try! input.seek(index)
+            try input.seek(index)
             input.release(m)
             return alt
         }

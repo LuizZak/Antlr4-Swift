@@ -296,12 +296,12 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     ///
 
     public func and(_ a: IntSet?) -> IntSet? {
-        if a == nil {
+        guard var theirIntervals = (a as? IntervalSet)?.intervals else {
             return nil // nothing in common with null set
         }
 
         var myIntervals = self.intervals
-        var theirIntervals = (a as! IntervalSet).intervals
+        
         var intersection: IntervalSet? = nil
         let mySize = myIntervals.count
         let theirSize = theirIntervals.count
@@ -315,51 +315,53 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
             if mine.startsBeforeDisjoint(theirs) {
                 // move this iterator looking for interval that might overlap
                 i += 1
-            } else {
-                if theirs.startsBeforeDisjoint(mine) {
-                    // move other iterator looking for interval that might overlap
+                continue
+            }
+            
+            if theirs.startsBeforeDisjoint(mine) {
+                // move other iterator looking for interval that might overlap
+                j += 1
+                continue
+            }
+            
+            if mine.properlyContains(theirs) {
+                // overlap, add intersection, get next theirs
+                if intersection == nil {
+                    intersection = IntervalSet()
+                }
+                
+                intersection!.add(mine.intersection(theirs))
+                j += 1
+                continue
+            }
+            
+            if theirs.properlyContains(mine) {
+                // overlap, add intersection, get next mine
+                if intersection == nil {
+                    intersection = IntervalSet()
+                }
+                intersection!.add(mine.intersection(theirs))
+                i += 1
+                continue
+            }
+            
+            if !mine.disjoint(theirs) {
+                // overlap, add intersection
+                if intersection == nil {
+                    intersection = IntervalSet()
+                }
+                intersection!.add(mine.intersection(theirs))
+                // Move the iterator of lower range [a..b], but not
+                // the upper range as it may contain elements that will collide
+                // with the next iterator. So, if mine=[0..115] and
+                // theirs=[115..200], then intersection is 115 and move mine
+                // but not theirs as theirs may collide with the next range
+                // in thisIter.
+                // move both iterators to next ranges
+                if mine.startsAfterNonDisjoint(theirs) {
                     j += 1
-                } else {
-                    if mine.properlyContains(theirs) {
-                        // overlap, add intersection, get next theirs
-                        if intersection == nil {
-                            intersection = IntervalSet()
-                        }
-
-                        intersection!.add(mine.intersection(theirs))
-                        j += 1
-                    } else {
-                        if theirs.properlyContains(mine) {
-                            // overlap, add intersection, get next mine
-                            if intersection == nil {
-                                intersection = IntervalSet()
-                            }
-                            intersection!.add(mine.intersection(theirs))
-                            i += 1
-                        } else {
-                            if !mine.disjoint(theirs) {
-                                // overlap, add intersection
-                                if intersection == nil {
-                                    intersection = IntervalSet()
-                                }
-                                intersection!.add(mine.intersection(theirs))
-                                // Move the iterator of lower range [a..b], but not
-                                // the upper range as it may contain elements that will collide
-                                // with the next iterator. So, if mine=[0..115] and
-                                // theirs=[115..200], then intersection is 115 and move mine
-                                // but not theirs as theirs may collide with the next range
-                                // in thisIter.
-                                // move both iterators to next ranges
-                                if mine.startsAfterNonDisjoint(theirs) {
-                                    j += 1
-                                } else {
-                                    if theirs.startsAfterNonDisjoint(mine) {
-                                        i += 1
-                                    }
-                                }
-                            }
-                        }
-                    }
+                } else if theirs.startsAfterNonDisjoint(mine) {
+                    i += 1
                 }
             }
         }

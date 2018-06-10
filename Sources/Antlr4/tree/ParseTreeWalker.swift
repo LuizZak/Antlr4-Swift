@@ -33,13 +33,17 @@ public class ParseTreeWalker {
     /// the rule specific. We to them in reverse order upon finishing the node.
     ///
     internal func enterRule(_ listener: ParseTreeListener, _ r: RuleNode) throws {
-        let ctx = r.getRuleContext() as! ParserRuleContext
+        guard let ctx = r.getRuleContext() as? ParserRuleContext else {
+            throw ANTLRError.illegalArgument(msg: "Expected \(ParserRuleContext.self), received \(type(of: listener))")
+        }
         try listener.enterEveryRule(ctx)
         ctx.enterRule(listener)
     }
 
     internal func exitRule(_ listener: ParseTreeListener, _ r: RuleNode) throws {
-        let ctx = r.getRuleContext() as! ParserRuleContext
+        guard let ctx = r.getRuleContext() as? ParserRuleContext else {
+            throw ANTLRError.illegalArgument(msg: "Expected \(ParserRuleContext.self), received \(type(of: listener))")
+        }
         ctx.exitRule(listener)
         try listener.exitEveryRule(ctx)
     }
