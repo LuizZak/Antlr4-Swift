@@ -75,13 +75,15 @@ public enum Transition: CustomStringConvertible {
         set {
             switch self {
             case .epsilon(_, let outermostPrecedenceReturnInside):
-                self = .epsilon(newValue, outermostPrecedenceReturnInside: outermostPrecedenceReturnInside)
+                self = .epsilon(newValue,
+                                outermostPrecedenceReturnInside: outermostPrecedenceReturnInside)
                 
             case let .range(_, from, to):
                 self = .range(newValue, from: from, to: to)
                 
             case let .rule(_, ruleIndex, precedence, followState):
-                self = .rule(newValue, ruleIndex: ruleIndex,
+                self = .rule(newValue,
+                             ruleIndex: ruleIndex,
                              precedence: precedence,
                              followState: followState)
                 
@@ -92,7 +94,8 @@ public enum Transition: CustomStringConvertible {
                 self = .atom(newValue, label: label)
                 
             case let .action(_, ruleIndex, actionIndex, isCtxDependent):
-                self = .action(newValue, ruleIndex: ruleIndex,
+                self = .action(newValue,
+                               ruleIndex: ruleIndex,
                                actionIndex: actionIndex,
                                isCtxDependent: isCtxDependent)
                 
@@ -112,20 +115,28 @@ public enum Transition: CustomStringConvertible {
         switch self {
         case .epsilon:
             return "epsilon"
+            
         case let .range(_, from, to):
             return "'\(from)'..'\(to)'"
+            
         case .rule:
             return "\(self)"
+            
         case .predicate(_, let transition):
             return transition.description
+            
         case .atom(_, let label):
             return String(label)
+            
         case let .action(_, ruleIndex, actionIndex, _):
             return "action_\(ruleIndex):\(actionIndex)"
+            
         case .set(_, let set):
             return set.description
+            
         case .notSet(_, let set):
             return "~" + set.description
+            
         case .wildcard:
             return "."
         }
@@ -167,8 +178,10 @@ public enum Transition: CustomStringConvertible {
         switch self {
         case .epsilon, .rule, .predicate:
             return true
+            
         case .action:
             return true // we are to be ignored by analysis 'cept for predicates
+            
         case .range, .atom, .set, .notSet, .wildcard:
             return false
         }
@@ -178,10 +191,13 @@ public enum Transition: CustomStringConvertible {
         switch self {
         case .epsilon, .rule, .predicate, .action, .wildcard:
             return nil
+            
         case let .range(_, from, to):
             return .of(from, to)
+            
         case .atom(_, let label):
             return IntervalSet(label)
+            
         case .set(_, let set), .notSet(_, let set):
             return set
         }
@@ -191,16 +207,21 @@ public enum Transition: CustomStringConvertible {
         switch self {
         case .epsilon, .rule, .predicate, .action:
             return false
+            
         case let .range(_, from, to):
             return symbol >= from && symbol <= to
+            
         case .atom(_, let label):
             return label == symbol
+            
         case .set(_, let set):
             return set.contains(symbol)
+            
         case .notSet(_, let set):
             return symbol >= minVocabSymbol
                 && symbol <= maxVocabSymbol
                 && !set.contains(symbol)
+            
         case .wildcard:
             return symbol >= minVocabSymbol && symbol <= maxVocabSymbol
         }
