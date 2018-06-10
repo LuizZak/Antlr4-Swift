@@ -1357,10 +1357,6 @@ open class ParserATNSimulator: ATNSimulator {
         assert(!state.fullCtx || !state.configs.atnSet.dipsIntoOuterContext, "Expected: !fullCtx||!configs.dipsIntoOuterContext")
     }
     
-    final internal func _closureCheckingStopState(_ state: ClosureState) throws {
-        
-    }
-    
     final internal func closureCheckingStopState(_ state: ClosureState) throws {
         if debug {
             print("closure(" + state.config.toString(parser, true) + ")")
