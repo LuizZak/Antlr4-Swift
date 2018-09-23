@@ -4,7 +4,7 @@
 /// can be found in the LICENSE.txt file in the project root.
 ///
 
-public struct TuplePair<T: Hashable, U: Hashable>: Hashable {
+public struct TuplePair<T, U> {
     public var key1: T
     public var key2: U
 
@@ -13,3 +13,6 @@ public struct TuplePair<T: Hashable, U: Hashable>: Hashable {
         self.key2 = key2
     }
 }
+
+extension TuplePair: Equatable where T: Equatable, U: Equatable { }
+extension TuplePair: Hashable where T: Hashable, U: Hashable { }

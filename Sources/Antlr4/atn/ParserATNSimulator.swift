@@ -1743,7 +1743,7 @@ open class ParserATNSimulator: ATNSimulator {
                                     predicate: SemanticContext,
                                     _ collectPredicates: Bool,
                                     _ inContext: Bool,
-                                    _ fullCtx: Bool) throws -> ATNConfig {
+                                    _ fullCtx: Bool) throws -> ATNConfig? {
         if debug {
             print("PRED (collectPredicates=\(collectPredicates)) \(precedence)>=_p, ctx dependent=true")
             //if ( parser != nil ) {
@@ -1764,8 +1764,6 @@ open class ParserATNSimulator: ATNSimulator {
                 try _input.seek(currentPosition)
                 if predSucceeds {
                     c = ATNConfig(config, target) // no pred context
-                } else {
-                    c = ATNConfig(config, target)
                 }
             } else {
                 let newSemCtx = SemanticContext.and(config.semanticContext, predicate)
@@ -1778,7 +1776,7 @@ open class ParserATNSimulator: ATNSimulator {
         if debug {
             print("config from pred transition=\(String(describing: c))")
         }
-        return c!
+        return c
     }
 // (ruleIndex: Int, predIndex: Int, isCtxDependent: Bool)
     final func predTransition(_ config: ATNConfig,
