@@ -45,13 +45,7 @@ public struct Interval: Hashable {
         }
         return b - a + 1
     }
-
-    public var hashValue: Int {
-        var hash: Int = 23
-        hash = hash * 31 + a
-        hash = hash * 31 + b
-        return hash
-    }
+    
     ///
     /// Does this start completely before a? Disjoint
     ///
@@ -140,9 +134,5 @@ public struct Interval: Hashable {
 
     public var description: String {
         return "\(a)..\(b)"
-    }
-
-    public static func == (lhs: Interval, rhs: Interval) -> Bool {
-        return lhs.a == rhs.a && lhs.b == rhs.b
     }
 }
