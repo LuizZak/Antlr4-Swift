@@ -54,9 +54,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
     /// it's a wildcard whereas it is not for LL context merge.
     ///
     public var fullCtx: Bool
-
-    private var cachedHashCode = -1
-
+    
     public init(_ fullCtx: Bool = true, ordered: Bool = false) {
         if ordered {
             configLookup = LookupDictionary(type: LookupDictionaryType.ordered)
@@ -65,8 +63,6 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
         }
 
         self.fullCtx = fullCtx
-        
-        cachedHashCode = configsHashValue
     }
 
     public init(_ old: ATNConfigSet) {
@@ -83,8 +79,6 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
         self.conflictingAlts = old.conflictingAlts
         self.hasSemanticContext = old.hasSemanticContext
         self.dipsIntoOuterContext = old.dipsIntoOuterContext
-        
-        cachedHashCode = configsHashValue
     }
 
     //override
@@ -117,8 +111,6 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
         }
         let existing: ATNConfig = getOrAdd(config)
         if existing === config {
-            // we added this new one
-            cachedHashCode = -1
             configs.append(config)  // track order here
             return true
         }
@@ -239,7 +231,6 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
 
     public mutating func clear() {
         configs.removeAll()
-        cachedHashCode = -1
         configLookup.removeAll()
     }
     

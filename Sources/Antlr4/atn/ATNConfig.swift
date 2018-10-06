@@ -90,7 +90,7 @@ public class ATNConfig: Hashable, CustomStringConvertible {
         self.context = context
         self.semanticContext = semanticContext
     }
-
+    
     public convenience init(_ c: ATNConfig, _ state: ATNState) {
         self.init(c, state, c.context, c.semanticContext)
     }
