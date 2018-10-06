@@ -445,13 +445,6 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     public func getIntervals() -> [Interval] {
         return intervals
     }
-
-    public func hash(into hasher: inout Hasher) {
-        for I in intervals {
-            hasher.combine(I.a)
-            hasher.combine(I.b)
-        }
-    }
     
     ///
     /// Are two IntervalSets equal?  Because all intervals are sorted
@@ -651,8 +644,4 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
             }
         }
     }
-}
-
-public func == (lhs: IntervalSet, rhs: IntervalSet) -> Bool {
-    return lhs.intervals == rhs.intervals
 }
