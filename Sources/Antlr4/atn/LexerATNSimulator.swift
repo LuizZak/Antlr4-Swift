@@ -36,7 +36,7 @@ open class LexerATNSimulator: ATNSimulator {
         internal var index: Int = -1
         internal var line: Int = 0
         internal var charPos: Int = -1
-        internal var dfaState: DFAState?
+        internal var dfaState: DFAState<LexerATNConfig>?
 
         internal func reset() {
             index = -1
@@ -66,7 +66,7 @@ open class LexerATNSimulator: ATNSimulator {
     ///
     public var charPositionInLine = 0
 
-    public final var decisionToDFA: [DFA]
+    public final var decisionToDFA: [DFA<LexerATNConfig>]
 
     internal var mode = Lexer.DEFAULT_MODE
 
@@ -86,13 +86,13 @@ open class LexerATNSimulator: ATNSimulator {
 
     internal final var prevAccept = SimState()
     
-    public convenience init(_ atn: ATN, _ decisionToDFA: [DFA],
+    public convenience init(_ atn: ATN, _ decisionToDFA: [DFA<LexerATNConfig>],
                             _ sharedContextCache: PredictionContextCache) {
         self.init(nil, atn, decisionToDFA, sharedContextCache)
     }
 
     public init(_ recog: Lexer?, _ atn: ATN,
-                _ decisionToDFA: [DFA],
+                _ decisionToDFA: [DFA<LexerATNConfig>],
                 _ sharedContextCache: PredictionContextCache) {
 
         self.decisionToDFA = decisionToDFA
@@ -168,7 +168,7 @@ open class LexerATNSimulator: ATNSimulator {
         return predict
     }
 
-    internal func execATN(_ input: CharStream, _ ds0: DFAState) throws -> Int {
+    internal func execATN(_ input: CharStream, _ ds0: DFAState<LexerATNConfig>) throws -> Int {
         //print("enter exec index "+input.index()+" from "+ds0.configs);
         if LexerATNSimulator.debug {
             print("start state closure=\(ds0.configs)\n")
@@ -206,14 +206,14 @@ open class LexerATNSimulator: ATNSimulator {
             // This optimization makes a lot of sense for loops within DFA.
             // A character will take us back to an existing DFA state
             // that already has lots of edges out of it. e.g., .* in comments.
-            var target: DFAState
+            var target: DFAState<LexerATNConfig>
             if let existingTarget = getExistingTargetState(s, t) {
                 target = existingTarget
             } else {
                 target = try computeTargetState(input, s, t)
             }
 
-            if target == ATNSimulator.ERROR {
+            if target == ATNSimulator.ERROR() {
                 break
             }
 
@@ -251,7 +251,7 @@ open class LexerATNSimulator: ATNSimulator {
     /// already cached
     ///
 
-    internal func getExistingTargetState(_ s: DFAState, _ t: Int) -> DFAState? {
+    internal func getExistingTargetState(_ s: DFAState<LexerATNConfig>, _ t: Int) -> DFAState<LexerATNConfig>? {
         if s.edges == nil || t < LexerATNSimulator.MIN_DFA_EDGE || t > LexerATNSimulator.MAX_DFA_EDGE {
             return nil
         }
@@ -277,8 +277,8 @@ open class LexerATNSimulator: ATNSimulator {
     /// returns _#ERROR_.
     ///
 
-    internal func computeTargetState(_ input: CharStream, _ s: DFAState, _ t: Int) throws -> DFAState {
-        var reach = ATNConfigSet(ordered: true)
+    internal func computeTargetState(_ input: CharStream, _ s: DFAState<LexerATNConfig>, _ t: Int) throws -> DFAState<LexerATNConfig> {
+        var reach = ATNConfigSet<LexerATNConfig>(ordered: true)
 
         // if we don't find an existing DFA state
         // Fill reach starting from closure, following t transitions
@@ -290,11 +290,11 @@ open class LexerATNSimulator: ATNSimulator {
             if !reach.hasSemanticContext {
                 // we got nowhere on t, don't throw out this knowledge; it'd
                 // cause a failover from DFA later.
-                addDFAEdge(s, t, ATNSimulator.ERROR)
+                addDFAEdge(s, t, ATNSimulator.ERROR())
             }
 
             // stop when we can't match any more char
-            return ATNSimulator.ERROR
+            return ATNSimulator.ERROR()
         }
 
         // Add an edge from s to target DFA found/created for reach
@@ -302,7 +302,7 @@ open class LexerATNSimulator: ATNSimulator {
     }
 
     internal func failOrAccept(_ prevAccept: SimState, _ input: CharStream,
-                               _ reach: ATNConfigSet, _ t: Int) throws -> Int {
+                               _ reach: ATNConfigSet<LexerATNConfig>, _ t: Int) throws -> Int {
         if let dfaState = prevAccept.dfaState {
             let lexerActionExecutor = dfaState.lexerActionExecutor
             try accept(input, lexerActionExecutor, startIndex,
@@ -322,16 +322,13 @@ open class LexerATNSimulator: ATNSimulator {
     /// we can reach upon input `t`. Parameter `reach` is a return
     /// parameter.
     ///
-    internal func getReachableConfigSet(_ input: CharStream, _ closureConfig: ATNConfigSet,
-                                        _ reach: inout ATNConfigSet, _ t: Int) throws {
+    internal func getReachableConfigSet(_ input: CharStream, _ closureConfig: ATNConfigSet<LexerATNConfig>,
+                                        _ reach: inout ATNConfigSet<LexerATNConfig>, _ t: Int) throws {
         
         // this is used to skip processing for configs which have a lower priority
         // than a config that already reached an accept state for the same rule
         var skipAlt = ATN.INVALID_ALT_NUMBER
         for c in closureConfig.configs {
-            guard let c = c as? LexerATNConfig else {
-                continue
-            }
             let currentAltReachedAcceptState = (c.alt == skipAlt)
             if currentAltReachedAcceptState && c.hasPassedThroughNonGreedyDecision() {
                 continue
@@ -394,9 +391,9 @@ open class LexerATNSimulator: ATNSimulator {
     }
 
     final func computeStartState(_ input: CharStream,
-                                 _ p: ATNState) throws -> ATNConfigSet {
+                                 _ p: ATNState) throws -> ATNConfigSet<LexerATNConfig> {
         let initialContext = PredictionContext.EMPTY
-        var configs = ATNConfigSet(ordered: true)
+        var configs = ATNConfigSet<LexerATNConfig>(ordered: true)
         let length = p.getNumberOfTransitions()
         for i in 0..<length {
             let target = p.transition(i).target
@@ -418,7 +415,7 @@ open class LexerATNSimulator: ATNSimulator {
     ///
     @discardableResult
     final func closure(_ input: CharStream, _ config: LexerATNConfig,
-                       _ configs: inout ATNConfigSet, _ currentAltReachedAcceptState: Bool,
+                       _ configs: inout ATNConfigSet<LexerATNConfig>, _ currentAltReachedAcceptState: Bool,
                        _ speculative: Bool, _ treatEofAsEpsilon: Bool) throws -> Bool {
         
         var currentAltReachedAcceptState = currentAltReachedAcceptState
@@ -486,7 +483,7 @@ open class LexerATNSimulator: ATNSimulator {
     final func getEpsilonTarget(_ input: CharStream,
                                 _ config: LexerATNConfig,
                                 _ t: Transition,
-                                _ configs: inout ATNConfigSet,
+                                _ configs: inout ATNConfigSet<LexerATNConfig>,
                                 _ speculative: Bool,
                                 _ treatEofAsEpsilon: Bool) throws -> LexerATNConfig? {
         
@@ -620,16 +617,16 @@ open class LexerATNSimulator: ATNSimulator {
 
     final func captureSimState(_ settings: SimState,
                                _ input: CharStream,
-                               _ dfaState: DFAState) {
+                               _ dfaState: DFAState<LexerATNConfig>) {
         settings.index = input.index()
         settings.line = line
         settings.charPos = charPositionInLine
         settings.dfaState = dfaState
     }
 
-    final func addDFAEdge(_ from: DFAState,
+    final func addDFAEdge(_ from: DFAState<LexerATNConfig>,
                           _ t: Int,
-                          _ q: inout ATNConfigSet) -> DFAState {
+                          _ q: inout ATNConfigSet<LexerATNConfig>) -> DFAState<LexerATNConfig> {
         ///
         /// leading to this call, ATNConfigSet.hasSemanticContext is used as a
         /// marker indicating dynamic predicate evaluation makes this edge
@@ -654,7 +651,7 @@ open class LexerATNSimulator: ATNSimulator {
         return to
     }
 
-    final func addDFAEdge(_ p: DFAState, _ t: Int, _ q: DFAState) {
+    final func addDFAEdge(_ p: DFAState<LexerATNConfig>, _ t: Int, _ q: DFAState<LexerATNConfig>) {
         if t < LexerATNSimulator.MIN_DFA_EDGE || t > LexerATNSimulator.MAX_DFA_EDGE {
             // Only track edges within the DFA bounds
             return
@@ -681,7 +678,7 @@ open class LexerATNSimulator: ATNSimulator {
     /// traversing the DFA, we will know which rule to accept.
     ///
 
-    final func addDFAState(_ configs: inout ATNConfigSet) -> DFAState {
+    final func addDFAState(_ configs: inout ATNConfigSet<LexerATNConfig>) -> DFAState<LexerATNConfig> {
         ///
         /// the lexer evaluates predicates on-the-fly; by this point configs
         /// should not contain any configurations with unevaluated predicates.
@@ -713,7 +710,7 @@ open class LexerATNSimulator: ATNSimulator {
         }
     }
 
-    public final func getDFA(_ mode: Int) -> DFA {
+    public final func getDFA(_ mode: Int) -> DFA<LexerATNConfig> {
         return decisionToDFA[mode]
     }
 

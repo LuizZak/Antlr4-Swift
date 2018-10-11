@@ -13,12 +13,12 @@ public class LexerNoViableAltException: RecognitionException, CustomStringConver
     ///
     /// Which configurations did we try at input.index() that couldn't match input.LA(1)?
     ///
-    private final var deadEndConfigs: ATNConfigSet
+    private final var deadEndConfigs: ATNConfigSet<LexerATNConfig>
 
     public init(_ lexer: Lexer?,
                 _ input: CharStream,
                 _ startIndex: Int,
-                _ deadEndConfigs: ATNConfigSet) {
+                _ deadEndConfigs: ATNConfigSet<LexerATNConfig>) {
         let ctx: ParserRuleContext? = nil
         self.startIndex = startIndex
         self.deadEndConfigs = deadEndConfigs
@@ -30,7 +30,7 @@ public class LexerNoViableAltException: RecognitionException, CustomStringConver
         return startIndex
     }
 
-    public func getDeadEndConfigs() -> ATNConfigSet {
+    public func getDeadEndConfigs() -> ATNConfigSet<LexerATNConfig> {
         return deadEndConfigs
     }
 

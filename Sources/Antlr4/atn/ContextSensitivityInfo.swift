@@ -37,7 +37,7 @@ public class ContextSensitivityInfo: DecisionEventInfo {
     /// identified during full-context prediction
     ///
     public init(_ decision: Int,
-                _ configs: ATNConfigSet,
+                _ configs: ATNConfigSet<ATNConfig>,
                 _ input: TokenStream, _ startIndex: Int, _ stopIndex: Int) {
         super.init(decision, configs, input, startIndex, stopIndex, true)
     }

@@ -53,12 +53,12 @@ public class DiagnosticErrorListener: BaseErrorListener {
 
     override
     public func reportAmbiguity(_ recognizer: Parser,
-                                _ dfa: DFA,
+                                _ dfa: DFA<ATNConfig>,
                                 _ startIndex: Int,
                                 _ stopIndex: Int,
                                 _ exact: Bool,
                                 _ ambigAlts: BitSet,
-                                _ configs: ATNConfigSet) {
+                                _ configs: ATNConfigSet<ATNConfig>) {
         if exactOnly && !exact {
             return
         }
@@ -72,11 +72,11 @@ public class DiagnosticErrorListener: BaseErrorListener {
 
     override
     public func reportAttemptingFullContext(_ recognizer: Parser,
-                                            _ dfa: DFA,
+                                            _ dfa: DFA<ATNConfig>,
                                             _ startIndex: Int,
                                             _ stopIndex: Int,
                                             _ conflictingAlts: BitSet?,
-                                            _ configs: ATNConfigSet) {
+                                            _ configs: ATNConfigSet<ATNConfig>) {
         let decision = getDecisionDescription(recognizer, dfa)
         let text = getTextInInterval(recognizer, startIndex, stopIndex)
         let message = "reportAttemptingFullContext d=\(decision), input='\(text)'"
@@ -85,18 +85,18 @@ public class DiagnosticErrorListener: BaseErrorListener {
 
     override
     public func reportContextSensitivity(_ recognizer: Parser,
-                                         _ dfa: DFA,
+                                         _ dfa: DFA<ATNConfig>,
                                          _ startIndex: Int,
                                          _ stopIndex: Int,
                                          _ prediction: Int,
-                                         _ configs: ATNConfigSet) {
+                                         _ configs: ATNConfigSet<ATNConfig>) {
         let decision = getDecisionDescription(recognizer, dfa)
         let text = getTextInInterval(recognizer, startIndex, stopIndex)
         let message = "reportContextSensitivity d=\(decision), input='\(text)'"
         recognizer.notifyErrorListeners(message)
     }
 
-    internal func getDecisionDescription(_ recognizer: Parser, _ dfa: DFA) -> String {
+    internal func getDecisionDescription(_ recognizer: Parser, _ dfa: DFA<ATNConfig>) -> String {
         let decision: Int = dfa.decision
         let ruleIndex: Int = dfa.atnStartState.ruleIndex!
 
@@ -124,7 +124,7 @@ public class DiagnosticErrorListener: BaseErrorListener {
     /// - returns: Returns `reportedAlts` if it is not `null`, otherwise
     /// returns the set of alternatives represented in `configs`.
     ///
-    internal func getConflictingAlts(_ reportedAlts: BitSet?, _ configs: ATNConfigSet) -> BitSet {
+    internal func getConflictingAlts(_ reportedAlts: BitSet?, _ configs: ATNConfigSet<ATNConfig>) -> BitSet {
         return reportedAlts ?? configs.getAltBitSet()
     }
 }

@@ -4,8 +4,8 @@
 /// can be found in the LICENSE.txt file in the project root.
 ///
 
-public class LexerDFASerializer: DFASerializer {
-    public init(_ dfa: DFA) {
+public class LexerDFASerializer<T: ATNConfig>: DFASerializer<T> {
+    public init(_ dfa: DFA<T>) {
         super.init(dfa, Vocabulary.EMPTY_VOCABULARY)
     }
 

@@ -57,7 +57,7 @@ public class AmbiguityInfo: DecisionEventInfo {
     /// during SLL prediction
     ///
     public init(_ decision: Int,
-                _ configs: ATNConfigSet,
+                _ configs: ATNConfigSet<ATNConfig>,
                 _ ambigAlts: BitSet,
                 _ input: TokenStream, _ startIndex: Int, _ stopIndex: Int,
                 _ fullCtx: Bool) {

@@ -25,7 +25,7 @@ public class ParserInterpreter: Parser {
     ///
     internal final var statesNeedingLeftRecursionContext: BitSet
 
-    internal final var decisionToDFA: [DFA]
+    internal final var decisionToDFA: [DFA<ATNConfig>]
     // not shared like it is for generated parsers
     internal final var sharedContextCache: PredictionContextCache =
         PredictionContextCache()

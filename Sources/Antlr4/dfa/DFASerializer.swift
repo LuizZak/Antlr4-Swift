@@ -8,11 +8,11 @@
 /// A DFA walker that knows how to dump them to serialized strings.
 ///
 
-public class DFASerializer: CustomStringConvertible {
-    private let dfa: DFA
+public class DFASerializer<T: ATNConfig>: CustomStringConvertible {
+    private let dfa: DFA<T>
     private let vocabulary: Vocabulary
 
-    public init(_ dfa: DFA, _ vocabulary: Vocabulary) {
+    public init(_ dfa: DFA<T>, _ vocabulary: Vocabulary) {
         self.dfa = dfa
         self.vocabulary = vocabulary
     }
@@ -46,7 +46,7 @@ public class DFASerializer: CustomStringConvertible {
         return vocabulary.getDisplayName(i - 1)
     }
 
-    internal func getStateString(_ s: DFAState) -> String {
+    internal func getStateString(_ s: DFAState<T>) -> String {
         let n = s.stateNumber
 
         let s1 = s.isAcceptState ? ":" : ""

@@ -4,15 +4,15 @@
 /// can be found in the LICENSE.txt file in the project root.
 ///
 
-public class DFA: CustomStringConvertible {
+public class DFA<T: ATNConfig>: CustomStringConvertible {
     ///
     /// A set of all DFA states. Use _java.util.Map_ so we can get old state back
     /// (_java.util.Set_ only allows you to see if it's there).
     ///
 
-    public final var states: [DFAState: DFAState?] = [:]
+    public final var states: [DFAState<T>: DFAState<T>?] = [:]
 
-    public /*volatile*/ var s0: DFAState?
+    public /*volatile*/ var s0: DFAState<T>?
 
     public final var decision: Int
 
@@ -42,8 +42,8 @@ public class DFA: CustomStringConvertible {
         self.decision = decision
 
         if let starLoopState = atnStartState as? StarLoopEntryState, starLoopState.precedenceRuleDecision {
-            let precedenceState = DFAState(ATNConfigSet())
-            precedenceState.edges = [DFAState]()
+            let precedenceState = DFAState<T>(ATNConfigSet())
+            precedenceState.edges = [DFAState<T>]()
             precedenceState.isAcceptState = false
             precedenceState.requiresFullContext = false
 
@@ -80,7 +80,7 @@ public class DFA: CustomStringConvertible {
     /// - throws: _ANTLRError.illegalState_ if this is not a precedence DFA.
     /// - seealso: #isPrecedenceDfa()
     ///
-    public final func getPrecedenceStartState(_ precedence: Int) throws -> DFAState? {
+    public final func getPrecedenceStartState(_ precedence: Int) throws -> DFAState<T>? {
         if !isPrecedenceDfa() {
             throw ANTLRError.illegalState(msg: "Only precedence DFAs may contain a precedence start state.")
 
@@ -103,7 +103,7 @@ public class DFA: CustomStringConvertible {
     /// - throws: _ANTLRError.illegalState_ if this is not a precedence DFA.
     /// - seealso: #isPrecedenceDfa()
     ///
-    public final func setPrecedenceStartState(_ precedence: Int, _ startState: DFAState) throws {
+    public final func setPrecedenceStartState(_ precedence: Int, _ startState: DFAState<T>) throws {
         if !isPrecedenceDfa() {
             throw ANTLRError.illegalState(msg: "Only precedence DFAs may contain a precedence start state.")
         }
@@ -117,7 +117,7 @@ public class DFA: CustomStringConvertible {
         dfaStateMutex.synchronized {
             // s0.edges is never null for a precedence DFA
             if precedence >= edges.count {
-                let increase = [DFAState?](repeating: nil, count: (precedence + 1 - edges.count))
+                let increase = [DFAState<T>?](repeating: nil, count: (precedence + 1 - edges.count))
                 s0.edges = edges + increase
             }
 
@@ -128,8 +128,8 @@ public class DFA: CustomStringConvertible {
     ///
     /// Return a list of all states in this DFA, ordered by state number.
     ///
-    public func getStates() -> [DFAState] {
-        var result = [DFAState](states.keys)
+    public func getStates() -> [DFAState<T>] {
+        var result = [DFAState<T>](states.keys)
 
         result = result.sorted {
             $0.stateNumber < $1.stateNumber
@@ -147,7 +147,7 @@ public class DFA: CustomStringConvertible {
             return ""
         }
 
-        let serializer = DFASerializer(self, vocabulary)
+        let serializer = DFASerializer<T>(self, vocabulary)
         return serializer.description
     }
 
@@ -155,7 +155,7 @@ public class DFA: CustomStringConvertible {
         if s0 == nil {
             return ""
         }
-        let serializer = LexerDFASerializer(self)
+        let serializer = LexerDFASerializer<T>(self)
         return serializer.description
     }
 

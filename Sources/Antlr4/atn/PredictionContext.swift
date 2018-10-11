@@ -238,9 +238,9 @@ public class PredictionContext: Hashable, CustomStringConvertible {
             // merge parents x and y, giving array node with x,y then remainders
             // of those graphs.  dup a, a' points at merged array
             // new joined parent so create new singleton pointing to it, a'
-            let a_ = SingletonPredictionContext.create(parent, a.returnState)
-            mergeCache?[TuplePair(a, b)] = a_
-            return a_
+            let newA = SingletonPredictionContext.create(parent, a.returnState)
+            mergeCache?[TuplePair(a, b)] = newA
+            return newA
         } else {
             // a != b payloads differ
             // see if we can collapse parents due to $+x parents if local ctx
@@ -259,9 +259,9 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                     payloads[1] = a.returnState
                 }
                 let parents = [singleParent, singleParent]
-                let a_ = ArrayPredictionContext(parents, payloads)
-                mergeCache?[TuplePair(a, b)] = a_
-                return a_
+                let newA = ArrayPredictionContext(parents, payloads)
+                mergeCache?[TuplePair(a, b)] = newA
+                return newA
             }
             // parents differ and can't merge them. Just pack together
             // into array; can't merge.
@@ -277,9 +277,9 @@ public class PredictionContext: Hashable, CustomStringConvertible {
             if a is EmptyPredictionContext {
                 // print("parent is null")
             }
-            let a_ = ArrayPredictionContext(parents, payloads)
-            mergeCache?[TuplePair(a, b)] = a_
-            return a_
+            let newA = ArrayPredictionContext(parents, payloads)
+            mergeCache?[TuplePair(a, b)] = newA
+            return newA
         }
     }
 

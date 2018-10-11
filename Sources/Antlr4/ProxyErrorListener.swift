@@ -30,34 +30,34 @@ public class ProxyErrorListener: ANTLRErrorListener {
     }
 
     public func reportAmbiguity(_ recognizer: Parser,
-                                _ dfa: DFA,
+                                _ dfa: DFA<ATNConfig>,
                                 _ startIndex: Int,
                                 _ stopIndex: Int,
                                 _ exact: Bool,
                                 _ ambigAlts: BitSet,
-                                _ configs: ATNConfigSet) {
+                                _ configs: ATNConfigSet<ATNConfig>) {
         for listener in delegates {
             listener.reportAmbiguity(recognizer, dfa, startIndex, stopIndex, exact, ambigAlts, configs)
         }
     }
 
     public func reportAttemptingFullContext(_ recognizer: Parser,
-                                            _ dfa: DFA,
+                                            _ dfa: DFA<ATNConfig>,
                                             _ startIndex: Int,
                                             _ stopIndex: Int,
                                             _ conflictingAlts: BitSet?,
-                                            _ configs: ATNConfigSet) {
+                                            _ configs: ATNConfigSet<ATNConfig>) {
         for listener in delegates {
             listener.reportAttemptingFullContext(recognizer, dfa, startIndex, stopIndex, conflictingAlts, configs)
         }
     }
 
     public func reportContextSensitivity(_ recognizer: Parser,
-                                         _ dfa: DFA,
+                                         _ dfa: DFA<ATNConfig>,
                                          _ startIndex: Int,
                                          _ stopIndex: Int,
                                          _ prediction: Int,
-                                         _ configs: ATNConfigSet) {
+                                         _ configs: ATNConfigSet<ATNConfig>) {
         for listener in delegates {
             listener.reportContextSensitivity(recognizer, dfa, startIndex, stopIndex, prediction, configs)
         }

@@ -161,7 +161,9 @@ public enum PredictionMode {
     /// the configurations to strip out all of the predicates so that a standard
     /// _org.antlr.v4.runtime.atn.ATNConfigSet_ will merge everything ignoring predicates.
     ///
-    public static func hasSLLConflictTerminatingPrediction(_ mode: PredictionMode, _ configs: ATNConfigSet) -> Bool {
+    public static func hasSLLConflictTerminatingPrediction<T: ATNConfig>(generator: (ATNConfig, SemanticContext) -> T,
+                                                                         _ mode: PredictionMode,
+                                                                         _ configs: ATNConfigSet<T>) -> Bool {
         var configs = configs
         ///
         /// Configs in rule stop states indicate reaching the end of the decision
@@ -180,7 +182,7 @@ public enum PredictionMode {
             // since we'll often fail over anyway.
             if configs.hasSemanticContext {
                 // dup configs, tossing out semantic predicates
-                configs = configs.dupConfigsWithoutSemanticPredicates()
+                configs = configs.dupConfigsWithoutSemanticPredicates(generator: generator)
             }
             // now we have combined contexts for configs with dissimilar preds
         }
@@ -203,7 +205,7 @@ public enum PredictionMode {
     /// - returns: `true` if any configuration in `configs` is in a
     /// _org.antlr.v4.runtime.atn.RuleStopState_, otherwise `false`
     ///
-    public static func hasConfigInRuleStopState(_ configs: ATNConfigSet) -> Bool {
+    public static func hasConfigInRuleStopState<T: ATNConfig>(_ configs: ATNConfigSet<T>) -> Bool {
 
         return  configs.hasConfigInRuleStopState
     }
@@ -218,7 +220,7 @@ public enum PredictionMode {
     /// - returns: `true` if all configurations in `configs` are in a
     /// _org.antlr.v4.runtime.atn.RuleStopState_, otherwise `false`
     ///
-    public static func allConfigsInRuleStopStates(_ configs: ATNConfigSet) -> Bool {
+    public static func allConfigsInRuleStopStates<T: ATNConfig>(_ configs: ATNConfigSet<T>) -> Bool {
 
         return configs.allConfigsInRuleStopStates
     }
@@ -457,7 +459,7 @@ public enum PredictionMode {
     ///
     /// Get union of all alts from configs. - Since: 4.5.1
     ///
-    public static func getAlts(_ configs: ATNConfigSet) -> BitSet {
+    public static func getAlts<T: ATNConfig>(_ configs: ATNConfigSet<T>) -> BitSet {
         return configs.getAltBitSet()
 
     }
@@ -472,7 +474,7 @@ public enum PredictionMode {
     ///
     ///
 
-    public static func getConflictingAltSubsets(_ configs: ATNConfigSet) -> [BitSet] {
+    public static func getConflictingAltSubsets<T: ATNConfig>(_ configs: ATNConfigSet<T>) -> [BitSet] {
         return configs.getConflictingAltSubsets()
     }
 
@@ -484,11 +486,11 @@ public enum PredictionMode {
     /// map[c._org.antlr.v4.runtime.atn.ATNConfig#state state_] U= c._org.antlr.v4.runtime.atn.ATNConfig#alt alt_
     ///
     ///
-    public static func getStateToAltMap(_ configs: ATNConfigSet) -> [ATNState: BitSet] {
+    public static func getStateToAltMap<T: ATNConfig>(_ configs: ATNConfigSet<T>) -> [ATNState: BitSet] {
         return configs.getStateToAltMap()
     }
 
-    public static func hasStateAssociatedWithOneAlt(_ configs: ATNConfigSet) -> Bool {
+    public static func hasStateAssociatedWithOneAlt<T: ATNConfig>(_ configs: ATNConfigSet<T>) -> Bool {
         let x = getStateToAltMap(configs)
         for alts in x.values {
             if alts.cardinality() == 1 {

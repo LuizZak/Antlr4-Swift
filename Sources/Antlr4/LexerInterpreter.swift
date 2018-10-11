@@ -14,7 +14,7 @@ public class LexerInterpreter: Lexer {
 
     private final var vocabulary: Vocabulary?
 
-    internal final var _decisionToDFA: [DFA]
+    internal final var _decisionToDFA: [DFA<LexerATNConfig>]
     internal final var _sharedContextCache = PredictionContextCache()
 
     public init(_ grammarFileName: String, _ vocabulary: Vocabulary, _ ruleNames: [String],

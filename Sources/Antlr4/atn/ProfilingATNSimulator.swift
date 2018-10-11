@@ -18,7 +18,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     internal var _llStopIndex: Int = 0
 
     internal var currentDecision: Int = 0
-    internal var currentState: DFAState?
+    internal var currentState: DFAState<ATNConfig>?
 
     ///
     /// At the point of LL failover, we record how SLL would resolve the conflict so that
@@ -98,7 +98,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
     override
-    internal func getExistingTargetState(_ previousD: DFAState, _ t: Int) -> DFAState? {
+    internal func getExistingTargetState(_ previousD: DFAState<ATNConfig>, _ t: Int) -> DFAState<ATNConfig>? {
         // this method is called after each time the input position advances
         // during SLL prediction
         _sllStopIndex = _input.index()
@@ -106,7 +106,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
         let existingTargetState = super.getExistingTargetState(previousD, t)
         if existingTargetState != nil {
             decisions[currentDecision].SLL_DFATransitions += 1 // count only if we transition over a DFA state
-            if existingTargetState == ATNSimulator.ERROR {
+            if existingTargetState == ATNSimulator.ERROR() {
                 decisions[currentDecision].errors.append(
                     ErrorInfo(currentDecision, previousD.configs, _input, _startIndex, _sllStopIndex, false)
                 )
@@ -118,14 +118,14 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
     override
-    internal func computeTargetState(_ dfa: DFA, _ previousD: DFAState, _ t: Int) throws -> DFAState {
+    internal func computeTargetState(_ dfa: DFA<ATNConfig>, _ previousD: DFAState<ATNConfig>, _ t: Int) throws -> DFAState<ATNConfig> {
         let state = try super.computeTargetState(dfa, previousD, t)
         currentState = state
         return state
     }
 
     override
-    internal func computeReachSet(_ closure: ATNConfigSet, _ t: Int, _ fullCtx: Bool) throws -> ATNConfigSet? {
+    internal func computeReachSet(_ closure: ATNConfigSet<ATNConfig>, _ t: Int, _ fullCtx: Bool) throws -> ATNConfigSet<ATNConfig>? {
         if fullCtx {
             // this method is called after each time the input position advances
             // during full context prediction
@@ -175,8 +175,8 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
     override
-    internal func reportAttemptingFullContext(_ dfa: DFA, _ conflictingAlts: BitSet?,
-                                              _ configs: ATNConfigSet, _ startIndex: Int, _ stopIndex: Int) {
+    internal func reportAttemptingFullContext(_ dfa: DFA<ATNConfig>, _ conflictingAlts: BitSet?,
+                                              _ configs: ATNConfigSet<ATNConfig>, _ startIndex: Int, _ stopIndex: Int) {
         if let conflictingAlts = conflictingAlts {
             conflictingAltResolvedBySLL = conflictingAlts.firstSetBit()
         } else {
@@ -188,7 +188,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
     override
-    internal func reportContextSensitivity(_ dfa: DFA, _ prediction: Int, _ configs: ATNConfigSet,
+    internal func reportContextSensitivity(_ dfa: DFA<ATNConfig>, _ prediction: Int, _ configs: ATNConfigSet<ATNConfig>,
                                            _ startIndex: Int, _ stopIndex: Int) {
         if prediction != conflictingAltResolvedBySLL {
             decisions[currentDecision].contextSensitivities.append(
@@ -199,8 +199,8 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
     override
-    internal func reportAmbiguity(_ dfa: DFA, _ D: DFAState, _ startIndex: Int, _ stopIndex: Int, _ exact: Bool,
-                                  _ ambigAlts: BitSet?, _ configs: ATNConfigSet) {
+    internal func reportAmbiguity(_ dfa: DFA<ATNConfig>, _ D: DFAState<ATNConfig>, _ startIndex: Int, _ stopIndex: Int, _ exact: Bool,
+                                  _ ambigAlts: BitSet?, _ configs: ATNConfigSet<ATNConfig>) {
         var prediction: Int
         if let ambigAlts = ambigAlts {
             prediction = ambigAlts.firstSetBit()

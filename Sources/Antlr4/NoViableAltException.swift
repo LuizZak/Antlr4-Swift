@@ -12,7 +12,7 @@
 public class NoViableAltException: RecognitionException {
     /// Which configurations did we try at input.index() that couldn't match input.LT(1)?
 
-    private final var deadEndConfigs: ATNConfigSet?
+    private final var deadEndConfigs: ATNConfigSet<ATNConfig>?
 
     /// The token object at the start index; the input stream might
     /// not be buffering tokens so get a reference to it. (At the
@@ -36,7 +36,7 @@ public class NoViableAltException: RecognitionException {
                 _ input: IntStream,
                 _ startToken: Token,
                 _ offendingToken: Token?,
-                _ deadEndConfigs: ATNConfigSet?,
+                _ deadEndConfigs: ATNConfigSet<ATNConfig>?,
                 _ ctx: ParserRuleContext?) {
 
         self.deadEndConfigs = deadEndConfigs
@@ -52,7 +52,7 @@ public class NoViableAltException: RecognitionException {
         return startToken
     }
 
-    public func getDeadEndConfigs() -> ATNConfigSet? {
+    public func getDeadEndConfigs() -> ATNConfigSet<ATNConfig>? {
         return deadEndConfigs
     }
 

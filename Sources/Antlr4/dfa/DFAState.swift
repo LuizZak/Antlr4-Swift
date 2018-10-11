@@ -30,10 +30,10 @@
 /// meaning that state was reached via a different set of rule invocations.
 ///
 
-public class DFAState: Hashable, CustomStringConvertible {
+public class DFAState<T: ATNConfig>: Hashable, CustomStringConvertible {
     public var stateNumber = -1
 
-    public var configs = ATNConfigSet()
+    public var configs = ATNConfigSet<T>()
 
     ///
     /// `edges[symbol]` points to target of symbol. Shift up by 1 so (-1)
@@ -102,7 +102,7 @@ public class DFAState: Hashable, CustomStringConvertible {
         self.stateNumber = stateNumber
     }
 
-    public init(_ configs: ATNConfigSet) {
+    public init(_ configs: ATNConfigSet<T>) {
         self.configs = configs
     }
 

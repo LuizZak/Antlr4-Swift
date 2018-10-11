@@ -9,7 +9,7 @@
 /// info about the set, with support for combining similar configurations using a
 /// graph-structured stack.
 ///
-public struct ATNConfigSet: Hashable, CustomStringConvertible {
+public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
     ///
     /// The reason that we need this is because we don't want the hash map to use
     /// the standard hash code and equals. We need all configurations with the same
@@ -22,12 +22,12 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
     /// All configs but hashed by (s, i, _, pi) not including context. Wiped out
     /// when we go readonly as this set becomes a DFA state.
     ///
-    public var configLookup: LookupDictionary
+    public var configLookup: LookupDictionary<T>
 
     ///
     /// Track the elements as they are added to the set; supports get(i)
     ///
-    public var configs = [ATNConfig]()
+    public var configs = [T]()
 
     // TODO: these fields make me pretty uncomfortable but nice to pack up info together, saves recomputation
     // TODO: can we track conflicts as they are added to save scanning configs later?
@@ -83,7 +83,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
 
     //override
     @discardableResult
-    public mutating func add(_ config: ATNConfig) -> Bool {
+    public mutating func add(_ config: T) -> Bool {
         var mergeCache: [TuplePair<PredictionContext, PredictionContext>: PredictionContext]? = nil
         return add(config, &mergeCache)
     }
@@ -101,16 +101,19 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
     ///
     @discardableResult
     public mutating func add(
-        _ config: ATNConfig,
+        _ config: T,
         _ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?) -> Bool {
+        
         if config.semanticContext != SemanticContext.none {
             hasSemanticContext = true
         }
         if config.getOuterContextDepth() > 0 {
             dipsIntoOuterContext = true
         }
-        let existing: ATNConfig = getOrAdd(config)
-        if existing === config {
+        let (added, existing) = getOrAdd(config)
+        if added {
+            // we added this new one
+            cachedHashCode = -1
             configs.append(config)  // track order here
             return true
         }
@@ -131,10 +134,17 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
         }
 
         existing.context = merged // replace context; no need to alt mapping
+        
+        update(existing)
+        
         return true
     }
+    
+    private mutating func update(_ config: T) {
+        configLookup.update(config)
+    }
 
-    public mutating func getOrAdd(_ config: ATNConfig) -> ATNConfig {
+    public mutating func getOrAdd(_ config: T) -> (added: Bool, T) {
 
         return configLookup.getOrAdd(config)
     }
@@ -224,7 +234,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
         return configs.isEmpty
     }
 
-    public func contains(_ o: ATNConfig) -> Bool {
+    public func contains(_ o: T) -> Bool {
 
         return configLookup.contains(o)
     }
@@ -327,6 +337,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
     }
 
     public func removeAllConfigsNotInRuleStopState(
+        generator: (ATNConfig, ATNState) -> T,
         _ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?,
         _ lookToEndOfRule: Bool,
         _ atn: ATN) -> ATNConfigSet {
@@ -346,7 +357,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
                 let nextTokens = atn.nextTokens(config.state)
                 if nextTokens.contains(CommonToken.epsilon) {
                     let endOfRuleState = atn.ruleToStopState[config.state.ruleIndex!]
-                    result.add(ATNConfig(config, endOfRuleState), &mergeCache)
+                    result.add(generator(config, endOfRuleState), &mergeCache)
                 }
             }
         }
@@ -355,6 +366,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
     }
 
     public func applyPrecedenceFilter(
+        generator: (ATNConfig, SemanticContext) -> T,
         _ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?,
         _ parser: Parser,
         _ _outerContext: ParserRuleContext!) throws -> ATNConfigSet {
@@ -375,7 +387,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
 
             statesFromAlt1[config.state.stateNumber] = config.context
             if updatedContext != config.semanticContext {
-                configSet.add(ATNConfig(config, updatedContext!), &mergeCache)
+                configSet.add(generator(config, updatedContext!), &mergeCache)
             } else {
                 configSet.add(config, &mergeCache)
             }
@@ -477,11 +489,11 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
         }
         return (succeeded, failed)
     }
-
-    public func dupConfigsWithoutSemanticPredicates() -> ATNConfigSet {
+    
+    public func dupConfigsWithoutSemanticPredicates(generator: (ATNConfig, SemanticContext) -> T) -> ATNConfigSet {
         var dup = ATNConfigSet()
         for config in configs {
-            let c = ATNConfig(config, SemanticContext.none)
+            let c = generator(config, SemanticContext.none)
             dup.add(c)
         }
         return dup
@@ -496,7 +508,7 @@ public struct ATNConfigSet: Hashable, CustomStringConvertible {
     }
 }
 
-public func == (lhs: ATNConfigSet, rhs: ATNConfigSet) -> Bool {
+public func == <T: ATNConfig>(lhs: ATNConfigSet<T>, rhs: ATNConfigSet<T>) -> Bool {
     return
         lhs.configs == rhs.configs && // includes stack context
             lhs.fullCtx == rhs.fullCtx &&

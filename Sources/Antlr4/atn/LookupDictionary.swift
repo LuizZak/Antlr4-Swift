@@ -18,14 +18,20 @@ public enum LookupDictionaryType: Int {
     case ordered
 }
 
-public struct LookupDictionary {
+public struct LookupDictionary<T: ATNConfig> {
     private(set) internal var type: LookupDictionaryType
-    private var cache: [Int: ATNConfig] = [:]
+    
+    private var cache: [Int: T] = [:]
+    
+    public var isEmpty: Bool {
+        return cache.isEmpty
+    }
+    
     public init(type: LookupDictionaryType = LookupDictionaryType.lookup) {
         self.type = type
     }
 
-    private func hash(_ config: ATNConfig) -> Int {
+    private func hash(_ config: T) -> Int {
         if type == LookupDictionaryType.lookup {
             
             var hash = Hasher()
@@ -40,7 +46,7 @@ public struct LookupDictionary {
         }
     }
 
-    private func equal(_ lhs: ATNConfig, _ rhs: ATNConfig) -> Bool {
+    private func equal(_ lhs: T, _ rhs: T) -> Bool {
         if type == LookupDictionaryType.lookup {
             if lhs === rhs {
                 return true
@@ -78,23 +84,26 @@ public struct LookupDictionary {
     //        return config
     //
     //    }
-    public mutating func getOrAdd(_ config: ATNConfig) -> ATNConfig {
+    public mutating func getOrAdd(_ config: T) -> (added: Bool, T) {
 
         let h = hash(config)
 
         if let configList = cache[h] {
-            return configList
+            return (false, configList)
         } else {
             cache[h] = config
         }
 
-        return config
-
+        return (true, config)
     }
-    public var isEmpty: Bool {
-        return cache.isEmpty
+    
+    mutating func update(_ config: T) {
+        
+        let h = hash(config)
+        cache[h] = config
+        
     }
-
+    
     //    public func contains(config: ATNConfig) -> Bool {
     //
     //        let h = hash(config)
@@ -109,7 +118,7 @@ public struct LookupDictionary {
     //        return false
     //
     //    }
-    public func contains(_ config: ATNConfig) -> Bool {
+    public func contains(_ config: T) -> Bool {
         let h = hash(config)
         return cache[h] != nil
 
