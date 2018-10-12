@@ -87,8 +87,8 @@ class LexerATNConfigPool: Pooler<LexerATNConfig> {
     
 }
 
-public class LexerATNConfig: ATNConfig {
-    public func reset() {
+public struct LexerATNConfig: ATNConfig {
+    public mutating func reset() {
         context = nil
         state = BasicState()
         alt = 0
@@ -103,18 +103,18 @@ public class LexerATNConfig: ATNConfig {
     /// _#isPrecedenceFilterSuppressed_ property as a bit within the
     /// existing _#reachesIntoOuterContext_ field.
     ///
-    private final let SUPPRESS_PRECEDENCE_FILTER: Int = 0x40000000
+    private let SUPPRESS_PRECEDENCE_FILTER: Int = 0x40000000
     
-    public final var state: ATNState
+    public var state: ATNState
     
-    public final var alt: Int
+    public var alt: Int
     
-    public final var context: PredictionContext?
+    public var context: PredictionContext?
     
-    public final var reachesIntoOuterContext: Int = 0
+    public var reachesIntoOuterContext: Int = 0
     //=0 intital by janyou
     
-    public final var semanticContext: SemanticContext
+    public var semanticContext: SemanticContext
     
     ///
     /// This is the backing field for _#getLexerActionExecutor_.
@@ -138,15 +138,15 @@ public class LexerATNConfig: ATNConfig {
         passedThroughNonGreedyDecision = false
     }
     
-    public final func getOuterContextDepth() -> Int {
+    public func getOuterContextDepth() -> Int {
         return reachesIntoOuterContext & ~SUPPRESS_PRECEDENCE_FILTER
     }
     
-    public final func isPrecedenceFilterSuppressed() -> Bool {
+    public func isPrecedenceFilterSuppressed() -> Bool {
         return (reachesIntoOuterContext & SUPPRESS_PRECEDENCE_FILTER) != 0
     }
     
-    public final func setPrecedenceFilterSuppressed(_ value: Bool) {
+    public mutating func setPrecedenceFilterSuppressed(_ value: Bool) {
         if value {
             self.reachesIntoOuterContext |= 0x40000000
         } else {
@@ -177,11 +177,11 @@ public class LexerATNConfig: ATNConfig {
     /// Gets the _org.antlr.v4.runtime.atn.LexerActionExecutor_ capable of executing the embedded
     /// action(s) for the current configuration.
     ///
-    public final func getLexerActionExecutor() -> LexerActionExecutor? {
+    public func getLexerActionExecutor() -> LexerActionExecutor? {
         return lexerActionExecutor
     }
 
-    public final func hasPassedThroughNonGreedyDecision() -> Bool {
+    public func hasPassedThroughNonGreedyDecision() -> Bool {
         return passedThroughNonGreedyDecision
     }
     
@@ -208,10 +208,6 @@ public class LexerATNConfig: ATNConfig {
 
 //useless
 public func == (lhs: LexerATNConfig, rhs: LexerATNConfig) -> Bool {
-
-    if lhs === rhs {
-        return true
-    }
     
     if lhs.passedThroughNonGreedyDecision != rhs.passedThroughNonGreedyDecision {
         return false
