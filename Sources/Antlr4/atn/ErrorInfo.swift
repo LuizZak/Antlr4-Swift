@@ -32,7 +32,7 @@ public class ErrorInfo: DecisionEventInfo {
     /// during SLL prediction
     ///
     public init(_ decision: Int,
-                _ configs: ATNConfigSet<ATNConfig>,
+                _ configs: ATNConfigSet<ParserATNConfig>,
                 _ input: TokenStream, _ startIndex: Int, _ stopIndex: Int,
                 _ fullCtx: Bool) {
         super.init(decision, configs, input, startIndex, stopIndex, fullCtx)

@@ -108,7 +108,7 @@ public class ATNDeserializer {
         p += 1
         let maxTokenType = toInt(data[p])
         p += 1
-        let atn = ATN(grammarType, maxTokenType)
+        let atn = ATN(atnConfigPool: ParserATNConfigPool(), grammarType, maxTokenType)
 
         //
         // STATES
@@ -397,7 +397,7 @@ public class ATNDeserializer {
 
         let grammarType = ATNType(rawValue: dict["grammarType"] as! Int)!
         let maxTokenType = dict["maxTokenType"] as! Int
-        let atn = ATN(grammarType, maxTokenType)
+        let atn = ATN(atnConfigPool: ParserATNConfigPool(), grammarType, maxTokenType)
 
         //
         // STATES

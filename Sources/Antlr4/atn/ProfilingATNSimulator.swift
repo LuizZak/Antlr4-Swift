@@ -18,7 +18,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     internal var _llStopIndex: Int = 0
 
     internal var currentDecision: Int = 0
-    internal var currentState: DFAState<ATNConfig>?
+    internal var currentState: DFAState<ParserATNConfig>?
 
     ///
     /// At the point of LL failover, we record how SLL would resolve the conflict so that
@@ -98,7 +98,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
     override
-    internal func getExistingTargetState(_ previousD: DFAState<ATNConfig>, _ t: Int) -> DFAState<ATNConfig>? {
+    internal func getExistingTargetState(_ previousD: DFAState<ParserATNConfig>, _ t: Int) -> DFAState<ParserATNConfig>? {
         // this method is called after each time the input position advances
         // during SLL prediction
         _sllStopIndex = _input.index()
@@ -118,14 +118,14 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
     override
-    internal func computeTargetState(_ dfa: DFA<ATNConfig>, _ previousD: DFAState<ATNConfig>, _ t: Int) throws -> DFAState<ATNConfig> {
+    internal func computeTargetState(_ dfa: DFA<ParserATNConfig>, _ previousD: DFAState<ParserATNConfig>, _ t: Int) throws -> DFAState<ParserATNConfig> {
         let state = try super.computeTargetState(dfa, previousD, t)
         currentState = state
         return state
     }
 
     override
-    internal func computeReachSet(_ closure: ATNConfigSet<ATNConfig>, _ t: Int, _ fullCtx: Bool) throws -> ATNConfigSet<ATNConfig>? {
+    internal func computeReachSet(_ closure: ATNConfigSet<ParserATNConfig>, _ t: Int, _ fullCtx: Bool) throws -> ATNConfigSet<ParserATNConfig>? {
         if fullCtx {
             // this method is called after each time the input position advances
             // during full context prediction
@@ -175,8 +175,8 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
     override
-    internal func reportAttemptingFullContext(_ dfa: DFA<ATNConfig>, _ conflictingAlts: BitSet?,
-                                              _ configs: ATNConfigSet<ATNConfig>, _ startIndex: Int, _ stopIndex: Int) {
+    internal func reportAttemptingFullContext(_ dfa: DFA<ParserATNConfig>, _ conflictingAlts: BitSet?,
+                                              _ configs: ATNConfigSet<ParserATNConfig>, _ startIndex: Int, _ stopIndex: Int) {
         if let conflictingAlts = conflictingAlts {
             conflictingAltResolvedBySLL = conflictingAlts.firstSetBit()
         } else {
@@ -188,7 +188,7 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
     override
-    internal func reportContextSensitivity(_ dfa: DFA<ATNConfig>, _ prediction: Int, _ configs: ATNConfigSet<ATNConfig>,
+    internal func reportContextSensitivity(_ dfa: DFA<ParserATNConfig>, _ prediction: Int, _ configs: ATNConfigSet<ParserATNConfig>,
                                            _ startIndex: Int, _ stopIndex: Int) {
         if prediction != conflictingAltResolvedBySLL {
             decisions[currentDecision].contextSensitivities.append(
@@ -199,8 +199,8 @@ public class ProfilingATNSimulator: ParserATNSimulator {
     }
 
     override
-    internal func reportAmbiguity(_ dfa: DFA<ATNConfig>, _ D: DFAState<ATNConfig>, _ startIndex: Int, _ stopIndex: Int, _ exact: Bool,
-                                  _ ambigAlts: BitSet?, _ configs: ATNConfigSet<ATNConfig>) {
+    internal func reportAmbiguity(_ dfa: DFA<ParserATNConfig>, _ D: DFAState<ParserATNConfig>, _ startIndex: Int, _ stopIndex: Int, _ exact: Bool,
+                                  _ ambigAlts: BitSet?, _ configs: ATNConfigSet<ParserATNConfig>) {
         var prediction: Int
         if let ambigAlts = ambigAlts {
             prediction = ambigAlts.firstSetBit()

@@ -110,10 +110,9 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
         if config.getOuterContextDepth() > 0 {
             dipsIntoOuterContext = true
         }
-        let (added, existing) = getOrAdd(config)
+        var (added, existing) = getOrAdd(config)
         if added {
             // we added this new one
-            cachedHashCode = -1
             configs.append(config)  // track order here
             return true
         }
@@ -152,7 +151,7 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
     ///
     /// Return a List holding list of configs
     ///
-    public func elements() -> [ATNConfig] {
+    public func elements() -> [T] {
         return configs
     }
 
@@ -188,17 +187,16 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
         return preds
     }
 
-    public func get(_ i: Int) -> ATNConfig {
+    public func get(_ i: Int) -> T {
         return configs[i]
     }
 
-    public func optimizeConfigs(_ interpreter: ATNSimulator) {
+    public mutating func optimizeConfigs(_ interpreter: ATNSimulator) {
         if configLookup.isEmpty {
             return
         }
-        for config in configs {
-            config.context = interpreter.getCachedContext(config.context!)
-
+        for (i, config) in configs.enumerated() {
+            configs[i].context = interpreter.getCachedContext(config.context!)
         }
     }
 
@@ -318,7 +316,7 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
     }
 
     //LexerATNSimulator
-    public var firstConfigWithRuleStopState: ATNConfig? {
+    public var firstConfigWithRuleStopState: T? {
         return configs.first(where: { $0.state is RuleStopState })
     }
 
@@ -337,7 +335,7 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
     }
 
     public func removeAllConfigsNotInRuleStopState(
-        generator: (ATNConfig, ATNState) -> T,
+        generator: (T, ATNState) -> T,
         _ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?,
         _ lookToEndOfRule: Bool,
         _ atn: ATN) -> ATNConfigSet {
@@ -366,7 +364,7 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
     }
 
     public func applyPrecedenceFilter(
-        generator: (ATNConfig, SemanticContext) -> T,
+        generator: (T, SemanticContext) -> T,
         _ mergeCache: inout [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?,
         _ parser: Parser,
         _ _outerContext: ParserRuleContext!) throws -> ATNConfigSet {
@@ -490,7 +488,7 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
         return (succeeded, failed)
     }
     
-    public func dupConfigsWithoutSemanticPredicates(generator: (ATNConfig, SemanticContext) -> T) -> ATNConfigSet {
+    public func dupConfigsWithoutSemanticPredicates(generator: (T, SemanticContext) -> T) -> ATNConfigSet {
         var dup = ATNConfigSet()
         for config in configs {
             let c = generator(config, SemanticContext.none)

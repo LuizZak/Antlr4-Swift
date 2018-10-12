@@ -9,6 +9,8 @@
 ///
 
 open class LexerATNSimulator: ATNSimulator {
+    var lexerAtnConfigPool: LexerATNConfigPool = LexerATNConfigPool()
+    
     public static let debug = false
     public let dfa_debug = false
 
@@ -296,7 +298,7 @@ open class LexerATNSimulator: ATNSimulator {
             // stop when we can't match any more char
             return ATNSimulator.ERROR()
         }
-
+        
         // Add an edge from s to target DFA found/created for reach
         return addDFAEdge(s, t, &reach)
     }
@@ -351,7 +353,7 @@ open class LexerATNSimulator: ATNSimulator {
 
                     let treatEofAsEpsilon = (t == BufferedTokenStream.EOF)
                     if try closure(input,
-                                   LexerATNConfig(c, target, lexerActionExecutor),
+                                   lexerAtnConfigPool.pull(c, target, lexerActionExecutor),
                                    &reach,
                                    currentAltReachedAcceptState,
                                    true,
@@ -397,7 +399,8 @@ open class LexerATNSimulator: ATNSimulator {
         let length = p.getNumberOfTransitions()
         for i in 0..<length {
             let target = p.transition(i).target
-            let c = LexerATNConfig(target, i + 1, initialContext)
+            
+            let c = lexerAtnConfigPool.pull(target, i + 1, initialContext)
             try closure(input, c, &configs, false, false, false)
         }
         return configs
@@ -437,7 +440,7 @@ open class LexerATNSimulator: ATNSimulator {
                     configs.add(config)
                     return true
                 } else {
-                    configs.add(LexerATNConfig(config, config.state, PredictionContext.EMPTY))
+                    configs.add(lexerAtnConfigPool.pull(config, config.state, PredictionContext.EMPTY))
                     currentAltReachedAcceptState = true
                 }
             }
@@ -448,7 +451,9 @@ open class LexerATNSimulator: ATNSimulator {
                     if configContext.getReturnState(i) != PredictionContext.EMPTY_RETURN_STATE {
                         let newContext = configContext.getParent(i)! // "pop" return state
                         let returnState = atn.states[configContext.getReturnState(i)]
-                        let c = LexerATNConfig(config, returnState!, newContext)
+                        
+                        let c = lexerAtnConfigPool.pull(config, returnState!, newContext)
+                        
                         currentAltReachedAcceptState =
                             try closure(input, c, &configs, currentAltReachedAcceptState, speculative, treatEofAsEpsilon)
                     }
@@ -491,7 +496,7 @@ open class LexerATNSimulator: ATNSimulator {
         switch t {
         case let .rule(target, _, _, followState):
             let newContext = SingletonPredictionContext.create(config.context, followState.stateNumber)
-            c = LexerATNConfig(config, target, newContext)
+            c = lexerAtnConfigPool.pull(config, target, newContext)
             
         case .predicate(_, .precedence):
             throw ANTLRError.unsupportedOperation(msg: "Precedence predicates are not supported in lexers.")
@@ -521,7 +526,7 @@ open class LexerATNSimulator: ATNSimulator {
             }
             configs.hasSemanticContext = true
             if try evaluatePredicate(input, ruleIndex, predIndex, speculative) {
-                c = LexerATNConfig(config, target)
+                c = lexerAtnConfigPool.pull(config, target)
             }
             
         case let .action(target, _, actionIndex, _):
@@ -541,14 +546,14 @@ open class LexerATNSimulator: ATNSimulator {
                 let lexerActionExecutor =
                     LexerActionExecutor.append(config.getLexerActionExecutor(),
                                                atn.lexerActions[actionIndex])
-                c = LexerATNConfig(config, target, lexerActionExecutor)
+                c = lexerAtnConfigPool.pull(config, target, lexerActionExecutor)
             } else {
                 // ignore actions in referenced rules
-                c = LexerATNConfig(config, target)
+                c = lexerAtnConfigPool.pull(config, target)
             }
             
         case .epsilon(let target, _):
-            c = LexerATNConfig(config, target)
+            c = lexerAtnConfigPool.pull(config, target)
             
         case .atom, .range, .set:
             guard treatEofAsEpsilon else {
@@ -556,7 +561,7 @@ open class LexerATNSimulator: ATNSimulator {
             }
             
             if t.matches(BufferedTokenStream.EOF, Character.minValue, Character.maxValue) {
-                c = LexerATNConfig(config, t.target)
+                c = lexerAtnConfigPool.pull(config, t.target)
             }
             
         default:
@@ -690,7 +695,7 @@ open class LexerATNSimulator: ATNSimulator {
 
         if let firstConfigWithRuleStopState = firstConfigWithRuleStopState {
             proposed.isAcceptState = true
-            proposed.lexerActionExecutor = (firstConfigWithRuleStopState as! LexerATNConfig).getLexerActionExecutor()
+            proposed.lexerActionExecutor = firstConfigWithRuleStopState.getLexerActionExecutor()
             proposed.prediction = atn.ruleToTokenType[firstConfigWithRuleStopState.state.ruleIndex!]
         }
 

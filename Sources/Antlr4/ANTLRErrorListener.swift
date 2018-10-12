@@ -88,12 +88,12 @@ public protocol ANTLRErrorListener: class {
     /// identified
     ///
     func reportAmbiguity(_ recognizer: Parser,
-                         _ dfa: DFA<ATNConfig>,
+                         _ dfa: DFA<ParserATNConfig>,
                          _ startIndex: Int,
                          _ stopIndex: Int,
                          _ exact: Bool,
                          _ ambigAlts: BitSet,
-                         _ configs: ATNConfigSet<ATNConfig>)
+                         _ configs: ATNConfigSet<ParserATNConfig>)
 
     ///
     /// This method is called when an SLL conflict occurs and the parser is about
@@ -119,11 +119,11 @@ public protocol ANTLRErrorListener: class {
     /// detected
     ///
     func reportAttemptingFullContext(_ recognizer: Parser,
-                                     _ dfa: DFA<ATNConfig>,
+                                     _ dfa: DFA<ParserATNConfig>,
                                      _ startIndex: Int,
                                      _ stopIndex: Int,
                                      _ conflictingAlts: BitSet?,
-                                     _ configs: ATNConfigSet<ATNConfig>)
+                                     _ configs: ATNConfigSet<ParserATNConfig>)
 
     ///
     /// This method is called by the parser when a full-context prediction has a
@@ -164,9 +164,9 @@ public protocol ANTLRErrorListener: class {
     /// was determined
     ///
     func reportContextSensitivity(_ recognizer: Parser,
-                                  _ dfa: DFA<ATNConfig>,
+                                  _ dfa: DFA<ParserATNConfig>,
                                   _ startIndex: Int,
                                   _ stopIndex: Int,
                                   _ prediction: Int,
-                                  _ configs: ATNConfigSet<ATNConfig>)
+                                  _ configs: ATNConfigSet<ParserATNConfig>)
 }

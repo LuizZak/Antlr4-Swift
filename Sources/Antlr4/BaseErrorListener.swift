@@ -26,27 +26,27 @@ open class BaseErrorListener: ANTLRErrorListener {
     }
 
     open func reportAmbiguity(_ recognizer: Parser,
-                              _ dfa: DFA<ATNConfig>,
+                              _ dfa: DFA<ParserATNConfig>,
                               _ startIndex: Int,
                               _ stopIndex: Int,
                               _ exact: Bool,
                               _ ambigAlts: BitSet,
-                              _ configs: ATNConfigSet<ATNConfig>) {
+                              _ configs: ATNConfigSet<ParserATNConfig>) {
     }
 
     open func reportAttemptingFullContext(_ recognizer: Parser,
-                                          _ dfa: DFA<ATNConfig>,
+                                          _ dfa: DFA<ParserATNConfig>,
                                           _ startIndex: Int,
                                           _ stopIndex: Int,
                                           _ conflictingAlts: BitSet?,
-                                          _ configs: ATNConfigSet<ATNConfig>) {
+                                          _ configs: ATNConfigSet<ParserATNConfig>) {
     }
 
     open func reportContextSensitivity(_ recognizer: Parser,
-                                       _ dfa: DFA<ATNConfig>,
+                                       _ dfa: DFA<ParserATNConfig>,
                                        _ startIndex: Int,
                                        _ stopIndex: Int,
                                        _ prediction: Int,
-                                       _ configs: ATNConfigSet<ATNConfig>) {
+                                       _ configs: ATNConfigSet<ParserATNConfig>) {
     }
 }

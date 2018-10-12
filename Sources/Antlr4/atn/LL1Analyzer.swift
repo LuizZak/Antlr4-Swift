@@ -5,6 +5,8 @@
 ///
 
 public struct LL1Analyzer {
+    var atnConfigPool: ParserATNConfigPool
+    
     ///
     /// Special value added to the lookahead sets to indicate that we hit
     /// a predicate during analysis if `seeThruPreds==false`.
@@ -13,7 +15,8 @@ public struct LL1Analyzer {
 
     public let atn: ATN
 
-    public init(_ atn: ATN) {
+    public init(atnConfigPool: ParserATNConfigPool, _ atn: ATN) {
+        self.atnConfigPool = atnConfigPool
         self.atn = atn
     }
 
@@ -36,7 +39,7 @@ public struct LL1Analyzer {
         var look = [IntervalSet?](repeating: nil, count: length)
         for alt in 0..<length {
             look[alt] = IntervalSet()
-            var lookBusy = Set<ATNConfig>()
+            var lookBusy = Set<ParserATNConfig>()
             let seeThruPreds = false // fail to get lookahead upon pred
             var bitSet = BitSet()
             _LOOK(s.transition(alt).target, nil, PredictionContext.EMPTY,
@@ -93,7 +96,7 @@ public struct LL1Analyzer {
         var r = IntervalSet()
         let seeThruPreds = true // ignore preds; get all lookahead
         let lookContext = ctx != nil ? PredictionContext.fromRuleContext(s.atn!, ctx) : nil
-        var config = Set<ATNConfig>()
+        var config = Set<ParserATNConfig>()
         var bitSet = BitSet()
         _LOOK(s, stopState, lookContext, &r, &config, &bitSet, seeThruPreds, true)
         return r
@@ -133,12 +136,12 @@ public struct LL1Analyzer {
                         _ stopState: ATNState?,
                         _ ctx: PredictionContext?,
                         _ look: inout IntervalSet,
-                        _ lookBusy: inout Set<ATNConfig>,
+                        _ lookBusy: inout Set<ParserATNConfig>,
                         _ calledRuleStack: inout BitSet,
                         _ seeThruPreds: Bool,
                         _ addEOF: Bool) {
         // print ("_LOOK(\(s.stateNumber), ctx=\(ctx)");
-        let c = ATNConfig(s, 0, ctx)
+        let c = atnConfigPool.pull(s, 0, ctx)
         if lookBusy.contains(c) {
             return
         } else {

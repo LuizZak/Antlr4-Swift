@@ -161,7 +161,7 @@ public enum PredictionMode {
     /// the configurations to strip out all of the predicates so that a standard
     /// _org.antlr.v4.runtime.atn.ATNConfigSet_ will merge everything ignoring predicates.
     ///
-    public static func hasSLLConflictTerminatingPrediction<T: ATNConfig>(generator: (ATNConfig, SemanticContext) -> T,
+    public static func hasSLLConflictTerminatingPrediction<T: ATNConfig>(generator: (T, SemanticContext) -> T,
                                                                          _ mode: PredictionMode,
                                                                          _ configs: ATNConfigSet<T>) -> Bool {
         var configs = configs

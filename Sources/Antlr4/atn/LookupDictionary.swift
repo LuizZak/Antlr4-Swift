@@ -48,10 +48,6 @@ public struct LookupDictionary<T: ATNConfig> {
 
     private func equal(_ lhs: T, _ rhs: T) -> Bool {
         if type == LookupDictionaryType.lookup {
-            if lhs === rhs {
-                return true
-            }
-
             let same: Bool =
                 lhs.state.stateNumber == rhs.state.stateNumber &&
                     lhs.alt == rhs.alt &&

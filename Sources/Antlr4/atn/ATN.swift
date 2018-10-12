@@ -5,6 +5,8 @@
 ///
 
 public class ATN {
+    var atnConfigPool: ParserATNConfigPool
+    
     public static let INVALID_ALT_NUMBER = 0
 
     public final var states = [ATNState?]()
@@ -56,7 +58,8 @@ public class ATN {
     ///
     /// Used for runtime deserialization of ATNs from strings
     ///
-    public init(_ grammarType: ATNType, _ maxTokenType: Int) {
+    public init(atnConfigPool: ParserATNConfigPool, _ grammarType: ATNType, _ maxTokenType: Int) {
+        self.atnConfigPool = atnConfigPool
         self.grammarType = grammarType
         self.maxTokenType = maxTokenType
     }
@@ -68,7 +71,7 @@ public class ATN {
     /// restricted to tokens reachable staying within `s`'s rule.
     ///
     public func nextTokens(_ s: ATNState, _ ctx: RuleContext?) -> IntervalSet {
-        let anal = LL1Analyzer(self)
+        let anal = LL1Analyzer(atnConfigPool: atnConfigPool, self)
         let next = anal.LOOK(s, ctx)
         return next
     }

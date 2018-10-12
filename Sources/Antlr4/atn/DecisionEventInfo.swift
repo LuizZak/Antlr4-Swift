@@ -33,7 +33,7 @@ public class DecisionEventInfo {
     /// prediction state when the current event occurred, or `null` if no
     /// additional information is relevant or available.
     ///
-    public let configs: ATNConfigSet<ATNConfig>?
+    public let configs: ATNConfigSet<ParserATNConfig>?
 
     ///
     /// The input token stream which is being parsed.
@@ -58,7 +58,7 @@ public class DecisionEventInfo {
     public let fullCtx: Bool
 
     public init(_ decision: Int,
-                _ configs: ATNConfigSet<ATNConfig>?,
+                _ configs: ATNConfigSet<ParserATNConfig>?,
                 _ input: TokenStream,
                 _ startIndex: Int,
                 _ stopIndex: Int,
