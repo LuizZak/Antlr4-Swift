@@ -22,7 +22,8 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
     /// All configs but hashed by (s, i, _, pi) not including context. Wiped out
     /// when we go readonly as this set becomes a DFA state.
     ///
-    public var configLookup: LookupDictionary<T>
+    @usableFromInline
+    internal var configLookup: LookupDictionary<T>
 
     ///
     /// Track the elements as they are added to the set; supports get(i)
@@ -47,6 +48,8 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
     //TODO no default
     public var dipsIntoOuterContext = false
     //TODO no default
+    
+    public let ordered: Bool
 
     ///
     /// Indicates that this configuration set is part of a full context
@@ -56,22 +59,16 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
     public var fullCtx: Bool
     
     public init(_ fullCtx: Bool = true, ordered: Bool = false) {
-        if ordered {
-            configLookup = LookupDictionary(type: LookupDictionaryType.ordered)
-        } else {
-            configLookup = LookupDictionary()
-        }
+        configLookup = LookupDictionary(hash: ordered ? ATNConfigSet.hashOrdered : ATNConfigSet.hash)
+        
+        self.ordered = ordered
 
         self.fullCtx = fullCtx
     }
 
     public init(_ old: ATNConfigSet) {
-        if old.configLookup.type == .ordered {
-            configLookup = LookupDictionary(type: LookupDictionaryType.ordered)
-        } else {
-            configLookup = LookupDictionary()
-        }
-        
+        configLookup = LookupDictionary(hash: old.ordered ? ATNConfigSet.hashOrdered : ATNConfigSet.hash)
+        self.ordered = old.ordered
         self.fullCtx = old.fullCtx
         
         addAll(old)
@@ -80,7 +77,7 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
         self.hasSemanticContext = old.hasSemanticContext
         self.dipsIntoOuterContext = old.dipsIntoOuterContext
     }
-
+    
     //override
     @discardableResult
     public mutating func add(_ config: T) -> Bool {
@@ -110,7 +107,7 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
         if config.getOuterContextDepth() > 0 {
             dipsIntoOuterContext = true
         }
-        var (added, existing) = getOrAdd(config)
+        var (added, existing) = getOrAdd(config, index: configs.count)
         if added {
             // we added this new one
             configs.append(config)  // track order here
@@ -139,13 +136,16 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
         return true
     }
     
-    private mutating func update(_ config: T) {
-        configLookup.update(config)
+    @inlinable
+    mutating func update(_ config: T) {
+        if let orderedIndex = configLookup.update(config) {
+            configs[orderedIndex] = config
+        }
     }
 
-    public mutating func getOrAdd(_ config: T) -> (added: Bool, T) {
+    public mutating func getOrAdd(_ config: T, index: Int) -> (added: Bool, T) {
 
-        return configLookup.getOrAdd(config)
+        return configLookup.getOrAdd(config, index: index)
     }
 
     ///
@@ -503,6 +503,20 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
 
     public var allConfigsInRuleStopStates: Bool {
         return !configs.contains(where: { !($0.state is RuleStopState) })
+    }
+    
+    @usableFromInline
+    static func hashOrdered(_ config: T) -> Int {
+        return config.hashValue
+    }
+    
+    @usableFromInline
+    static func hash(_ config: T) -> Int {
+        var hash = Hasher()
+        hash.combine(config.state.stateNumber)
+        hash.combine(config.alt)
+        hash.combine(config.semanticContext)
+        return hash.finalize()
     }
 }
 

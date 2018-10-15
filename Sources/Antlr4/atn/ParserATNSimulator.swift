@@ -810,7 +810,7 @@ open class ParserATNSimulator: ATNSimulator {
         /// ensure that the alternative matching the longest overall sequence is
         /// chosen when multiple such configurations can match the input.
         ///
-        var skippedStopStates: [ParserATNConfig]? = nil
+        var skippedStopStates: [ParserATNConfig] = []
 
         // First figure out where we can reach on input t
         let configs = closureConfigSet.configs
@@ -822,10 +822,7 @@ open class ParserATNSimulator: ATNSimulator {
             if config.state is RuleStopState {
                 assert(config.context!.isEmpty(), "Expected: c.context.isEmpty()")
                 if fullCtx || t == BufferedTokenStream.EOF {
-                    if skippedStopStates == nil {
-                        skippedStopStates = [ParserATNConfig]()
-                    }
-                    skippedStopStates!.append(config)
+                    skippedStopStates.append(config)
                 }
 
                 continue
@@ -856,7 +853,7 @@ open class ParserATNSimulator: ATNSimulator {
         /// condition is not true when one or more configurations have been
         /// withheld in skippedStopStates, or when the current symbol is EOF.
         ///
-        if skippedStopStates == nil && t != CommonToken.EOF {
+        if !skippedStopStates.isEmpty && t != CommonToken.EOF {
             if intermediate.size() == 1 {
                 // Don't pursue the closure if there is just one state.
                 // It can only have one alternative; just add to result
@@ -931,7 +928,7 @@ open class ParserATNSimulator: ATNSimulator {
                 reach = _reach
             }
             
-            if let skippedStopStates = skippedStopStates,
+            if !skippedStopStates.isEmpty &&
                 (!fullCtx || !PredictionMode.hasConfigInRuleStopState(_reach)) {
                 
                 assert(!skippedStopStates.isEmpty, "Expected: !skippedStopStates.isEmpty()")
@@ -1410,11 +1407,10 @@ open class ParserATNSimulator: ATNSimulator {
                     }
                     let returnState: ATNState = atn.states[configContext.getReturnState(i)]!
                     let newContext: PredictionContext? = configContext.getParent(i) // "pop" return state
-                    let c = atnConfigPool.pull(returnState,
+                    var c = atnConfigPool.pull(returnState,
                                                state.config.alt,
                                                newContext,
                                                state.config.semanticContext)
-                    
                     // While we have context to pop back from, we may have
                     // gotten that context AFTER having falling off a rule.
                     // Make sure we track that we are now out of context.
@@ -1471,7 +1467,7 @@ open class ParserATNSimulator: ATNSimulator {
                 
             continueCollecting = continueCollecting && state.collectPredicates
             
-            guard let c =
+            guard var c =
                 try getEpsilonTarget(state.config, t, continueCollecting, state.depth == 0, state.fullCtx, state.treatEofAsEpsilon) else {
                     
                 continue
@@ -1498,8 +1494,6 @@ open class ParserATNSimulator: ATNSimulator {
                     //if (!closureBusy.insert(c)) {
                     // avoid infinite recursion for right-recursive rules
                     continue
-                } else {
-                    state.closureBusy.atnSet.insert(c)
                 }
                 
                 if let _dfa = _dfa, _dfa.isPrecedenceDfa() {
@@ -1519,6 +1513,8 @@ open class ParserATNSimulator: ATNSimulator {
                 //print("newDepth=>\(newDepth)")
                 assert(newDepth > Int.min, "Expected: newDepth>Integer.MIN_VALUE")
                 newDepth -= 1
+                
+                state.closureBusy.atnSet.insert(c)
 
                 if debug {
                     print("dips into outer ctx: \(c)")

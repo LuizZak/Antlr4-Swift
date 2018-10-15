@@ -221,8 +221,8 @@ public protocol ATNConfig: Poolable, Hashable, CustomStringConvertible {
 
 }
 
-public class ParserATNConfig: Poolable, ATNConfig, Hashable, CustomStringConvertible {
-    public func reset() {
+public struct ParserATNConfig: Poolable, ATNConfig, Hashable, CustomStringConvertible {
+    public mutating func reset() {
         context = nil
         state = BasicState()
         alt = 0
@@ -235,18 +235,18 @@ public class ParserATNConfig: Poolable, ATNConfig, Hashable, CustomStringConvert
     /// _#isPrecedenceFilterSuppressed_ property as a bit within the
     /// existing _#reachesIntoOuterContext_ field.
     ///
-    private final let SUPPRESS_PRECEDENCE_FILTER: Int = 0x40000000
+    private let SUPPRESS_PRECEDENCE_FILTER: Int = 0x40000000
     
-    public final var state: ATNState
+    public var state: ATNState
     
-    public final var alt: Int
+    public var alt: Int
     
-    public final var context: PredictionContext?
+    public var context: PredictionContext?
     
-    public final var reachesIntoOuterContext: Int = 0
+    public var reachesIntoOuterContext: Int = 0
     //=0 intital by janyou
 
-    public final var semanticContext: SemanticContext
+    public var semanticContext: SemanticContext
 
     internal init() {
         context = nil
@@ -256,15 +256,15 @@ public class ParserATNConfig: Poolable, ATNConfig, Hashable, CustomStringConvert
         semanticContext = .none
     }
     
-    public final func getOuterContextDepth() -> Int {
+    public func getOuterContextDepth() -> Int {
         return reachesIntoOuterContext & ~SUPPRESS_PRECEDENCE_FILTER
     }
 
-    public final func isPrecedenceFilterSuppressed() -> Bool {
+    public func isPrecedenceFilterSuppressed() -> Bool {
         return (reachesIntoOuterContext & SUPPRESS_PRECEDENCE_FILTER) != 0
     }
 
-    public final func setPrecedenceFilterSuppressed(_ value: Bool) {
+    public mutating func setPrecedenceFilterSuppressed(_ value: Bool) {
         if value {
             self.reachesIntoOuterContext |= 0x40000000
         } else {
@@ -310,11 +310,7 @@ public class ParserATNConfig: Poolable, ATNConfig, Hashable, CustomStringConvert
 }
 
 public func == (lhs: ParserATNConfig, rhs: ParserATNConfig) -> Bool {
-
-    if lhs === rhs {
-        return true
-    }
-
+    
     if lhs.state.stateNumber != rhs.state.stateNumber {
         return false
     }
