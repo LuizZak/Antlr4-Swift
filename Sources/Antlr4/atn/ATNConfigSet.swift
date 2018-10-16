@@ -82,6 +82,7 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
     }
 
     //override
+    @inlinable
     @discardableResult
     public mutating func add(_ config: T) -> Bool {
         var mergeCache: [TuplePair<PredictionContext, PredictionContext>: PredictionContext]? = nil
@@ -99,6 +100,7 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
     /// _#hasSemanticContext_ when necessary.
     /// - precondition: This set is not readonly.
     ///
+    @inlinable
     @discardableResult
     public mutating func add(
         _ config: T,
@@ -139,22 +141,25 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
         return true
     }
     
-    private mutating func update(_ config: T) {
+    @usableFromInline
+    internal mutating func update(_ config: T) {
         configLookup.update(config)
     }
-
+    
+    @inlinable
     public mutating func getOrAdd(_ config: T) -> (added: Bool, T) {
-
         return configLookup.getOrAdd(config)
     }
 
     ///
     /// Return a List holding list of configs
     ///
+    @inlinable
     public func elements() -> [T] {
         return configs
     }
-
+    
+    @inlinable
     public func getStates() -> Set<ATNState> {
         var states = Set<ATNState>(minimumCapacity: configs.count)
         for config in configs {
@@ -171,6 +176,7 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
     ///
     /// - since: 4.3
     ///
+    @inlinable
     public func getAlts() -> BitSet {
         var alts = BitSet()
         for config in configs {
@@ -178,7 +184,8 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
         }
         return alts
     }
-
+    
+    @inlinable
     public func getPredicates() -> [SemanticContext] {
         var preds = [SemanticContext]()
         for config in configs where config.semanticContext != SemanticContext.none {
@@ -186,11 +193,13 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
         }
         return preds
     }
-
+    
+    @inlinable
     public func get(_ i: Int) -> T {
         return configs[i]
     }
-
+    
+    @inlinable
     public mutating func optimizeConfigs(_ interpreter: ATNSimulator) {
         if configLookup.isEmpty {
             return
@@ -207,11 +216,11 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
         }
         return false
     }
-
+    
     public var hashValue: Int {
         return configsHashValue
     }
-
+    
     private var configsHashValue: Int {
         var hashCode = 1
         for item in configs {
@@ -219,21 +228,24 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
         }
         return hashCode
     }
-
+    
+    @inlinable
     public var count: Int {
         return configs.count
     }
-
+    
+    @inlinable
     public func size() -> Int {
         return configs.count
     }
-
+    
+    @inlinable
     public func isEmpty() -> Bool {
         return configs.isEmpty
     }
-
+    
+    @inlinable
     public func contains(_ o: T) -> Bool {
-
         return configLookup.contains(o)
     }
 

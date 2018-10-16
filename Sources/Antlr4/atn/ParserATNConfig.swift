@@ -4,10 +4,12 @@
 /// can be found in the LICENSE.txt file in the project root.
 ///
 
-public class ParserATNConfig: Poolable, ATNConfig, Hashable, CustomStringConvertible {
+public final class ParserATNConfig: ATNConfig, CustomStringConvertible {
+    private static let _state = BasicState()
+    
     public func reset() {
         context = nil
-        state = BasicState()
+        state = ParserATNConfig._state
         alt = 0
         reachesIntoOuterContext = 0
         semanticContext = .none
@@ -30,7 +32,8 @@ public class ParserATNConfig: Poolable, ATNConfig, Hashable, CustomStringConvert
     //=0 intital by janyou
 
     public final var semanticContext: SemanticContext
-
+    
+    @usableFromInline
     internal init() {
         context = nil
         state = BasicState()

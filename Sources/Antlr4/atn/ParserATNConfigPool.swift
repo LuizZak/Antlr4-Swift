@@ -6,6 +6,11 @@
 
 public class ParserATNConfigPool: Pooler<ParserATNConfig> {
     
+    public override init() {
+        
+    }
+    
+    @inlinable
     public func pull<T: ATNConfig>(_ old: T) -> ParserATNConfig {
         let value = pull {
             return ParserATNConfig()
@@ -14,6 +19,7 @@ public class ParserATNConfigPool: Pooler<ParserATNConfig> {
         return ParserATNConfigPool.config(value: value, old)
     }
     
+    @inlinable
     public func pull(_ state: ATNState,
                      _ alt: Int,
                      _ context: PredictionContext?) -> ParserATNConfig {
@@ -21,6 +27,7 @@ public class ParserATNConfigPool: Pooler<ParserATNConfig> {
         return pull(state, alt, context, SemanticContext.none)
     }
     
+    @inlinable
     public func pull(_ state: ATNState,
                      _ alt: Int,
                      _ context: PredictionContext?,
@@ -33,10 +40,12 @@ public class ParserATNConfigPool: Pooler<ParserATNConfig> {
         return ParserATNConfigPool.config(value: value, state, alt, context, semanticContext)
     }
     
+    @inlinable
     public func pull<T: ATNConfig>(_ c: T, _ state: ATNState) -> ParserATNConfig {
         return self.pull(c, state, c.context, c.semanticContext)
     }
     
+    @inlinable
     public func pull<T: ATNConfig>(_ c: T,
                                    _ state: ATNState,
                                    _ semanticContext: SemanticContext) -> ParserATNConfig {
@@ -44,12 +53,14 @@ public class ParserATNConfigPool: Pooler<ParserATNConfig> {
         return self.pull(c, state, c.context, semanticContext)
     }
     
+    @inlinable
     public func pull<T: ATNConfig>(_ c: T,
                                    _ semanticContext: SemanticContext) -> ParserATNConfig {
         
         return self.pull(c, c.state, c.context, semanticContext)
     }
     
+    @inlinable
     public func pull<T: ATNConfig>(_ c: T,
                                    _ state: ATNState,
                                    _ context: PredictionContext?) -> ParserATNConfig {
@@ -57,6 +68,7 @@ public class ParserATNConfigPool: Pooler<ParserATNConfig> {
         return self.pull(c, state, context, c.semanticContext)
     }
     
+    @inlinable
     public func pull<T: ATNConfig>(_ c: T,
                                    _ state: ATNState,
                                    _ context: PredictionContext?,
@@ -69,6 +81,7 @@ public class ParserATNConfigPool: Pooler<ParserATNConfig> {
         return ParserATNConfigPool.config(value: value, c, state, context, semanticContext)
     }
     
+    @inlinable
     public static func config<T: ATNConfig, U: ATNConfig>(value: T, _ old: U) -> T {
         var value = value
         
@@ -82,6 +95,7 @@ public class ParserATNConfigPool: Pooler<ParserATNConfig> {
         return value
     }
     
+    @inlinable
     public static func config<T: ATNConfig>(value: T,
                                             _ state: ATNState,
                                             _ alt: Int,
@@ -90,6 +104,7 @@ public class ParserATNConfigPool: Pooler<ParserATNConfig> {
         return config(value: value, state, alt, context, SemanticContext.none)
     }
     
+    @inlinable
     public static func config<T: ATNConfig>(value: T,
                                             _ state: ATNState,
                                             _ alt: Int,
@@ -106,10 +121,12 @@ public class ParserATNConfigPool: Pooler<ParserATNConfig> {
         return value
     }
     
+    @inlinable
     public static func config<T: ATNConfig, U: ATNConfig>(value: T, _ c: U, _ state: ATNState) -> T {
         return self.config(value: value, c, state, c.context, c.semanticContext)
     }
     
+    @inlinable
     public static func config<T: ATNConfig, U: ATNConfig>(value: T,
                                                           _ c: U,
                                                           _ state: ATNState,
@@ -118,6 +135,7 @@ public class ParserATNConfigPool: Pooler<ParserATNConfig> {
         return self.config(value: value, c, state, c.context, semanticContext)
     }
     
+    @inlinable
     public static func config<T: ATNConfig, U: ATNConfig>(value: T,
                                                           _ c: U,
                                                           _ semanticContext: SemanticContext) -> T {
@@ -125,6 +143,7 @@ public class ParserATNConfigPool: Pooler<ParserATNConfig> {
         return self.config(value: value, c, c.state, c.context, semanticContext)
     }
     
+    @inlinable
     public static func config<T: ATNConfig, U: ATNConfig>(value: T,
                                                           _ c: U,
                                                           _ state: ATNState,
@@ -133,6 +152,7 @@ public class ParserATNConfigPool: Pooler<ParserATNConfig> {
         return self.config(value: value, c, state, context, c.semanticContext)
     }
     
+    @inlinable
     public static func config<T: ATNConfig, U: ATNConfig>(value: T,
                                                           _ c: U,
                                                           _ state: ATNState,
@@ -151,4 +171,3 @@ public class ParserATNConfigPool: Pooler<ParserATNConfig> {
     }
     
 }
-

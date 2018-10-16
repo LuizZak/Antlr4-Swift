@@ -4,7 +4,11 @@
 /// can be found in the LICENSE.txt file in the project root.
 ///
 
-class LexerATNConfigPool: Pooler<LexerATNConfig> {
+public class LexerATNConfigPool: Pooler<LexerATNConfig> {
+    
+    public override init() {
+        
+    }
     
     public func pull(_ state: ATNState,
                      _ alt: Int,

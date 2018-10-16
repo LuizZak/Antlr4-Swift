@@ -99,6 +99,7 @@ public struct LL1Analyzer {
         var config = Set<ParserATNConfig>()
         var bitSet = BitSet()
         _LOOK(s, stopState, lookContext, &r, &config, &bitSet, seeThruPreds, true)
+        atnConfigPool.repool(from: &config)
         return r
     }
 

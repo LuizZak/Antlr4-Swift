@@ -19,9 +19,11 @@ public enum LookupDictionaryType: Int {
 }
 
 public struct LookupDictionary<T: ATNConfig> {
+    @usableFromInline
     private(set) internal var type: LookupDictionaryType
     
-    private var cache: [Int: T] = [:]
+    @usableFromInline
+    internal var cache: [Int: T] = [:]
     
     public var isEmpty: Bool {
         return cache.isEmpty
@@ -30,58 +32,23 @@ public struct LookupDictionary<T: ATNConfig> {
     public init(type: LookupDictionaryType = LookupDictionaryType.lookup) {
         self.type = type
     }
-
-    private func hash(_ config: T) -> Int {
+    
+    @usableFromInline
+    func hash(_ config: T) -> Int {
         if type == LookupDictionaryType.lookup {
-            
             var hash = Hasher()
             hash.combine(config.state.stateNumber)
             hash.combine(config.alt)
             hash.combine(config.semanticContext)
             return hash.finalize()
-
         } else {
             //Ordered
             return config.hashValue
         }
     }
-
-    private func equal(_ lhs: T, _ rhs: T) -> Bool {
-        if type == LookupDictionaryType.lookup {
-            let same: Bool =
-                lhs.state.stateNumber == rhs.state.stateNumber &&
-                    lhs.alt == rhs.alt &&
-                    lhs.semanticContext == rhs.semanticContext
-
-            return same
-
-        } else {
-            //Ordered
-            return lhs == rhs
-        }
-    }
-
-    //    public mutating func getOrAdd(config: ATNConfig) -> ATNConfig {
-    //
-    //        let h = hash(config)
-    //
-    //        if let configList = cache[h] {
-    //            let length = configList.count
-    //            for i in 0..<length {
-    //                if equal(configList[i], config) {
-    //                    return configList[i]
-    //                }
-    //            }
-    //            cache[h]!.append(config)
-    //        } else {
-    //            cache[h] = [config]
-    //        }
-    //
-    //        return config
-    //
-    //    }
+    
+    @inlinable
     public mutating func getOrAdd(_ config: T) -> (added: Bool, T) {
-
         let h = hash(config)
 
         if let configList = cache[h] {
@@ -93,34 +60,19 @@ public struct LookupDictionary<T: ATNConfig> {
         return (true, config)
     }
     
+    @usableFromInline
     mutating func update(_ config: T) {
-        
         let h = hash(config)
         cache[h] = config
-        
     }
     
-    //    public func contains(config: ATNConfig) -> Bool {
-    //
-    //        let h = hash(config)
-    //        if let configList = cache[h] {
-    //            for c in configList {
-    //                if equal(c, config) {
-    //                    return true
-    //                }
-    //            }
-    //        }
-    //
-    //        return false
-    //
-    //    }
+    @inlinable
     public func contains(_ config: T) -> Bool {
         let h = hash(config)
         return cache[h] != nil
-
     }
+    
     public mutating func removeAll() {
         cache = [:]
     }
-
 }

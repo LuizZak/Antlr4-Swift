@@ -233,30 +233,6 @@
 ///
 import Foundation
 
-public protocol Poolable {
-    mutating func reset()
-}
-
-public class Pooler<T: Poolable> {
-    
-    var pool: [T] = []
-    
-    func pull(_ creator: () -> T) -> T {
-        if var value = pool.popLast() {
-            value.reset()
-            return value
-        }
-        
-        let value = creator()
-        return value
-    }
-    
-    func repool(value: T) {
-        pool.append(value)
-    }
-    
-}
-
 open class ParserATNSimulator: ATNSimulator {
     var atnConfigPool = ParserATNConfigPool()
     
@@ -527,11 +503,12 @@ open class ParserATNSimulator: ATNSimulator {
                     print("ctx sensitive state \(outerContext) in \(D)")
                 }
                 let fullCtx = true
-                let s0_closure = try computeStartState(dfa.atnStartState, outerContext, fullCtx)
+                var s0_closure = try computeStartState(dfa.atnStartState, outerContext, fullCtx)
                 reportAttemptingFullContext(dfa, conflictingAlts, D.configs, startIndex, input.index())
                 let alt = try execATNWithFullContext(dfa, D, s0_closure,
                                                      input, startIndex,
                                                      outerContext)
+                atnConfigPool.repool(from: &s0_closure)
                 return alt
             }
 
@@ -676,7 +653,15 @@ open class ParserATNSimulator: ATNSimulator {
         let fullCtx = true
         var foundExactAmbig = false
         var reach: ATNConfigSet<ParserATNConfig>? = nil
+        defer {
+            if reach != nil {
+                atnConfigPool.repool(from: &reach!)
+            }
+        }
         var previous = s0
+        defer {
+            atnConfigPool.repool(from: &previous)
+        }
         try input.seek(startIndex)
         var t = try input.LA(1)
         var predictedAlt = 0
@@ -892,6 +877,8 @@ open class ParserATNSimulator: ATNSimulator {
                                  treatEofAsEpsilon: treatEofAsEpsilon)
                 
                 try closure(state)
+                
+                atnConfigPool.repool(from: &closureBusy.atnSet)
             }
         }
 
@@ -916,7 +903,11 @@ open class ParserATNSimulator: ATNSimulator {
             ///
             reach = removeAllConfigsNotInRuleStopState(reach!, isIntermediate)
         }
-
+        
+        defer {
+            atnConfigPool.repool(from: &intermediate)
+        }
+        
         ///
         /// If skippedStopStates is not null, then it contains at least one
         /// configuration. For full-context reach operations, these
@@ -980,16 +971,25 @@ open class ParserATNSimulator: ATNSimulator {
             var c = atnConfigPool.pull(target, i + 1, initialContext)
             let closureBusy = ParserATNSimulator.ClosureState.BoxedSetOfATNConfig()
             let boxedConfigs = ParserATNSimulator.ClosureState.BoxedATNConfigSet(atnSet: configs)
-            defer {
-                configs = boxedConfigs.atnSet
+            do {
+                defer {
+                    configs = boxedConfigs.atnSet
+                }
+                
+                let state =
+                    ClosureState(config: c, configs: boxedConfigs, closureBusy: closureBusy,
+                                 collectPredicates: true, fullCtx: fullCtx, depth: 0,
+                                 treatEofAsEpsilon: false)
+                
+                try closure(state)
             }
             
-            let state =
-                ClosureState(config: c, configs: boxedConfigs, closureBusy: closureBusy,
-                             collectPredicates: true, fullCtx: fullCtx, depth: 0,
-                             treatEofAsEpsilon: false)
+            if isKnownUniquelyReferenced(&c) {
+                atnConfigPool.repool(value: c)
+            }
             
-            try closure(state)
+            atnConfigPool.repool(from: &closureBusy.atnSet)
+            atnConfigPool.repool(from: &boxedConfigs.atnSet)
         }
 
         return configs
@@ -1397,7 +1397,10 @@ open class ParserATNSimulator: ATNSimulator {
                 for i in 0..<length {
                     if configContext.getReturnState(i) == PredictionContext.EMPTY_RETURN_STATE {
                         if state.fullCtx {
-                            state.configs.atnSet.add(atnConfigPool.pull(state.config, state.config.state, PredictionContext.EMPTY), &mergeCache)
+                            state.configs.atnSet.add(
+                                atnConfigPool.pull(state.config, state.config.state, PredictionContext.EMPTY),
+                                &mergeCache
+                            )
                             continue
                         } else {
                             // we have no context info, just chase follow links (if greedy)
@@ -1410,7 +1413,7 @@ open class ParserATNSimulator: ATNSimulator {
                     }
                     let returnState: ATNState = atn.states[configContext.getReturnState(i)]!
                     let newContext: PredictionContext? = configContext.getParent(i) // "pop" return state
-                    let c = atnConfigPool.pull(returnState,
+                    var c = atnConfigPool.pull(returnState,
                                                state.config.alt,
                                                newContext,
                                                state.config.semanticContext)
@@ -1426,6 +1429,10 @@ open class ParserATNSimulator: ATNSimulator {
                     assert(state.depth > Int.min, "Expected: depth>Integer.MIN_VALUE")
                     
                     try closureCheckingStopState(state.withConfig(c).withDepth(state.depth - 1))
+                    
+                    if isKnownUniquelyReferenced(&c) {
+                        atnConfigPool.repool(value: c)
+                    }
                 }
                 return
             } else if state.fullCtx {
@@ -1471,10 +1478,15 @@ open class ParserATNSimulator: ATNSimulator {
                 
             continueCollecting = continueCollecting && state.collectPredicates
             
-            guard let c =
+            guard var c =
                 try getEpsilonTarget(state.config, t, continueCollecting, state.depth == 0, state.fullCtx, state.treatEofAsEpsilon) else {
                     
                 continue
+            }
+            defer {
+                if isKnownUniquelyReferenced(&c) {
+                    atnConfigPool.repool(value: c)
+                }
             }
             
             if !t.isEpsilon() {
