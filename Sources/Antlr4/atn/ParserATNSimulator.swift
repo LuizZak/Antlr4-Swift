@@ -292,7 +292,8 @@ open class ParserATNSimulator: ATNSimulator {
     //        self.init(nil, atn, decisionToDFA, sharedContextCache);
     //    }
 
-    public init(_ parser: Parser, _ atn: ATN,
+    public init(_ parser: Parser,
+                _ atn: ATN,
                 _ decisionToDFA: [DFA<ParserATNConfig>],
                 _ sharedContextCache: PredictionContextCache) {
 

@@ -88,12 +88,15 @@ open class LexerATNSimulator: ATNSimulator {
 
     internal final var prevAccept = SimState()
     
-    public convenience init(_ atn: ATN, _ decisionToDFA: [DFA<LexerATNConfig>],
+    public convenience init(_ atn: ATN,
+                            _ decisionToDFA: [DFA<LexerATNConfig>],
                             _ sharedContextCache: PredictionContextCache) {
+        
         self.init(nil, atn, decisionToDFA, sharedContextCache)
     }
 
-    public init(_ recog: Lexer?, _ atn: ATN,
+    public init(_ recog: Lexer?,
+                _ atn: ATN,
                 _ decisionToDFA: [DFA<LexerATNConfig>],
                 _ sharedContextCache: PredictionContextCache) {
 
