@@ -20,6 +20,8 @@ public class Pooler<T: Poolable> {
     
     @usableFromInline
     final func repool(value: T) {
+        var value = value
+        value.reset()
         pool.append(value)
     }
 }

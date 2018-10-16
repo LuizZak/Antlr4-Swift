@@ -9,7 +9,7 @@
 ///
 
 open class LexerATNSimulator: ATNSimulator {
-    var lexerAtnConfigPool: LexerATNConfigPool = LexerATNConfigPool()
+    let lexerAtnConfigPool: LexerATNConfigPool
     
     public static let debug = false
     public let dfa_debug = false
@@ -90,18 +90,25 @@ open class LexerATNSimulator: ATNSimulator {
     
     public convenience init(_ atn: ATN,
                             _ decisionToDFA: [DFA<LexerATNConfig>],
-                            _ sharedContextCache: PredictionContextCache) {
+                            _ sharedContextCache: PredictionContextCache,
+                            lexerAtnConfigPool: LexerATNConfigPool = LexerATNConfigPool()) {
         
-        self.init(nil, atn, decisionToDFA, sharedContextCache)
+        self.init(nil,
+                  atn,
+                  decisionToDFA,
+                  sharedContextCache,
+                  lexerAtnConfigPool: lexerAtnConfigPool)
     }
 
     public init(_ recog: Lexer?,
                 _ atn: ATN,
                 _ decisionToDFA: [DFA<LexerATNConfig>],
-                _ sharedContextCache: PredictionContextCache) {
+                _ sharedContextCache: PredictionContextCache,
+                lexerAtnConfigPool: LexerATNConfigPool = LexerATNConfigPool()) {
 
         self.decisionToDFA = decisionToDFA
         self.recog = recog
+        self.lexerAtnConfigPool = lexerAtnConfigPool
         super.init(atn, sharedContextCache)
     }
 

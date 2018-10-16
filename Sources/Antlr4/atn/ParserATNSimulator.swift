@@ -234,7 +234,7 @@
 import Foundation
 
 open class ParserATNSimulator: ATNSimulator {
-    var atnConfigPool = ParserATNConfigPool()
+    let atnConfigPool: ParserATNConfigPool
     
     public let debug = false
     public let debug_list_atn_decisions = false
@@ -295,10 +295,12 @@ open class ParserATNSimulator: ATNSimulator {
     public init(_ parser: Parser,
                 _ atn: ATN,
                 _ decisionToDFA: [DFA<ParserATNConfig>],
-                _ sharedContextCache: PredictionContextCache) {
+                _ sharedContextCache: PredictionContextCache,
+                atnConfigPool: ParserATNConfigPool = ParserATNConfigPool()) {
 
         self.parser = parser
         self.decisionToDFA = decisionToDFA
+        self.atnConfigPool = atnConfigPool
         super.init(atn, sharedContextCache)
         //		DOTGenerator dot = new DOTGenerator(null);
         //		print(dot.getDOT(atn.rules.get(0), parser.getRuleNames()));
