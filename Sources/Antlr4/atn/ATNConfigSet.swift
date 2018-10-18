@@ -285,23 +285,21 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
     }
 
     public func getConflictingAltSubsets() -> [BitSet] {
-        let length = configs.count
         var configToAlts = [Int: BitSet]()
 
-        for i in 0..<length {
-            let hash = configHash(configs[i].state.stateNumber, configs[i].context)
-            configToAlts[hash, default: BitSet()].set(configs[i].alt)
+        for config in configs {
+            let hash = configHash(config.state.stateNumber, config.context)
+            configToAlts[hash, default: BitSet()].set(config.alt)
         }
 
         return Array(configToAlts.values)
     }
 
     public func getStateToAltMap() -> [ATNState: BitSet] {
-        let length = configs.count
         var m = [ATNState: BitSet]()
 
-        for i in 0..<length {
-            m[configs[i].state, default: BitSet()].set(configs[i].alt)
+        for config in configs {
+            m[config.state, default: BitSet()].set(config.alt)
         }
         return m
     }

@@ -22,16 +22,34 @@ public final class ParserATNConfig: ATNConfig, CustomStringConvertible {
     ///
     private final let SUPPRESS_PRECEDENCE_FILTER: Int = 0x40000000
     
-    public final var state: ATNState
+    private final var _cachedHashCode: Int?
     
-    public final var alt: Int
+    public final var state: ATNState {
+        didSet {
+            _cachedHashCode = nil
+        }
+    }
     
-    public final var context: PredictionContext?
+    public final var alt: Int {
+        didSet {
+            _cachedHashCode = nil
+        }
+    }
+    
+    public final var context: PredictionContext? {
+        didSet {
+            _cachedHashCode = nil
+        }
+    }
     
     public final var reachesIntoOuterContext: Int = 0
     //=0 intital by janyou
 
-    public final var semanticContext: SemanticContext
+    public final var semanticContext: SemanticContext {
+        didSet {
+            _cachedHashCode = nil
+        }
+    }
     
     @usableFromInline
     internal init() {
@@ -64,11 +82,20 @@ public final class ParserATNConfig: ATNConfig, CustomStringConvertible {
     /// syntactic/semantic contexts are the same.
     ///
     
-    public func hash(into hasher: inout Hasher) {
+    public var hashValue: Int {
+        if let cachedHashCode = _cachedHashCode {
+            return cachedHashCode
+        }
+        
+        var hasher = Hasher()
         hasher.combine(state.stateNumber)
         hasher.combine(alt)
         hasher.combine(context)
         hasher.combine(semanticContext)
+        let result = hasher.finalize()
+        _cachedHashCode = result
+        
+        return result
     }
     
     public var description: String {
