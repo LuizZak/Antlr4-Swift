@@ -807,7 +807,7 @@ open class ParserATNSimulator: ATNSimulator {
                 print("testing \(getTokenName(t)) at \(config.description)")
             }
 
-            if config.state is RuleStopState {
+            if config.state.getStateType() == ATNState.RULE_STOP {
                 assert(config.context!.isEmpty(), "Expected: c.context.isEmpty()")
                 if fullCtx || t == BufferedTokenStream.EOF {
                     if skippedStopStates == nil {
@@ -1391,7 +1391,7 @@ open class ParserATNSimulator: ATNSimulator {
             print("closure(" + state.config.toString(parser, true) + ")")
         }
 
-        if state.config.state is RuleStopState {
+        if state.config.state.getStateType() == ATNState.RULE_STOP {
             let configContext = state.config.context!
             // We hit rule end. If we have context info, use it
             // run thru all possible stack tops in ctx
@@ -1502,7 +1502,7 @@ open class ParserATNSimulator: ATNSimulator {
             }
 
             var newDepth = state.depth
-            if state.config.state is RuleStopState {
+            if state.config.state.getStateType() == ATNState.RULE_STOP {
                 assert(!state.fullCtx, "Expected: !fullCtx")
                 // target fell off end of rule; mark resulting c as having dipped into outer context
                 // We can't get here if incoming config was rule stop and we had context

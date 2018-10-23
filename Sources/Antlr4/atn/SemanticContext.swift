@@ -55,6 +55,7 @@ public enum SemanticContext: Hashable, CustomStringConvertible {
     /// prediction, so we passed in the outer context here in case of context
     /// dependent predicate evaluation.
     ///
+    @inlinable
     public func eval<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> Bool {
         switch self {
         case .none:
@@ -101,6 +102,7 @@ public enum SemanticContext: Hashable, CustomStringConvertible {
     /// * A non-`null` _org.antlr.v4.runtime.atn.SemanticContext_: the new simplified
     /// semantic context after precedence predicates are evaluated.
     ///
+    @inlinable
     public func evalPrecedence<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> SemanticContext? {
         switch self {
         case .none, .predicate:
@@ -185,6 +187,7 @@ public enum SemanticContext: Hashable, CustomStringConvertible {
         }
     }
     
+    @inlinable
     public static func and(_ a: SemanticContext?, _ b: SemanticContext?) -> SemanticContext {
         guard let a = a, a != .none else {
             return b!
@@ -206,6 +209,7 @@ public enum SemanticContext: Hashable, CustomStringConvertible {
     ///
     /// - seealso: org.antlr.v4.runtime.atn.ParserATNSimulator#getPredsForAmbigAlts
     ///
+    @inlinable
     public static func or(_ a: SemanticContext?, _ b: SemanticContext?) -> SemanticContext {
         guard let a = a else {
             return b!
@@ -226,7 +230,8 @@ public enum SemanticContext: Hashable, CustomStringConvertible {
         }
     }
     
-    private static func AND(_ a: SemanticContext, _ b: SemanticContext) -> SemanticContext {
+    @usableFromInline
+    internal static func AND(_ a: SemanticContext, _ b: SemanticContext) -> SemanticContext {
         var operands = Set<SemanticContext>()
         switch a {
         case .operatorAnd(let opnds):
@@ -255,7 +260,8 @@ public enum SemanticContext: Hashable, CustomStringConvertible {
         return .operatorAnd(Array(operands))
     }
     
-    private static func OR(_ a: SemanticContext, _ b: SemanticContext) -> SemanticContext {
+    @usableFromInline
+    internal static func OR(_ a: SemanticContext, _ b: SemanticContext) -> SemanticContext {
         var operands: Set<SemanticContext> = Set<SemanticContext>()
         switch a {
         case .operatorOr(let opnds):
@@ -284,7 +290,8 @@ public enum SemanticContext: Hashable, CustomStringConvertible {
         return .operatorOr(Array(operands))
     }
     
-    private static func filterPrecedencePredicates(_ collection: inout Set<SemanticContext>) -> [(precedence: Int, SemanticContext)] {
+    @usableFromInline
+    internal static func filterPrecedencePredicates(_ collection: inout Set<SemanticContext>) -> [(precedence: Int, SemanticContext)] {
         let result: [(Int, SemanticContext)] = collection.compactMap {
             if case .precedence(let prec) = $0 {
                 return (prec, $0)

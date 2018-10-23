@@ -436,7 +436,7 @@ open class LexerATNSimulator: ATNSimulator {
             print("closure(" + config.toString(recog, true) + ")")
         }
 
-        if config.state is RuleStopState {
+        if config.state.getStateType() == ATNState.RULE_STOP {
             if LexerATNSimulator.debug {
                 if let recog = recog {
                     print("closure at \(recog.getRuleNames()[config.state.ruleIndex!]) rule stop \(config)\n")
