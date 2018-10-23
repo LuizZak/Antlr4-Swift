@@ -105,14 +105,12 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     }
 
     static func calculateEmptyHashCode() -> Int {
-        var hash = Hasher()
-        hash.combine(INITIAL_HASH)
+        let hash = Hasher()
         return hash.finalize()
     }
 
     static func calculateHashCode(_ parent: PredictionContext?, _ returnState: Int) -> Int {
         var hash = Hasher()
-        hash.combine(INITIAL_HASH)
         hash.combine(parent)
         hash.combine(returnState)
         return hash.finalize()
@@ -120,16 +118,8 @@ public class PredictionContext: Hashable, CustomStringConvertible {
 
     static func calculateHashCode(_ parents: [PredictionContext?], _ returnStates: [Int]) -> Int {
         var hash = Hasher()
-        hash.combine(INITIAL_HASH)
-        var length = parents.count
-        for i in 0..<length {
-            hash.combine(parents[i])
-        }
-        length = returnStates.count
-        for i in 0..<length {
-            hash.combine(returnStates[i])
-        }
-
+        hash.combine(parents)
+        hash.combine(returnStates)
         return hash.finalize()
     }
 
