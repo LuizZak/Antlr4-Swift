@@ -2,8 +2,8 @@
 import Antlr4
 
 open class VisitorBasicLexer: Lexer {
-	internal static var _decisionToDFA: [DFA] = {
-          var decisionToDFA = [DFA]()
+	internal static var _decisionToDFA: [DFA<LexerATNConfig>] = {
+          var decisionToDFA = [DFA<LexerATNConfig>]()
           let length = VisitorBasicLexer._ATN.getNumberOfDecisions()
           for i in 0..<length {
           	    decisionToDFA.append(DFA(VisitorBasicLexer._ATN.getDecisionState(i)!, i))

@@ -2,8 +2,8 @@
 import Antlr4
 
 open class LexerA: Lexer {
-	internal static var _decisionToDFA: [DFA] = {
-          var decisionToDFA = [DFA]()
+	internal static var _decisionToDFA: [DFA<LexerATNConfig>] = {
+          var decisionToDFA = [DFA<LexerATNConfig>]()
           let length = LexerA._ATN.getNumberOfDecisions()
           for i in 0..<length {
           	    decisionToDFA.append(DFA(LexerA._ATN.getDecisionState(i)!, i))
