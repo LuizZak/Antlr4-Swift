@@ -10,12 +10,6 @@ open class ATNSimulator {
     ///
     /// Must distinguish between missing edge and edge we know leads nowhere
     ///
-//    public static let ERROR: DFAState<LexerATNConfig> = {
-//        let error = DFAState(ATNConfigSet<LexerATNConfig>())
-//        error.stateNumber = Int.max
-//        return error
-//    }()
-    
     public static func ERROR<T: ATNConfig>() -> DFAState<T> {
         let error = DFAState(ATNConfigSet<T>())
         error.stateNumber = Int.max
