@@ -31,27 +31,29 @@
 ///
 
 public class DFAState<T: ATNConfig>: Hashable, CustomStringConvertible {
+    var isError: Bool = false
+    
     public var stateNumber = -1
-
+    
     public var configs = ATNConfigSet<T>()
-
+    
     ///
     /// `edges[symbol]` points to target of symbol. Shift up by 1 so (-1)
     /// _org.antlr.v4.runtime.Token#EOF_ maps to `edges[0]`.
     ///
     public var edges: [DFAState?]!
-
+    
     public var isAcceptState = false
-
+    
     ///
     /// if accept state, what ttype do we match or alt do we predict?
     /// This is set to _org.antlr.v4.runtime.atn.ATN#INVALID_ALT_NUMBER_ when _#predicates_`!=null` or
     /// _#requiresFullContext_.
     ///
     public var prediction = 0
-
+    
     public var lexerActionExecutor: LexerActionExecutor!
-
+    
     ///
     /// Indicates that this state was created during SLL prediction that
     /// discovered a conflict between the configurations in the state. Future
@@ -59,7 +61,7 @@ public class DFAState<T: ATNConfig>: Hashable, CustomStringConvertible {
     /// full context prediction if this field is true.
     ///
     public var requiresFullContext = false
-
+    
     ///
     /// During SLL parsing, this is a list of predicates associated with the
     /// ATN configurations of the DFA state. When we have predicates,
@@ -73,13 +75,13 @@ public class DFAState<T: ATNConfig>: Hashable, CustomStringConvertible {
     ///
     /// This list is computed by _org.antlr.v4.runtime.atn.ParserATNSimulator#predicateDFAState_.
     ///
-
+    
     public var predicates: [PredPrediction]?
-
+    
     ///
     /// Map a predicate to a predicted alternative.
     ///
-
+    
     public class PredPrediction: CustomStringConvertible {
         public final var pred: SemanticContext
         // never null; at least SemanticContext.none
@@ -94,18 +96,23 @@ public class DFAState<T: ATNConfig>: Hashable, CustomStringConvertible {
             return "(\(pred),\(alt))"
         }
     }
-
+    
     public init() {
     }
-
+    
     public init(_ stateNumber: Int) {
         self.stateNumber = stateNumber
     }
-
+    
     public init(_ configs: ATNConfigSet<T>) {
         self.configs = configs
     }
-
+    
+    func makeError() -> DFAState {
+        isError = true
+        return self
+    }
+    
     ///
     /// Get the set of all alts mentioned by all ATN configurations in this
     /// DFA state.
@@ -117,7 +124,7 @@ public class DFAState<T: ATNConfig>: Hashable, CustomStringConvertible {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(configs)
     }
-
+    
     ///
     /// Two _org.antlr.v4.runtime.dfa.DFAState_ instances are equal if their ATN configuration sets
     /// are the same. This method is used to see if a state already exists.
@@ -143,7 +150,7 @@ public class DFAState<T: ATNConfig>: Hashable, CustomStringConvertible {
         }
         return buf
     }
-
+    
     public static func == (lhs: DFAState, rhs: DFAState) -> Bool {
         if lhs === rhs {
             return true

@@ -19,7 +19,7 @@ open class ATNSimulator {
     public static func ERROR<T: ATNConfig>() -> DFAState<T> {
         let error = DFAState(ATNConfigSet<T>())
         error.stateNumber = Int.max
-        return error
+        return error.makeError()
     }
 
     public let atn: ATN

@@ -225,7 +225,7 @@ open class LexerATNSimulator: ATNSimulator {
                 target = try computeTargetState(input, s, t)
             }
 
-            if target == ATNSimulator.ERROR() {
+            if target.isError {
                 break
             }
 

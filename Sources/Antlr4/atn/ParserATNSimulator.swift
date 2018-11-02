@@ -454,7 +454,7 @@ open class ParserATNSimulator: ATNSimulator {
                 D = try computeTargetState(dfa, previousD, t)
             }
 
-            if D == ATNSimulator.ERROR() {
+            if D.isError {
                 // if any configs in previous dipped into outer context, that
                 // means that input up to t actually finished entry rule
                 // at least for SLL decision. Full LL doesn't dip into outer
@@ -2070,7 +2070,7 @@ open class ParserATNSimulator: ATNSimulator {
     /// state was not already present.
     ///
     final func addDFAState(_ dfa: DFA<ParserATNConfig>, _ D: DFAState<ParserATNConfig>) -> DFAState<ParserATNConfig> {
-        if D == ATNSimulator.ERROR() {
+        if D.isError {
             return D
         }
 
