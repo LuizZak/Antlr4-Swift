@@ -163,7 +163,7 @@ public class BufferedTokenStream: TokenStream {
 
     public func get(_ i: Int) -> Token {
         precondition(i >= 0 && i < tokens.count,
-                     "token index  \(i) out of range 0..\(index)")
+                     "token index  \(i) out of range 0..\(tokens.count)")
         
         return tokens[i]
     }
