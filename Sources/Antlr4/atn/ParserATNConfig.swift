@@ -22,30 +22,30 @@ public final class ParserATNConfig: ATNConfig, CustomStringConvertible {
     ///
     private final let SUPPRESS_PRECEDENCE_FILTER: Int = 0x40000000
     
-    private final var _cachedHashCode: Int?
+    private var _cachedHashCode: Int?
     
-    public final var state: ATNState {
+    public var state: ATNState {
         didSet {
             _cachedHashCode = nil
         }
     }
     
-    public final var alt: Int {
+    public var alt: Int {
         didSet {
             _cachedHashCode = nil
         }
     }
     
-    public final var context: PredictionContext? {
+    public var context: PredictionContext? {
         didSet {
             _cachedHashCode = nil
         }
     }
     
-    public final var reachesIntoOuterContext: Int = 0
+    public var reachesIntoOuterContext: Int = 0
     //=0 intital by janyou
 
-    public final var semanticContext: SemanticContext {
+    public var semanticContext: SemanticContext {
         didSet {
             _cachedHashCode = nil
         }

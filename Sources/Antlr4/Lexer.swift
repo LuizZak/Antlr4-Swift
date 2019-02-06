@@ -76,7 +76,7 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
     ///
     public var _type = 0
 
-    public final var _modeStack = Stack<Int>()
+    public var _modeStack = Stack<Int>()
     public var _mode = Lexer.DEFAULT_MODE
 
     ///

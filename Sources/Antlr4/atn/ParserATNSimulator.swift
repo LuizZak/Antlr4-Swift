@@ -253,7 +253,7 @@ open class ParserATNSimulator: ATNSimulator {
 
     internal final unowned let parser: Parser
 
-    public final var decisionToDFA: [DFA<ParserATNConfig>]
+    public var decisionToDFA: [DFA<ParserATNConfig>]
 
     ///
     /// SLL, LL, or LL + exact ambig detection?
@@ -268,7 +268,7 @@ open class ParserATNSimulator: ATNSimulator {
     /// the merge if we ever see a and b again.  Note that (b,a)&rarr;c should
     /// also be examined during cache lookup.
     ///
-    internal final var mergeCache: [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?
+    internal var mergeCache: [TuplePair<PredictionContext, PredictionContext>: PredictionContext]?
 
     // LAME globals to avoid parameters!!!!! I need these down deep in predTransition
     internal var _input: TokenStream!

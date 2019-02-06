@@ -18,24 +18,24 @@
 ///
 
 public class ParserInterpreter: Parser {
-    internal final var grammarFileName: String
-    internal final var atn: ATN
+    internal let grammarFileName: String
+    internal let atn: ATN
     /// This identifies StarLoopEntryState's that begin the (...)*
     /// precedence loops of left recursive rules.
     ///
-    internal final var statesNeedingLeftRecursionContext: BitSet
+    internal var statesNeedingLeftRecursionContext: BitSet
 
-    internal final var decisionToDFA: [DFA<ParserATNConfig>]
+    internal var decisionToDFA: [DFA<ParserATNConfig>]
     // not shared like it is for generated parsers
-    internal final var sharedContextCache: PredictionContextCache =
+    internal let sharedContextCache: PredictionContextCache =
         PredictionContextCache()
 
-    internal final var ruleNames: [String]
+    internal let ruleNames: [String]
 
-    private final var vocabulary: Vocabulary
+    private let vocabulary: Vocabulary
 
     /// Tracks LR rules for adjusting the contexts
-    internal final var _parentContextStack: [(ParserRuleContext?, Int)] = []
+    internal var _parentContextStack: [(ParserRuleContext?, Int)] = []
 
     /// We need a map from (decision,inputIndex)->forced alt for computing ambiguous
     /// parse trees. For now, we allow exactly one override.

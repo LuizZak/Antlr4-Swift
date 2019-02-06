@@ -30,7 +30,7 @@ public class DiagnosticErrorListener: BaseErrorListener {
     ///
     /// When `true`, only exactly known ambiguities are reported.
     ///
-    internal final var exactOnly: Bool
+    internal let exactOnly: Bool
 
     ///
     /// Initializes a new instance of _org.antlr.v4.runtime.DiagnosticErrorListener_ which only

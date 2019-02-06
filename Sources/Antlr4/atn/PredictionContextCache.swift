@@ -11,7 +11,7 @@
 ///
 
 public final class PredictionContextCache {
-    //internal final var
+    //internal let
     var cache: [PredictionContext: PredictionContext] =
         [PredictionContext: PredictionContext]()
     public init() {

@@ -5,7 +5,7 @@ public protocol Poolable {
 public class Pooler<T: Poolable> {
     
     @usableFromInline
-    final var pool: [T] = []
+    var pool: [T] = []
     
     @usableFromInline
     final func pull(_ creator: () -> T) -> T {

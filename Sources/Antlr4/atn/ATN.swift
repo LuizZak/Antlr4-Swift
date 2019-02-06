@@ -9,24 +9,24 @@ public class ATN {
     
     public static let INVALID_ALT_NUMBER = 0
 
-    public final var states = [ATNState?]()
+    public var states = [ATNState?]()
 
     ///
     /// Each subrule/rule is a decision point and we must track them so we
     /// can go back later and build DFA predictors for them.  This includes
     /// all the rules, subrules, optional blocks, ()+, ()* etc...
     ///
-    public final var decisionToState = [DecisionState]()
+    public var decisionToState = [DecisionState]()
 
     ///
     /// Maps from rule index to starting state number.
     ///
-    public final var ruleToStartState: [RuleStartState]!
+    public var ruleToStartState: [RuleStartState]!
 
     ///
     /// Maps from rule index to stop state number.
     ///
-    public final var ruleToStopState: [RuleStopState]!
+    public var ruleToStopState: [RuleStopState]!
 
     ///
     /// The type of the ATN.
@@ -45,15 +45,15 @@ public class ATN {
     /// _org.antlr.v4.runtime.atn.ATNDeserializationOptions#isGenerateRuleBypassTransitions_
     /// deserialization option was specified; otherwise, this is `null`.
     ///
-    public final var ruleToTokenType: [Int]!
+    public var ruleToTokenType: [Int]!
 
     ///
     /// For lexer ATNs, this is an array of _org.antlr.v4.runtime.atn.LexerAction_ objects which may
     /// be referenced by action transitions in the ATN.
     ///
-    public final var lexerActions: [LexerAction]!
+    public var lexerActions: [LexerAction]!
 
-    public final var modeToStartState = [TokensStartState]()
+    public var modeToStartState = [TokensStartState]()
 
     ///
     /// Used for runtime deserialization of ATNs from strings

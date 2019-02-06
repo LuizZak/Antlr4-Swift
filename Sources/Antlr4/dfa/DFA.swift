@@ -10,11 +10,11 @@ public class DFA<T: ATNConfig>: CustomStringConvertible {
     /// (_java.util.Set_ only allows you to see if it's there).
     ///
 
-    public final var states: [DFAState<T>: DFAState<T>?] = [:]
+    public var states: [DFAState<T>: DFAState<T>?] = [:]
 
     public /*volatile*/ var s0: DFAState<T>?
 
-    public final var decision: Int
+    public let decision: Int
 
     ///
     /// From which ATN state did we create this DFA?

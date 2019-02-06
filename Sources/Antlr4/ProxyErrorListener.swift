@@ -12,7 +12,7 @@
 ///
 
 public class ProxyErrorListener: ANTLRErrorListener {
-    private final var delegates: [ANTLRErrorListener]
+    private let delegates: [ANTLRErrorListener]
 
     public init(_ delegates: [ANTLRErrorListener]) {
         self.delegates = delegates

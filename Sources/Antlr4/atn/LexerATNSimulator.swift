@@ -86,7 +86,7 @@ open class LexerATNSimulator: ATNSimulator {
     /// Used during DFA/ATN exec to record the most recent accept configuration info
     ///
 
-    internal final var prevAccept = SimState()
+    internal let prevAccept = SimState()
     
     public convenience init(_ atn: ATN,
                             _ decisionToDFA: [DFA<LexerATNConfig>],

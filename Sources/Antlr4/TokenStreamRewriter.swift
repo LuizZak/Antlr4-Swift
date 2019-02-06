@@ -171,7 +171,7 @@ public class TokenStreamRewriter {
     }
 
     public class RewriteOperationArray {
-        private final var rewrites = [RewriteOperation?]()
+        private var rewrites = [RewriteOperation?]()
 
         public init() {
             rewrites.reserveCapacity(TokenStreamRewriter.programInitSize)
@@ -186,11 +186,11 @@ public class TokenStreamRewriter {
             rewrites = Array(rewrites[TokenStreamRewriter.minTokenIndex ..< instructionIndex])
         }
 
-        final var count: Int {
+        var count: Int {
             return rewrites.count
         }
 
-        final var isEmpty: Bool {
+        var isEmpty: Bool {
             return rewrites.isEmpty
         }
 
@@ -383,7 +383,7 @@ public class TokenStreamRewriter {
     internal var programs = [String: RewriteOperationArray]()
 
     /// Map String (program name) &rarr; Integer index
-    internal final var lastRewriteTokenIndexes: [String: Int]
+    internal var lastRewriteTokenIndexes: [String: Int]
 
     public init(_ tokens: TokenStream) {
         self.tokens = tokens

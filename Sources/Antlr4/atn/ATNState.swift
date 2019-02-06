@@ -101,24 +101,24 @@ public class ATNState: Hashable, CustomStringConvertible {
     ///
     /// Which ATN are we in?
     ///
-    public final var atn: ATN?
+    public var atn: ATN?
 
-    public final var stateNumber: Int = INVALID_STATE_NUMBER
+    public var stateNumber: Int = INVALID_STATE_NUMBER
 
-    public final var ruleIndex: Int?
+    public var ruleIndex: Int?
     // at runtime, we don't have Rule objects
 
-    public final var epsilonOnlyTransitions: Bool = false
+    public var epsilonOnlyTransitions: Bool = false
 
     ///
     /// Track the transitions emanating from this ATN state.
     ///
-    internal final var transitions: [Transition] = []
+    internal var transitions: [Transition] = []
 
     ///
     /// Used to cache lookahead during parsing, not used during construction
     ///
-    public final var nextTokenWithinRule: IntervalSet?
+    public var nextTokenWithinRule: IntervalSet?
 
     public var hashValue: Int {
         return stateNumber

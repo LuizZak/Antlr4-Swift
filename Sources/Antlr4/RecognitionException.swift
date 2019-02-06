@@ -14,11 +14,11 @@ public class RecognitionException {
     ///
     /// The _org.antlr.v4.runtime.Recognizer_ where this exception originated.
     ///
-    private final var recognizer: RecognizerProtocol?
+    private var recognizer: RecognizerProtocol?
 
     private final weak var ctx: RuleContext?
 
-    private final var input: IntStream?
+    private var input: IntStream?
 
     ///
     /// The current _org.antlr.v4.runtime.Token_ when an error occurred. Since not all streams
