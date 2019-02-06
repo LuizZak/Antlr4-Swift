@@ -17,6 +17,11 @@ class Mutex {
     init() {
         pthread_mutex_init(&mutex, nil)
     }
+    
+    deinit {
+        // free the mutex resource
+        pthread_mutex_destroy(&mutex)
+    }
 
     ///
     /// Running the supplied closure synchronously.
