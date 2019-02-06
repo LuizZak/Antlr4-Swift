@@ -32,6 +32,21 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
 
     open var lastErrorStates: IntervalSet?
 
+    /**
+     * This field is used to propagate information about the lookahead following
+     * the previous match. Since prediction prefers completing the current rule
+     * to error recovery efforts, error reporting may occur later than the
+     * original point where it was discoverable. The original context is used to
+     * compute the true expected sets as though the reporting occurred as early
+     * as possible.
+     */
+    open var nextTokensContext: ParserRuleContext?
+
+    /**
+     * @see #nextTokensContext
+     */
+    open var nextTokensState = ATNState.INVALID_STATE_NUMBER
+
     public init() {
     }
 
@@ -96,7 +111,6 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
         // if we've already reported an error and have not matched a token
         // yet successfully, don't report any errors.
         if inErrorRecoveryMode(recognizer) {
-
             return // don't report spurious errors
         }
         beginErrorCondition(recognizer)
@@ -190,7 +204,6 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
     /// some reason speed is suffering for you, you can turn off this
     /// functionality by simply overriding this method as a blank { }.
     ///
-
     open func sync(_ recognizer: Parser) throws {
         let s = recognizer.getInterpreter().atn.states[recognizer.getState()]!
         //		errPrint("sync @ "+s.stateNumber+"="+s.getClass().getSimpleName());
@@ -204,10 +217,23 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
 
         // try cheaper subset first; might get lucky. seems to shave a wee bit off
         let nextToks = recognizer.getATN().nextTokens(s)
-        if nextToks.contains(CommonToken.epsilon) || nextToks.contains(la) {
+        if nextToks.contains(la) {
+            // We are sure the token matches
+            nextTokensContext = nil
+            nextTokensState = ATNState.INVALID_STATE_NUMBER
             return
         }
-
+        
+        if nextToks.contains(CommonToken.epsilon) {
+            if nextTokensContext == nil {
+                // It's possible the next token won't match; information tracked
+                // by sync is restricted for performance.
+                nextTokensContext = recognizer.getContext()
+                nextTokensState = recognizer.getState()
+            }
+            return
+        }
+        
         switch s.getStateType() {
         case ATNState.BLOCK_START,
              ATNState.STAR_BLOCK_START,
@@ -267,8 +293,9 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
     /// - parameter e: the recognition exception
     ///
     open func reportInputMismatch(_ recognizer: Parser, _ e: InputMismatchException) {
-        let msg = "mismatched input " + getTokenErrorDisplay(e.getOffendingToken()) +
-            " expecting " + e.getExpectedTokens()!.toString(recognizer.getVocabulary())
+        let tok = getTokenErrorDisplay(e.getOffendingToken())
+        let expected = e.getExpectedTokens()?.toString(recognizer.getVocabulary()) ?? "<missing>"
+        let msg = "mismatched input \(tok) expecting \(expected)"
         recognizer.notifyErrorListeners(e.getOffendingToken(), msg, e)
     }
 
@@ -400,7 +427,6 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
     /// is in the set of tokens that can follow the `')'` token reference
     /// in rule `atom`. It can assume that you forgot the `')'`.
     ///
-
     open func recoverInline(_ recognizer: Parser) throws -> Token {
         // SINGLE TOKEN DELETION
         let matchedSymbol = try singleTokenDeletion(recognizer)
@@ -416,7 +442,8 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
             return try getMissingSymbol(recognizer)
         }
         // even that didn't work; must throw the exception
-        throw ANTLRException.recognition(e: InputMismatchException(recognizer))
+        let exn = InputMismatchException(recognizer, state: nextTokensState, ctx: nextTokensContext)
+        throw ANTLRException.recognition(e: exn)
     }
 
     ///
@@ -701,12 +728,12 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
         //		print("recover set "+recoverSet.toString(recognizer.getTokenNames()));
         return recoverSet
     }
-
+    
     ///
     /// Consume tokens until one matches the given token set.
     ///
     open func consumeUntil(_ recognizer: Parser, _ set: IntervalSet) throws {
-        //		errPrint("consumeUntil("+set.toString(recognizer.getTokenNames())+")");
+        //        errPrint("consumeUntil("+set.toString(recognizer.getTokenNames())+")");
         var ttype = try getTokenStream(recognizer).LA(1)
         while ttype != CommonToken.EOF && !set.contains(ttype) {
             //print("consume during recover LA(1)="+getTokenNames()[input.LA(1)]);
