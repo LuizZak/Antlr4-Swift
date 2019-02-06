@@ -68,7 +68,7 @@ open class LexerATNSimulator: ATNSimulator {
     ///
     public var charPositionInLine = 0
 
-    public final var decisionToDFA: [DFA<LexerATNConfig>]
+    public private(set) final var decisionToDFA: [DFA<LexerATNConfig>]
 
     internal var mode = Lexer.DEFAULT_MODE
 

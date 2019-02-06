@@ -22,7 +22,7 @@ public struct DecisionInfo: CustomStringConvertible {
     ///
     /// The decision number, which is an index into _org.antlr.v4.runtime.atn.ATN#decisionToState_.
     ///
-    public var decision: Int
+    public private(set) var decision: Int
 
     ///
     /// The total number of times _org.antlr.v4.runtime.atn.ParserATNSimulator#adaptivePredict_ was

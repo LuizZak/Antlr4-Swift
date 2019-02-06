@@ -57,7 +57,7 @@ public enum Transition: CustomStringConvertible {
     case notSet(ATNState, set: IntervalSet)
     case wildcard(ATNState)
     
-    public var target: ATNState {
+    public internal(set) var target: ATNState {
         get {
             switch self {
             case .epsilon(let state, _),
