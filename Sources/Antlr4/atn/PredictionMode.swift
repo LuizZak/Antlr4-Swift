@@ -478,20 +478,8 @@ public enum PredictionMode {
         return configs.getConflictingAltSubsets()
     }
 
-    ///
-    /// Get a map from state to alt subset from a configuration set. For each
-    /// configuration `c` in `configs`:
-    ///
-    ///
-    /// map[c._org.antlr.v4.runtime.atn.ATNConfig#state state_] U= c._org.antlr.v4.runtime.atn.ATNConfig#alt alt_
-    ///
-    ///
-    public static func getStateToAltMap<T: ATNConfig>(_ configs: ATNConfigSet<T>) -> [ATNState: BitSet] {
-        return configs.getStateToAltMap()
-    }
-
     public static func hasStateAssociatedWithOneAlt<T: ATNConfig>(_ configs: ATNConfigSet<T>) -> Bool {
-        let x = getStateToAltMap(configs)
+        let x = configs.getStateToAltMap()
         for alts in x.values {
             if alts.cardinality() == 1 {
                 return true

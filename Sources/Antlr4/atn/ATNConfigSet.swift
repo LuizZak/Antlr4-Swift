@@ -295,11 +295,11 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
         return Array(configToAlts.values)
     }
 
-    public func getStateToAltMap() -> [ATNState: BitSet] {
-        var m = [ATNState: BitSet]()
+    public func getStateToAltMap() -> [Int: BitSet] {
+        var m = [Int: BitSet]()
 
         for config in configs {
-            m[config.state, default: BitSet()].set(config.alt)
+            m[config.state.stateNumber, default: BitSet()].set(config.alt)
         }
         return m
     }
