@@ -154,7 +154,7 @@ public class LexerActionExecutor: Hashable {
                 try! input.seek(stopIndex)
             }
         }
-        //try {
+        
         for var lexerAction in self.lexerActions {
             
             switch lexerAction {
@@ -171,14 +171,11 @@ public class LexerActionExecutor: Hashable {
 
             try lexerAction.execute(lexer)
         }
-        //}
-
     }
 
-    public var hashValue: Int {
-        return self.hashCode
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(hashCode)
     }
-
 }
 
 public func == (lhs: LexerActionExecutor, rhs: LexerActionExecutor) -> Bool {

@@ -120,10 +120,6 @@ public class ATNState: Hashable, CustomStringConvertible {
     ///
     public internal(set) var nextTokenWithinRule: IntervalSet?
 
-    public var hashValue: Int {
-        return stateNumber
-    }
-
     public func isNonGreedyExitState() -> Bool {
         return false
     }
@@ -132,6 +128,11 @@ public class ATNState: Hashable, CustomStringConvertible {
         //return "MyClass \(string)"
         return String(stateNumber)
     }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(stateNumber)
+    }
+    
     public final func getTransitions() -> [Transition] {
         return transitions
     }

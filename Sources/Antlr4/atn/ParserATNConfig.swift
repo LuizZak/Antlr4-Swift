@@ -76,32 +76,33 @@ public final class ParserATNConfig: ATNConfig, CustomStringConvertible {
         }
     }
 
+    public var description: String {
+        //return "MyClass \(string)"
+        return toString(nil, true)
+    }
+    
     ///
     /// An ATN configuration is equal to another if both have
     /// the same state, they predict the same alternative, and
     /// syntactic/semantic contexts are the same.
     ///
-    
-    public var hashValue: Int {
+    public func hash(into hasher: inout Hasher) {
         if let cachedHashCode = _cachedHashCode {
-            return cachedHashCode
+            hasher.combine(cachedHashCode)
+            return
         }
         
-        var hasher = Hasher()
-        hasher.combine(state.stateNumber)
-        hasher.combine(alt)
-        hasher.combine(context)
-        hasher.combine(semanticContext)
-        let result = hasher.finalize()
+        var innerHasher = Hasher()
+        innerHasher.combine(state.stateNumber)
+        innerHasher.combine(alt)
+        innerHasher.combine(context)
+        innerHasher.combine(semanticContext)
+        let result = innerHasher.finalize()
         _cachedHashCode = result
         
-        return result
+        hasher.combine(result)
     }
     
-    public var description: String {
-        //return "MyClass \(string)"
-        return toString(nil, true)
-    }
     public func toString<T>(_ recog: Recognizer<T>?, _ showAlt: Bool) -> String {
         var buf = "(\(state)"
         if showAlt {

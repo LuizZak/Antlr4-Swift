@@ -217,10 +217,6 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
         return false
     }
     
-    public var hashValue: Int {
-        return configsHashValue
-    }
-    
     private var configsHashValue: Int {
         var hashCode = 1
         for item in configs {
@@ -252,6 +248,10 @@ public struct ATNConfigSet<T: ATNConfig>: Hashable, CustomStringConvertible {
     public mutating func clear() {
         configs.removeAll()
         configLookup.removeAll()
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(configsHashValue)
     }
     
     public var description: String {

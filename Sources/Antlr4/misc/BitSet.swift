@@ -1016,24 +1016,24 @@ public struct BitSet: Hashable, CustomStringConvertible {
     }
 
     ///
-    /// Returns the hash code value for this bit set. The hash code depends
-    /// only on which bits are set within this `BitSet`.
+    /// Hashes this BitSet into a given Hasher. The hash code depends only on
+    /// which bits are set within this `BitSet`.
     ///
     /// The hash code is defined to be the result of the following
     /// calculation:
     /// `
-    /// public int hashCode() {
     /// long h = 1234;
     /// long[] words = toLongArray();
     /// for (int i = words.length; --i >= 0; )
     /// h ^= words[i] * (i + 1);
-    /// return (int)((h >> 32) ^ h);
-    /// `}
+    ///
+    /// hash.combine((int)((h >> 32) ^ h));
+    /// `
     /// Note that the hash code changes if the set of bits is altered.
     ///
     /// - returns: the hash code value for this bit set
     ///
-    public var hashValue: Int {
+    public func hash(into hasher: inout Hasher) {
         var h: Int64 = 1234
         var i: Int = wordsInUse
         i -= 1
@@ -1041,8 +1041,8 @@ public struct BitSet: Hashable, CustomStringConvertible {
             h ^= words[i] * Int64(i + 1)
             i -= 1
         }
-
-        return Int(Int32((h >> 32) ^ h))
+        
+        hasher.combine(Int(Int32((h >> 32) ^ h)))
     }
 
     ///
