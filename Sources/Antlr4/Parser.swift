@@ -9,6 +9,19 @@
 import Foundation
 
 ///
+/// mutex for bypassAltsAtnCache updates
+///
+private let bypassAltsAtnCacheMutex = Mutex()
+
+///
+/// This field maps from the serialized ATN string to the deserialized _org.antlr.v4.runtime.atn.ATN_ with
+/// bypass alternatives.
+///
+/// - SeeAlso: org.antlr.v4.runtime.atn.ATNDeserializationOptions#isGenerateRuleBypassTransitions()
+///
+private var bypassAltsAtnCache: [String: ATN] = [String: ATN]()
+
+///
 /// This is all the parsing support code essentially; most of it is error recovery stuff.
 ///
 open class Parser: Recognizer<ParserATNSimulator> {
@@ -57,24 +70,6 @@ open class Parser: Recognizer<ParserATNSimulator> {
             // TODO: Print exit info.
         }
     }
-
-    ///
-    /// mutex for bypassAltsAtnCache updates
-    ///
-    private let bypassAltsAtnCacheMutex = Mutex()
-
-    ///
-    /// mutex for decisionToDFA updates
-    ///
-    private let decisionToDFAMutex = Mutex()
-
-    ///
-    /// This field maps from the serialized ATN string to the deserialized _org.antlr.v4.runtime.atn.ATN_ with
-    /// bypass alternatives.
-    ///
-    /// - SeeAlso: org.antlr.v4.runtime.atn.ATNDeserializationOptions#isGenerateRuleBypassTransitions()
-    ///
-    private var bypassAltsAtnCache: [String: ATN] = [String: ATN]()
 
     ///
     /// The error handling strategy for the parser. The default value is a new
@@ -417,17 +412,19 @@ open class Parser: Recognizer<ParserATNSimulator> {
     ///
     public func getATNWithBypassAlts() -> ATN {
         let serializedAtn = getSerializedATN()
-
-        var result = bypassAltsAtnCache[serializedAtn]
-        bypassAltsAtnCacheMutex.synchronized { [unowned self] in
-            if result == nil {
-                var deserializationOptions = ATNDeserializationOptions()
-                try! deserializationOptions.setGenerateRuleBypassTransitions(true)
-                result = try! ATNDeserializer(deserializationOptions).deserialize(Array(serializedAtn))
-                self.bypassAltsAtnCache[serializedAtn] = result!
+        
+        return bypassAltsAtnCacheMutex.synchronized {
+            if let result = bypassAltsAtnCache[serializedAtn] {
+                return result
             }
+            
+            var deserializationOptions = ATNDeserializationOptions()
+            try! deserializationOptions.setGenerateRuleBypassTransitions(true)
+            let result = try! ATNDeserializer(deserializationOptions).deserialize(Array(serializedAtn))
+            bypassAltsAtnCache[serializedAtn] = result
+            
+            return result
         }
-        return result!
     }
 
     ///
@@ -963,18 +960,13 @@ open class Parser: Recognizer<ParserATNSimulator> {
 
     /// For debugging and other purposes.
     public func getDFAStrings() -> [String] {
-        var s = [String]()
-        guard let _interp = _interp  else {
-            return s
+        guard let _interp = _interp else {
+            return []
         }
-        decisionToDFAMutex.synchronized { [unowned self] in
-            for d in 0..<_interp.decisionToDFA.count {
-                let dfa = _interp.decisionToDFA[d]
-                s.append(dfa.toString(self.getVocabulary()))
-            }
-
+        
+        return _interp.decisionToDFA.map {
+            $0.toString(self.getVocabulary())
         }
-        return s
     }
 
     /// For debugging and other purposes.
@@ -982,16 +974,15 @@ open class Parser: Recognizer<ParserATNSimulator> {
         guard let _interp = _interp else {
             return
         }
-        decisionToDFAMutex.synchronized { [unowned self] in
-            var seenOne = false
-
-            for dfa in _interp.decisionToDFA where !dfa.states.isEmpty {
+        var seenOne = false
+        let vocab = getVocabulary()
+        for dfa in _interp.decisionToDFA {
+            if !dfa.states.isEmpty {
                 if seenOne {
                     print("")
                 }
                 print("Decision \(dfa.decision):")
-
-                print(dfa.toString(self.getVocabulary()), terminator: "")
+                print(dfa.toString(vocab), terminator: "")
                 seenOne = true
             }
         }
