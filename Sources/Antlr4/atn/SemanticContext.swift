@@ -126,10 +126,10 @@ public enum SemanticContext: Hashable, CustomStringConvertible {
                 
                 if let evaluated = evaluated {
                     // Reduce the result by skipping true elements
-                    if evaluated != .none {
+                    if evaluated != SemanticContext.none {
                         operands.append(evaluated)
                     }
-                } else if evaluated != .none {
+                } else if evaluated != SemanticContext.none {
                     // The AND context is false if any element is false
                     return nil
                 }
@@ -141,7 +141,7 @@ public enum SemanticContext: Hashable, CustomStringConvertible {
             
             if operands.isEmpty {
                 // all elements were true, so the AND context is true
-                return .none
+                return SemanticContext.none
             }
             
             var result = operands[0]
@@ -159,9 +159,9 @@ public enum SemanticContext: Hashable, CustomStringConvertible {
             for context in opnds {
                 let evaluated = try context.evalPrecedence(parser, parserCallStack)
                 differs = differs || (evaluated != context)
-                if evaluated == .none {
+                if evaluated == SemanticContext.none {
                     // The OR context is true if any element is true
-                    return .none
+                    return SemanticContext.none
                 } else if let evaluated = evaluated {
                     // Reduce the result by skipping false elements
                     operands.append(evaluated)
