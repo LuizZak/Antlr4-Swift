@@ -296,11 +296,11 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     ///
 
     public func and(_ a: IntSet?) -> IntSet? {
-        guard var theirIntervals = (a as? IntervalSet)?.intervals else {
+        guard let theirIntervals = (a as? IntervalSet)?.intervals else {
             return nil // nothing in common with null set
         }
 
-        var myIntervals = self.intervals
+        let myIntervals = self.intervals
         
         var intersection: IntervalSet? = nil
         let mySize = myIntervals.count
