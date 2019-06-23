@@ -113,6 +113,7 @@ public class ATNState: Hashable, CustomStringConvertible {
     ///
     /// Track the transitions emanating from this ATN state.
     ///
+    @usableFromInline
     internal var transitions: [Transition] = []
 
     ///
@@ -171,6 +172,7 @@ public class ATNState: Hashable, CustomStringConvertible {
         }
     }
 
+    @inlinable
     public final func transition(_ i: Int) -> Transition {
         return transitions[i]
     }
@@ -185,8 +187,8 @@ public class ATNState: Hashable, CustomStringConvertible {
         transitions[i] = e
     }
 
+    @inlinable
     public final func removeTransition(_ index: Int) -> Transition {
-
         return transitions.remove(at: index)
     }
 
@@ -194,6 +196,7 @@ public class ATNState: Hashable, CustomStringConvertible {
         fatalError(#function + " must be overridden")
     }
 
+    @inlinable
     public final func onlyHasEpsilonTransitions() -> Bool {
         return epsilonOnlyTransitions
     }
