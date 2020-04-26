@@ -575,7 +575,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     }
 
     public func toString<T>(_ recog: Recognizer<T>) -> String {
-        return NSStringFromClass(PredictionContext.self)
+        return String(describing: PredictionContext.self)
         //		return toString(recog, ParserRuleContext.EMPTY);
     }
 
