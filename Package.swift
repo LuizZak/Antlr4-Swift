@@ -10,7 +10,6 @@ let package = Package(
     products: [
         .library(
             name: "Antlr4",
-            type: .dynamic,
             targets: ["Antlr4"])
     ],
     targets: [
