@@ -69,7 +69,7 @@ open class VisitorBasicParser: Parser {
 	}
 
 	public override init(_ input: TokenStream)throws {
-	    RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION)
+	    RuntimeMetaData.checkVersion("4.8", RuntimeMetaData.VERSION)
 		try super.init(input)
 		_interp = ParserATNSimulator(self, VisitorBasicParser._ATN, VisitorBasicParser._decisionToDFA, VisitorBasicParser._sharedContextCache)
 	}

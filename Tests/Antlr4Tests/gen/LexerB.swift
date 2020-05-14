@@ -62,7 +62,7 @@ open class LexerB: Lexer {
     }
 
 	public required init(_ input: CharStream) {
-	    RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION)
+	    RuntimeMetaData.checkVersion("4.8", RuntimeMetaData.VERSION)
 		super.init(input)
 		_interp = LexerATNSimulator(self, LexerB._ATN, LexerB._decisionToDFA, LexerB._sharedContextCache)
 	}
