@@ -121,7 +121,7 @@ open class LexerATNSimulator: ATNSimulator {
 
     open func match(_ input: CharStream, _ mode: Int) throws -> Int {
         self.mode = mode
-        var mark = input.mark()
+        let mark = input.mark()
         defer {
             input.release(mark)
         }
@@ -612,10 +612,10 @@ open class LexerATNSimulator: ATNSimulator {
             return try recog.sempred(nil, ruleIndex, predIndex)
         }
 
-        var savedCharPositionInLine = charPositionInLine
-        var savedLine = line
-        var index = input.index()
-        var marker = input.mark()
+        let savedCharPositionInLine = charPositionInLine
+        let savedLine = line
+        let index = input.index()
+        let marker = input.mark()
         do {
             try consume(input)
             defer {
