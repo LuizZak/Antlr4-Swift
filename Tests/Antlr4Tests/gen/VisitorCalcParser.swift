@@ -69,7 +69,7 @@ open class VisitorCalcParser: Parser {
 	}
 
 	public override init(_ input: TokenStream)throws {
-	    RuntimeMetaData.checkVersion("4.8", RuntimeMetaData.VERSION)
+	    RuntimeMetaData.checkVersion("4.9.24.8", RuntimeMetaData.VERSION)
 		try super.init(input)
 		_interp = ParserATNSimulator(self, VisitorCalcParser._ATN, VisitorCalcParser._decisionToDFA, VisitorCalcParser._sharedContextCache)
 	}

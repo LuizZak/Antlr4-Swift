@@ -1,4 +1,7 @@
+#if os(Windows)
+
 import Foundation
+import WinSDK
 
 ///
 /// Using class so it can be shared even if
@@ -9,18 +12,18 @@ class Mutex {
     ///
     /// The mutex instance.
     ///
-    private var mutex = pthread_mutex_t()
+    private var section = CRITICAL_SECTION()
 
     ///
     /// Initialization
     ///
     init() {
-        pthread_mutex_init(&mutex, nil)
+        InitializeCriticalSection(&section)
     }
     
     deinit {
         // free the mutex resource
-        pthread_mutex_destroy(&mutex)
+        DeleteCriticalSection(&section)
     }
 
     ///
@@ -32,11 +35,12 @@ class Mutex {
     ///
     @discardableResult
     func synchronized<R>(closure: () throws -> R) rethrows -> R {
-        pthread_mutex_lock(&mutex)
+        EnterCriticalSection(&section)
         defer {
-            pthread_mutex_unlock(&mutex)
+            LeaveCriticalSection(&section)
         }
         return try closure()
     }
-
 }
+
+#endif
