@@ -62,7 +62,7 @@ open class VisitorBasicLexer: Lexer {
     }
 
 	public required init(_ input: CharStream) {
-	    RuntimeMetaData.checkVersion("4.8", RuntimeMetaData.VERSION)
+	    RuntimeMetaData.checkVersion("4.9.2", RuntimeMetaData.VERSION)
 		super.init(input)
 		_interp = LexerATNSimulator(self, VisitorBasicLexer._ATN, VisitorBasicLexer._decisionToDFA, VisitorBasicLexer._sharedContextCache)
 	}
