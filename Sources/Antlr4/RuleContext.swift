@@ -217,7 +217,7 @@ open class RuleContext: RuleNode {
                 }
             }
 
-            if pWrap.parent != nil && (ruleNames != nil || !pWrap.parent!.isEmpty()) {
+            if let pWp = pWrap.parent, (ruleNames != nil || !pWp.isEmpty()) {
                 buf += " "
             }
 

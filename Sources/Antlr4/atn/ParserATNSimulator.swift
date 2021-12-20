@@ -468,7 +468,7 @@ open class ParserATNSimulator: ATNSimulator {
             if D.requiresFullContext && (mode != PredictionMode.SLL) {
                 // IF PREDS, MIGHT RESOLVE TO SINGLE ALT => SLL (or syntax error)
                 var conflictingAlts = D.configs.conflictingAlts!
-                if D.predicates != nil {
+                if let preds = D.predicates {
                     if debug {
                         print("DFA state has preds in DFA sim LL failover")
                     }
@@ -477,7 +477,7 @@ open class ParserATNSimulator: ATNSimulator {
                         try input.seek(startIndex)
                     }
 
-                    conflictingAlts = try evalSemanticContext(D.predicates!, outerContext, true)
+                    conflictingAlts = try evalSemanticContext(preds, outerContext, true)
                     if conflictingAlts.cardinality() == 1 {
                         if debug {
                             print("Full LL avoided")
@@ -506,13 +506,13 @@ open class ParserATNSimulator: ATNSimulator {
             }
 
             if D.isAcceptState {
-                if D.predicates == nil {
+                guard let preds = D.predicates else {
                     return D.prediction
                 }
 
                 let stopIndex = input.index()
                 try input.seek(startIndex)
-                let alts = try evalSemanticContext(D.predicates!, outerContext, true)
+                let alts = try evalSemanticContext(preds, outerContext, true)
                 switch alts.cardinality() {
                 case 0:
                     throw ANTLRException.recognition(e: noViableAlt(input, outerContext, D.configs, startIndex))
