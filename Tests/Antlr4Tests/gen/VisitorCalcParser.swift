@@ -117,6 +117,18 @@ open class VisitorCalcParser: Parser {
 				listener.exitS(self)
 			}
 		}
+		override open
+		func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
+			if let visitor = visitor as? VisitorCalcVisitor {
+			    return visitor.visitS(self)
+			}
+			else if let visitor = visitor as? VisitorCalcBaseVisitor {
+			    return visitor.visitS(self)
+			}
+			else {
+			     return visitor.visitChildren(self)
+			}
+		}
 	}
 	@discardableResult
 	 open func s() throws -> SContext {
@@ -184,6 +196,18 @@ open class VisitorCalcParser: Parser {
 				listener.exitAdd(self)
 			}
 		}
+		override open
+		func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
+			if let visitor = visitor as? VisitorCalcVisitor {
+			    return visitor.visitAdd(self)
+			}
+			else if let visitor = visitor as? VisitorCalcBaseVisitor {
+			    return visitor.visitAdd(self)
+			}
+			else {
+			     return visitor.visitChildren(self)
+			}
+		}
 	}
 	public class NumberContext: ExprContext {
 			open
@@ -206,6 +230,18 @@ open class VisitorCalcParser: Parser {
 		func exitRule(_ listener: ParseTreeListener) {
 			if let listener = listener as? VisitorCalcListener {
 				listener.exitNumber(self)
+			}
+		}
+		override open
+		func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
+			if let visitor = visitor as? VisitorCalcVisitor {
+			    return visitor.visitNumber(self)
+			}
+			else if let visitor = visitor as? VisitorCalcBaseVisitor {
+			    return visitor.visitNumber(self)
+			}
+			else {
+			     return visitor.visitChildren(self)
 			}
 		}
 	}
@@ -242,6 +278,18 @@ open class VisitorCalcParser: Parser {
 		func exitRule(_ listener: ParseTreeListener) {
 			if let listener = listener as? VisitorCalcListener {
 				listener.exitMultiply(self)
+			}
+		}
+		override open
+		func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
+			if let visitor = visitor as? VisitorCalcVisitor {
+			    return visitor.visitMultiply(self)
+			}
+			else if let visitor = visitor as? VisitorCalcBaseVisitor {
+			    return visitor.visitMultiply(self)
+			}
+			else {
+			     return visitor.visitChildren(self)
 			}
 		}
 	}

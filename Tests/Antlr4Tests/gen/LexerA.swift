@@ -2,6 +2,7 @@
 import Antlr4
 
 open class LexerA: Lexer {
+
 	internal static var _decisionToDFA: [DFA<LexerATNConfig>] = {
           var decisionToDFA = [DFA<LexerATNConfig>]()
           let length = LexerA._ATN.getNumberOfDecisions()

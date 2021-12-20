@@ -87,10 +87,22 @@ open class VisitorBasicParser: Parser {
 				listener.exitS(self)
 			}
 		}
+		override open
+		func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
+			if let visitor = visitor as? VisitorBasicVisitor {
+			    return visitor.visitS(self)
+			}
+			else if let visitor = visitor as? VisitorBasicBaseVisitor {
+			    return visitor.visitS(self)
+			}
+			else {
+			     return visitor.visitChildren(self)
+			}
+		}
 	}
 	@discardableResult
 	 open func s() throws -> SContext {
-		let _localctx: SContext = SContext(_ctx, getState())
+		var _localctx: SContext = SContext(_ctx, getState())
 		try enterRule(_localctx, 0, VisitorBasicParser.RULE_s)
 		defer {
 	    		try! exitRule()

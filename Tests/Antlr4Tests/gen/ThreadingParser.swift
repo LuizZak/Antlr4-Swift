@@ -115,10 +115,22 @@ open class ThreadingParser: Parser {
 				listener.exitS(self)
 			}
 		}
+		override open
+		func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
+			if let visitor = visitor as? ThreadingVisitor {
+			    return visitor.visitS(self)
+			}
+			else if let visitor = visitor as? ThreadingBaseVisitor {
+			    return visitor.visitS(self)
+			}
+			else {
+			     return visitor.visitChildren(self)
+			}
+		}
 	}
 	@discardableResult
 	 open func s() throws -> SContext {
-		let _localctx: SContext = SContext(_ctx, getState())
+		var _localctx: SContext = SContext(_ctx, getState())
 		try enterRule(_localctx, 0, ThreadingParser.RULE_s)
 		defer {
 	    		try! exitRule()
@@ -182,6 +194,18 @@ open class ThreadingParser: Parser {
 				listener.exitAdd(self)
 			}
 		}
+		override open
+		func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
+			if let visitor = visitor as? ThreadingVisitor {
+			    return visitor.visitAdd(self)
+			}
+			else if let visitor = visitor as? ThreadingBaseVisitor {
+			    return visitor.visitAdd(self)
+			}
+			else {
+			     return visitor.visitChildren(self)
+			}
+		}
 	}
 	public class NumberContext: ExprContext {
 			open
@@ -204,6 +228,18 @@ open class ThreadingParser: Parser {
 		func exitRule(_ listener: ParseTreeListener) {
 			if let listener = listener as? ThreadingListener {
 				listener.exitNumber(self)
+			}
+		}
+		override open
+		func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
+			if let visitor = visitor as? ThreadingVisitor {
+			    return visitor.visitNumber(self)
+			}
+			else if let visitor = visitor as? ThreadingBaseVisitor {
+			    return visitor.visitNumber(self)
+			}
+			else {
+			     return visitor.visitChildren(self)
 			}
 		}
 	}
@@ -242,6 +278,18 @@ open class ThreadingParser: Parser {
 				listener.exitMultiply(self)
 			}
 		}
+		override open
+		func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
+			if let visitor = visitor as? ThreadingVisitor {
+			    return visitor.visitMultiply(self)
+			}
+			else if let visitor = visitor as? ThreadingBaseVisitor {
+			    return visitor.visitMultiply(self)
+			}
+			else {
+			     return visitor.visitChildren(self)
+			}
+		}
 	}
 
 	 public final  func expr( ) throws -> ExprContext   {
@@ -252,6 +300,7 @@ open class ThreadingParser: Parser {
 		let _parentctx: ParserRuleContext? = _ctx
 		let _parentState: Int = getState()
 		var _localctx: ExprContext = ExprContext(_ctx, _parentState)
+		var _prevctx: ExprContext = _localctx
 		let _startState: Int = 2
 		try enterRecursionRule(_localctx, 2, ThreadingParser.RULE_expr, _p)
 		var _la: Int = 0
@@ -263,6 +312,7 @@ open class ThreadingParser: Parser {
 			try enterOuterAlt(_localctx, 1)
 			_localctx = NumberContext(_localctx)
 			_ctx = _localctx
+			_prevctx = _localctx
 
 			setState(8)
 			try match(ThreadingParser.Tokens.INT.rawValue)
@@ -276,6 +326,7 @@ open class ThreadingParser: Parser {
 					if _parseListeners != nil {
 					   try triggerExitRuleEvent()
 					}
+					_prevctx = _localctx
 					setState(16)
 					try _errHandler.sync(self)
 					switch(try getInterpreter().adaptivePredict(_input,0, _ctx)) {
