@@ -3,17 +3,35 @@ import Antlr4
 
 open class ThreadingLexer: Lexer {
 
-	internal static var _decisionToDFA: [DFA<LexerATNConfig>] = {
-          var decisionToDFA = [DFA<LexerATNConfig>]()
-          let length = ThreadingLexer._ATN.getNumberOfDecisions()
-          for i in 0..<length {
-          	    decisionToDFA.append(DFA(ThreadingLexer._ATN.getDecisionState(i)!, i))
-          }
-           return decisionToDFA
-     }()
-
-	internal static let _sharedContextCache = PredictionContextCache()
-
+    public class State {
+        public let _ATN: ATN = ATNDeserializer().deserializeFromJson(_serializedATN)
+        
+        internal var _decisionToDFA: [DFA<LexerATNConfig>]
+        internal let _sharedContextCache: PredictionContextCache = PredictionContextCache()
+        let atnConfigPool: LexerATNConfigPool = LexerATNConfigPool()
+        
+        public init() {
+            var decisionToDFA = [DFA<LexerATNConfig>]()
+            let length = _ATN.getNumberOfDecisions()
+            for i in 0..<length {
+                decisionToDFA.append(DFA(_ATN.getDecisionState(i)!, i))
+            }
+            _decisionToDFA = decisionToDFA
+        }
+    }
+    
+    public var _ATN: ATN {
+        return state._ATN
+    }
+    internal var _decisionToDFA: [DFA<LexerATNConfig>] {
+        return state._decisionToDFA
+    }
+    internal var _sharedContextCache: PredictionContextCache {
+        return state._sharedContextCache
+    }
+    
+    public var state: State
+    
 	public
 	static let INT=1, MUL=2, DIV=3, ADD=4, SUB=5, WS=6
 
@@ -46,13 +64,24 @@ open class ThreadingLexer: Lexer {
 	func getVocabulary() -> Vocabulary {
 		return ThreadingLexer.VOCABULARY
 	}
-
-	public
-	required init(_ input: CharStream) {
-	    RuntimeMetaData.checkVersion("4.9.3", RuntimeMetaData.VERSION)
-		super.init(input)
-		_interp = LexerATNSimulator(self, ThreadingLexer._ATN, ThreadingLexer._decisionToDFA, ThreadingLexer._sharedContextCache)
-	}
+    
+    public required convenience
+    init(_ input: CharStream) {
+        self.init(input, State())
+    }
+    
+    public
+    init(_ input: CharStream, _ state: State) {
+        self.state = state
+        
+        RuntimeMetaData.checkVersion("4.9.3", RuntimeMetaData.VERSION)
+        super.init(input)
+        _interp = LexerATNSimulator(self,
+                                    _ATN,
+                                    _decisionToDFA,
+                                    _sharedContextCache,
+                                    lexerAtnConfigPool: state.atnConfigPool)
+    }
 
 	override open
 	func getGrammarFileName() -> String { return "Threading.g4" }

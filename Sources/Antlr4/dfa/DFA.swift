@@ -31,7 +31,7 @@ public class DFA<T: ATNConfig>: CustomStringConvertible {
     ///
     /// mutex for states changes.
     ///
-    internal private(set) var statesMutex = Mutex()
+    internal let statesMutex = Mutex()
 
     public convenience init(_ atnStartState: DecisionState) {
         self.init(atnStartState, 0)

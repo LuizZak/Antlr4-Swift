@@ -3,14 +3,34 @@ import Antlr4
 
 open class VisitorCalcParser: Parser {
 
-	internal static var _decisionToDFA: [DFA<ParserATNConfig>] = {
-          var decisionToDFA = [DFA<ParserATNConfig>]()
-          let length = VisitorCalcParser._ATN.getNumberOfDecisions()
-          for i in 0..<length {
-            decisionToDFA.append(DFA(VisitorCalcParser._ATN.getDecisionState(i)!, i))
-           }
-           return decisionToDFA
-     }()
+    public class State {
+        public let _ATN: ATN = ATNDeserializer().deserializeFromJson(_serializedATN)
+        
+        internal var _decisionToDFA: [DFA<ParserATNConfig>]
+        internal let _sharedContextCache: PredictionContextCache = PredictionContextCache()
+        let atnConfigPool = ParserATNConfigPool()
+        
+        public init() {
+            var decisionToDFA = [DFA<ParserATNConfig>]()
+            let length = _ATN.getNumberOfDecisions()
+            for i in 0..<length {
+                decisionToDFA.append(DFA(_ATN.getDecisionState(i)!, i))
+            }
+            _decisionToDFA = decisionToDFA
+        }
+    }
+    
+    public var _ATN: ATN {
+        return state._ATN
+    }
+    internal var _decisionToDFA: [DFA<ParserATNConfig>] {
+        return state._decisionToDFA
+    }
+    internal var _sharedContextCache: PredictionContextCache {
+        return state._sharedContextCache
+    }
+    
+    public var state: State
 
 	internal static let _sharedContextCache = PredictionContextCache()
 
@@ -46,20 +66,30 @@ open class VisitorCalcParser: Parser {
 	func getSerializedATN() -> String { return VisitorCalcParser._serializedATN }
 
 	override open
-	func getATN() -> ATN { return VisitorCalcParser._ATN }
+	func getATN() -> ATN { return _ATN }
 
 
 	override open
 	func getVocabulary() -> Vocabulary {
 	    return VisitorCalcParser.VOCABULARY
 	}
-
-	override public
-	init(_ input:TokenStream) throws {
-	    RuntimeMetaData.checkVersion("4.9.3", RuntimeMetaData.VERSION)
-		try super.init(input)
-		_interp = ParserATNSimulator(self,VisitorCalcParser._ATN,VisitorCalcParser._decisionToDFA, VisitorCalcParser._sharedContextCache)
-	}
+    
+    override public convenience
+    init(_ input: TokenStream) throws {
+        try self.init(input, State())
+    }
+    
+    public
+    init(_ input: TokenStream, _ state: State) throws {
+        self.state = state
+        RuntimeMetaData.checkVersion("4.9.3", RuntimeMetaData.VERSION)
+        try super.init(input)
+        _interp = ParserATNSimulator(self,
+                                     _ATN,
+                                     _decisionToDFA,
+                                     _sharedContextCache,
+                                     atnConfigPool: state.atnConfigPool)
+    }
 
 
 	public class SContext: ParserRuleContext {
@@ -337,7 +367,4 @@ open class VisitorCalcParser: Parser {
 
 	public
 	static let _serializedATN = VisitorCalcParserATN().jsonString
-
-	public
-	static let _ATN = ATNDeserializer().deserializeFromJson(_serializedATN)
 }
