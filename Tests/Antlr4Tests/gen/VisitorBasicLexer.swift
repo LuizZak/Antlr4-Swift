@@ -9,7 +9,7 @@ open class VisitorBasicLexer: Lexer {
           	    decisionToDFA.append(DFA(VisitorBasicLexer._ATN.getDecisionState(i)!, i))
           }
            return decisionToDFA
-     }()
+    }()
 
 	internal static let _sharedContextCache: PredictionContextCache = PredictionContextCache()
 	public static let A=1

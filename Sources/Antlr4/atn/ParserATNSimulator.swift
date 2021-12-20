@@ -276,16 +276,6 @@ open class ParserATNSimulator: ATNSimulator {
     internal var _outerContext: ParserRuleContext!
     internal var _dfa: DFA<ParserATNConfig>?
 
-    ///
-    /// mutex for DFAState change
-    ///
-    private let dfaStateMutex = Mutex()
-
-    ///
-    /// mutex for changes in a DFAStates map
-    ///
-    private let dfaStatesMutex = Mutex()
-
     //    /// Testing only!
     //    public convenience init(_ atn : ATN, _ decisionToDFA : [DFA],
     //                              _ sharedContextCache : PredictionContextCache) {
@@ -2038,7 +2028,7 @@ open class ParserATNSimulator: ATNSimulator {
         guard let from = from else {
             return to
         }
-        dfaStateMutex.synchronized {
+        from.mutex.synchronized {
             [unowned self] in
             if from.edges == nil {
                 from.edges = [DFAState?](repeating: nil, count: self.atn.maxTokenType + 1 + 1)       //new DFAState[atn.maxTokenType+1+1];
@@ -2074,7 +2064,7 @@ open class ParserATNSimulator: ATNSimulator {
             return D
         }
 
-        return dfaStatesMutex.synchronized {
+        return dfa.statesMutex.synchronized {
             if let existing = dfa.states[D] {
                 return existing!
             }
