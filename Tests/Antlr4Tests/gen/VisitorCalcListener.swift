@@ -1,4 +1,4 @@
-// Generated from /Users/luizsilva/Documents/Local Projects/antlr4-swift/Tests/Antlr4Tests/VisitorCalc.g4 by ANTLR 4.7
+// Generated from VisitorCalc.g4 by ANTLR 4.9.3
 import Antlr4
 
 /**

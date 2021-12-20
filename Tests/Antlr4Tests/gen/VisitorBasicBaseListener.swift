@@ -1,6 +1,7 @@
-// Generated from /Users/luizsilva/Documents/Local Projects/antlr4-swift/Tests/Antlr4Tests/VisitorBasic.g4 by ANTLR 4.7
+// Generated from VisitorBasic.g4 by ANTLR 4.9.3
 
 import Antlr4
+
 
 /**
  * This class provides an empty implementation of {@link VisitorBasicListener},
@@ -8,7 +9,7 @@ import Antlr4
  * of the available methods.
  */
 open class VisitorBasicBaseListener: VisitorBasicListener {
-    public init() { }
+     public init() { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -27,13 +28,13 @@ open class VisitorBasicBaseListener: VisitorBasicListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	open func enterEveryRule(_ ctx: ParserRuleContext) { }
+	open func enterEveryRule(_ ctx: ParserRuleContext) throws { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	open func exitEveryRule(_ ctx: ParserRuleContext) { }
+	open func exitEveryRule(_ ctx: ParserRuleContext) throws { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -1,4 +1,4 @@
-// Generated from Tests/Antlr4Tests/Threading.g4 by ANTLR 4.9.3
+// Generated from Threading.g4 by ANTLR 4.9.3
 
 import Antlr4
 

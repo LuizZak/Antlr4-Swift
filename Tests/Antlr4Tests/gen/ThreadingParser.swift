@@ -1,13 +1,13 @@
-// Generated from Tests/Antlr4Tests/Threading.g4 by ANTLR 4.9.3
+// Generated from Threading.g4 by ANTLR 4.9.3
 import Antlr4
 
 open class ThreadingParser: Parser {
 
 	internal static var _decisionToDFA: [DFA<ParserATNConfig>] = {
           var decisionToDFA = [DFA<ParserATNConfig>]()
-          let length = VisitorBasicParser._ATN.getNumberOfDecisions()
+          let length = ThreadingParser._ATN.getNumberOfDecisions()
           for i in 0..<length {
-            decisionToDFA.append(DFA(VisitorBasicParser._ATN.getDecisionState(i)!, i))
+            decisionToDFA.append(DFA(ThreadingParser._ATN.getDecisionState(i)!, i))
            }
            return decisionToDFA
      }()

@@ -1,16 +1,16 @@
-// Generated from Tests/Antlr4Tests/Threading.g4 by ANTLR 4.9.3
+// Generated from Threading.g4 by ANTLR 4.9.3
 import Antlr4
 
 open class ThreadingLexer: Lexer {
 
 	internal static var _decisionToDFA: [DFA<LexerATNConfig>] = {
           var decisionToDFA = [DFA<LexerATNConfig>]()
-          let length = VisitorBasicLexer._ATN.getNumberOfDecisions()
+          let length = ThreadingLexer._ATN.getNumberOfDecisions()
           for i in 0..<length {
-          	    decisionToDFA.append(DFA(VisitorBasicLexer._ATN.getDecisionState(i)!, i))
+          	    decisionToDFA.append(DFA(ThreadingLexer._ATN.getDecisionState(i)!, i))
           }
            return decisionToDFA
-    }()
+     }()
 
 	internal static let _sharedContextCache = PredictionContextCache()
 

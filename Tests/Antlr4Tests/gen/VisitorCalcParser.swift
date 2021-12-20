@@ -1,4 +1,4 @@
-// Generated from /Users/luizsilva/Documents/Local Projects/antlr4-swift/Tests/Antlr4Tests/VisitorCalc.g4 by ANTLR 4.7
+// Generated from VisitorCalc.g4 by ANTLR 4.9.3
 import Antlr4
 
 open class VisitorCalcParser: Parser {
@@ -11,12 +11,19 @@ open class VisitorCalcParser: Parser {
            }
            return decisionToDFA
      }()
-	internal static let _sharedContextCache: PredictionContextCache = PredictionContextCache()
-	public enum Tokens: Int {
+
+	internal static let _sharedContextCache = PredictionContextCache()
+
+	public
+	enum Tokens: Int {
 		case EOF = -1, INT = 1, MUL = 2, DIV = 3, ADD = 4, SUB = 5, WS = 6
 	}
-	public static let RULE_s = 0, RULE_expr = 1
-	public static let ruleNames: [String] = [
+
+	public
+	static let RULE_s = 0, RULE_expr = 1
+
+	public
+	static let ruleNames: [String] = [
 		"s", "expr"
 	]
 
@@ -26,84 +33,63 @@ open class VisitorCalcParser: Parser {
 	private static let _SYMBOLIC_NAMES: [String?] = [
 		nil, "INT", "MUL", "DIV", "ADD", "SUB", "WS"
 	]
-	public static let VOCABULARY: Vocabulary = Vocabulary(_LITERAL_NAMES, _SYMBOLIC_NAMES)
+	public
+	static let VOCABULARY = Vocabulary(_LITERAL_NAMES, _SYMBOLIC_NAMES)
 
-	/**
-	 * @deprecated Use {@link #VOCABULARY} instead.
-	 */
-	//@Deprecated
-	public let tokenNames: [String?]? = {
-	    let length = _SYMBOLIC_NAMES.count
-	    var tokenNames = [String?](repeating: nil, count: length)
-		for i in 0..<length {
-			var name = VOCABULARY.getLiteralName(i)
-			if name == nil {
-				name = VOCABULARY.getSymbolicName(i)
-			}
-			if name == nil {
-				name = "<INVALID>"
-			}
-			tokenNames[i] = name
-		}
-		return tokenNames
-	}()
+	override open
+	func getGrammarFileName() -> String { return "VisitorCalc.g4" }
 
-	open func getTokenNames() -> [String?]? {
-		return tokenNames
-	}
+	override open
+	func getRuleNames() -> [String] { return VisitorCalcParser.ruleNames }
 
-	override
-	open func getGrammarFileName() -> String { return "VisitorCalc.g4" }
+	override open
+	func getSerializedATN() -> String { return VisitorCalcParser._serializedATN }
 
-	override
-	open func getRuleNames() -> [String] { return VisitorCalcParser.ruleNames }
+	override open
+	func getATN() -> ATN { return VisitorCalcParser._ATN }
 
-	override
-	open func getSerializedATN() -> String { return VisitorCalcParser._serializedATN }
 
-	override
-	open func getATN() -> ATN { return VisitorCalcParser._ATN }
-
-	open override func getVocabulary() -> Vocabulary {
+	override open
+	func getVocabulary() -> Vocabulary {
 	    return VisitorCalcParser.VOCABULARY
 	}
 
-	public override init(_ input: TokenStream)throws {
-	    RuntimeMetaData.checkVersion("4.9.2", RuntimeMetaData.VERSION)
+	override public
+	init(_ input:TokenStream) throws {
+	    RuntimeMetaData.checkVersion("4.9.3", RuntimeMetaData.VERSION)
 		try super.init(input)
-		_interp = ParserATNSimulator(self, VisitorCalcParser._ATN, VisitorCalcParser._decisionToDFA, VisitorCalcParser._sharedContextCache)
+		_interp = ParserATNSimulator(self,VisitorCalcParser._ATN,VisitorCalcParser._decisionToDFA, VisitorCalcParser._sharedContextCache)
 	}
-	open class SContext: ParserRuleContext {
-		open func expr() -> ExprContext? {
-			return getRuleContext(ExprContext.self, 0)
+
+
+	public class SContext: ParserRuleContext {
+			open
+			func expr() -> ExprContext? {
+				return getRuleContext(ExprContext.self, 0)
+			}
+			open
+			func EOF() -> TerminalNode? {
+				return getToken(VisitorCalcParser.Tokens.EOF.rawValue, 0)
+			}
+		override open
+		func getRuleIndex() -> Int {
+			return VisitorCalcParser.RULE_s
 		}
-		open func EOF() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.EOF.rawValue, 0) }
-		open override func getRuleIndex() -> Int { return VisitorCalcParser.RULE_s }
-		override
-		open func enterRule(_ listener: ParseTreeListener) {
-			if listener is VisitorCalcListener {
-			 	(listener as! VisitorCalcListener).enterS(self)
+		override open
+		func enterRule(_ listener: ParseTreeListener) {
+			if let listener = listener as? VisitorCalcListener {
+				listener.enterS(self)
 			}
 		}
-		override
-		open func exitRule(_ listener: ParseTreeListener) {
-			if listener is VisitorCalcListener {
-			 	(listener as! VisitorCalcListener).exitS(self)
-			}
-		}
-		override
-		open func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
-			if visitor is VisitorCalcVisitor {
-			     return (visitor as! VisitorCalcVisitor<T>).visitS(self)
-			} else if visitor is VisitorCalcBaseVisitor {
-		    	 return (visitor as! VisitorCalcBaseVisitor<T>).visitS(self)
-		    } else {
-			     return visitor.visitChildren(self)
+		override open
+		func exitRule(_ listener: ParseTreeListener) {
+			if let listener = listener as? VisitorCalcListener {
+				listener.exitS(self)
 			}
 		}
 	}
 	@discardableResult
-	open func s() throws -> SContext {
+	 open func s() throws -> SContext {
 		let _localctx: SContext = SContext(_ctx, getState())
 		try enterRule(_localctx, 0, VisitorCalcParser.RULE_s)
 		defer {
@@ -116,7 +102,8 @@ open class VisitorCalcParser: Parser {
 		 	setState(5)
 		 	try match(VisitorCalcParser.Tokens.EOF.rawValue)
 
-		} catch ANTLRException.recognition(let re) {
+		}
+		catch ANTLRException.recognition(let re) {
 			_localctx.exception = re
 			_errHandler.reportError(self, re)
 			try _errHandler.recover(self, re)
@@ -125,120 +112,115 @@ open class VisitorCalcParser: Parser {
 		return _localctx
 	}
 
-	open class ExprContext: ParserRuleContext {
-		open override func getRuleIndex() -> Int { return VisitorCalcParser.RULE_expr }
 
-		public  func copyFrom(_ ctx: ExprContext) {
-			super.copyFrom(ctx)
+	public class ExprContext: ParserRuleContext {
+		override open
+		func getRuleIndex() -> Int {
+			return VisitorCalcParser.RULE_expr
 		}
 	}
-	public  final class AddContext: ExprContext {
-        public func expr() -> [ExprContext] {
-			return getRuleContexts(ExprContext.self)
-		}
-        public func expr(_ i: Int) -> ExprContext? {
-			return getRuleContext(ExprContext.self, i)
-		}
-        public func ADD() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.ADD.rawValue, 0) }
-        public func SUB() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.SUB.rawValue, 0) }
-		public init(_ ctx: ExprContext) {
+	public class AddContext: ExprContext {
+			open
+			func expr() -> [ExprContext] {
+				return getRuleContexts(ExprContext.self)
+			}
+			open
+			func expr(_ i: Int) -> ExprContext? {
+				return getRuleContext(ExprContext.self, i)
+			}
+			open
+			func ADD() -> TerminalNode? {
+				return getToken(VisitorCalcParser.Tokens.ADD.rawValue, 0)
+			}
+			open
+			func SUB() -> TerminalNode? {
+				return getToken(VisitorCalcParser.Tokens.SUB.rawValue, 0)
+			}
+
+		public
+		init(_ ctx: ExprContext) {
 			super.init()
 			copyFrom(ctx)
 		}
-		override
-        public func enterRule(_ listener: ParseTreeListener) {
-			if listener is VisitorCalcListener {
-			 	(listener as! VisitorCalcListener).enterAdd(self)
+		override open
+		func enterRule(_ listener: ParseTreeListener) {
+			if let listener = listener as? VisitorCalcListener {
+				listener.enterAdd(self)
 			}
 		}
-		override
-        public func exitRule(_ listener: ParseTreeListener) {
-			if listener is VisitorCalcListener {
-			 	(listener as! VisitorCalcListener).exitAdd(self)
-			}
-		}
-		override
-        public func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
-			if visitor is VisitorCalcVisitor {
-			     return (visitor as! VisitorCalcVisitor<T>).visitAdd(self)
-			} else if visitor is VisitorCalcBaseVisitor {
-		    	 return (visitor as! VisitorCalcBaseVisitor<T>).visitAdd(self)
-		    } else {
-			     return visitor.visitChildren(self)
+		override open
+		func exitRule(_ listener: ParseTreeListener) {
+			if let listener = listener as? VisitorCalcListener {
+				listener.exitAdd(self)
 			}
 		}
 	}
-	public  final class NumberContext: ExprContext {
-        public func INT() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.INT.rawValue, 0) }
-		public init(_ ctx: ExprContext) {
+	public class NumberContext: ExprContext {
+			open
+			func INT() -> TerminalNode? {
+				return getToken(VisitorCalcParser.Tokens.INT.rawValue, 0)
+			}
+
+		public
+		init(_ ctx: ExprContext) {
 			super.init()
 			copyFrom(ctx)
 		}
-		override
-        public func enterRule(_ listener: ParseTreeListener) {
-			if listener is VisitorCalcListener {
-			 	(listener as! VisitorCalcListener).enterNumber(self)
+		override open
+		func enterRule(_ listener: ParseTreeListener) {
+			if let listener = listener as? VisitorCalcListener {
+				listener.enterNumber(self)
 			}
 		}
-		override
-        public func exitRule(_ listener: ParseTreeListener) {
-			if listener is VisitorCalcListener {
-			 	(listener as! VisitorCalcListener).exitNumber(self)
-			}
-		}
-		override
-        public func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
-			if visitor is VisitorCalcVisitor {
-			     return (visitor as! VisitorCalcVisitor<T>).visitNumber(self)
-			} else if visitor is VisitorCalcBaseVisitor {
-		    	 return (visitor as! VisitorCalcBaseVisitor<T>).visitNumber(self)
-		    } else {
-			     return visitor.visitChildren(self)
+		override open
+		func exitRule(_ listener: ParseTreeListener) {
+			if let listener = listener as? VisitorCalcListener {
+				listener.exitNumber(self)
 			}
 		}
 	}
-	public  final class MultiplyContext: ExprContext {
-        public func expr() -> [ExprContext] {
-			return getRuleContexts(ExprContext.self)
-		}
-        public func expr(_ i: Int) -> ExprContext? {
-			return getRuleContext(ExprContext.self, i)
-		}
-        public func MUL() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.MUL.rawValue, 0) }
-        public func DIV() -> TerminalNode? { return getToken(VisitorCalcParser.Tokens.DIV.rawValue, 0) }
-		public init(_ ctx: ExprContext) {
+	public class MultiplyContext: ExprContext {
+			open
+			func expr() -> [ExprContext] {
+				return getRuleContexts(ExprContext.self)
+			}
+			open
+			func expr(_ i: Int) -> ExprContext? {
+				return getRuleContext(ExprContext.self, i)
+			}
+			open
+			func MUL() -> TerminalNode? {
+				return getToken(VisitorCalcParser.Tokens.MUL.rawValue, 0)
+			}
+			open
+			func DIV() -> TerminalNode? {
+				return getToken(VisitorCalcParser.Tokens.DIV.rawValue, 0)
+			}
+
+		public
+		init(_ ctx: ExprContext) {
 			super.init()
 			copyFrom(ctx)
 		}
-		override
-        public func enterRule(_ listener: ParseTreeListener) {
-			if listener is VisitorCalcListener {
-			 	(listener as! VisitorCalcListener).enterMultiply(self)
+		override open
+		func enterRule(_ listener: ParseTreeListener) {
+			if let listener = listener as? VisitorCalcListener {
+				listener.enterMultiply(self)
 			}
 		}
-		override
-        public func exitRule(_ listener: ParseTreeListener) {
-			if listener is VisitorCalcListener {
-			 	(listener as! VisitorCalcListener).exitMultiply(self)
-			}
-		}
-		override
-        public func accept<T>(_ visitor: ParseTreeVisitor<T>) -> T? {
-			if visitor is VisitorCalcVisitor {
-			     return (visitor as! VisitorCalcVisitor<T>).visitMultiply(self)
-			} else if visitor is VisitorCalcBaseVisitor {
-		    	 return (visitor as! VisitorCalcBaseVisitor<T>).visitMultiply(self)
-		    } else {
-			     return visitor.visitChildren(self)
+		override open
+		func exitRule(_ listener: ParseTreeListener) {
+			if let listener = listener as? VisitorCalcListener {
+				listener.exitMultiply(self)
 			}
 		}
 	}
 
-	public final  func expr( ) throws -> ExprContext {
+	 public final  func expr( ) throws -> ExprContext   {
 		return try expr(0)
 	}
 	@discardableResult
-	private func expr(_ _p: Int) throws -> ExprContext {
+	private func expr(_ _p: Int) throws -> ExprContext   {
 		let _parentctx: ParserRuleContext? = _ctx
 		let _parentState: Int = getState()
 		var _localctx: ExprContext = ExprContext(_ctx, _parentState)
@@ -260,7 +242,7 @@ open class VisitorCalcParser: Parser {
 			_ctx!.stop = try _input.LT(-1)
 			setState(18)
 			try _errHandler.sync(self)
-			_alt = try getInterpreter().adaptivePredict(_input, 1, _ctx)
+			_alt = try getInterpreter().adaptivePredict(_input,1,_ctx)
 			while (_alt != 2 && _alt != ATN.INVALID_ALT_NUMBER) {
 				if ( _alt==1 ) {
 					if _parseListeners != nil {
@@ -268,13 +250,13 @@ open class VisitorCalcParser: Parser {
 					}
 					setState(16)
 					try _errHandler.sync(self)
-					switch(try getInterpreter().adaptivePredict(_input, 0, _ctx)) {
+					switch(try getInterpreter().adaptivePredict(_input,0, _ctx)) {
 					case 1:
 						_localctx = MultiplyContext(  ExprContext(_parentctx, _parentState))
 						try pushNewRecursionContext(_localctx, _startState, VisitorCalcParser.RULE_expr)
 						setState(10)
 						if (!(precpred(_ctx, 2))) {
-						    throw ANTLRException.recognition(e: FailedPredicateException(self, "precpred(_ctx, 2)"))
+						    throw ANTLRException.recognition(e:FailedPredicateException(self, "precpred(_ctx, 2)"))
 						}
 						setState(11)
 						_la = try _input.LA(1)
@@ -284,7 +266,8 @@ open class VisitorCalcParser: Parser {
 						      return testSet
 						 }())) {
 						try _errHandler.recoverInline(self)
-						} else {
+						}
+						else {
 							_errHandler.reportMatch(self)
 							try consume()
 						}
@@ -297,7 +280,7 @@ open class VisitorCalcParser: Parser {
 						try pushNewRecursionContext(_localctx, _startState, VisitorCalcParser.RULE_expr)
 						setState(13)
 						if (!(precpred(_ctx, 1))) {
-						    throw ANTLRException.recognition(e: FailedPredicateException(self, "precpred(_ctx, 1)"))
+						    throw ANTLRException.recognition(e:FailedPredicateException(self, "precpred(_ctx, 1)"))
 						}
 						setState(14)
 						_la = try _input.LA(1)
@@ -307,7 +290,8 @@ open class VisitorCalcParser: Parser {
 						      return testSet
 						 }())) {
 						try _errHandler.recoverInline(self)
-						} else {
+						}
+						else {
 							_errHandler.reportMatch(self)
 							try consume()
 						}
@@ -317,31 +301,32 @@ open class VisitorCalcParser: Parser {
 						break
 					default: break
 					}
-
+			 
 				}
 				setState(20)
 				try _errHandler.sync(self)
-				_alt = try getInterpreter().adaptivePredict(_input, 1, _ctx)
+				_alt = try getInterpreter().adaptivePredict(_input,1,_ctx)
 			}
 
-		} catch ANTLRException.recognition(let re) {
+		}
+		catch ANTLRException.recognition(let re) {
 			_localctx.exception = re
 			_errHandler.reportError(self, re)
 			try _errHandler.recover(self, re)
 		}
 
-		return _localctx
+		return _localctx;
 	}
 
-    override
-	open func sempred(_ _localctx: RuleContext?, _ ruleIndex: Int, _ predIndex: Int)throws -> Bool {
+	override open
+	func sempred(_ _localctx: RuleContext?, _ ruleIndex: Int,  _ predIndex: Int)throws -> Bool {
 		switch (ruleIndex) {
 		case  1:
 			return try expr_sempred(_localctx?.castdown(ExprContext.self), predIndex)
 	    default: return true
 		}
 	}
-	private func expr_sempred(_ _localctx: ExprContext!, _ predIndex: Int) throws -> Bool {
+	private func expr_sempred(_ _localctx: ExprContext!,  _ predIndex: Int) throws -> Bool {
 		switch (predIndex) {
 		    case 0:return precpred(_ctx, 2)
 		    case 1:return precpred(_ctx, 1)
@@ -349,6 +334,10 @@ open class VisitorCalcParser: Parser {
 		}
 	}
 
-   public static let _serializedATN: String = VisitorCalcParserATN().jsonString
-   public static let _ATN: ATN = ATNDeserializer().deserializeFromJson(_serializedATN)
+
+	public
+	static let _serializedATN = VisitorCalcParserATN().jsonString
+
+	public
+	static let _ATN = ATNDeserializer().deserializeFromJson(_serializedATN)
 }

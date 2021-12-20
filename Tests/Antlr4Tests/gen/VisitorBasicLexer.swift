@@ -1,4 +1,4 @@
-// Generated from /Users/luizsilva/Documents/Local Projects/antlr4-swift/Tests/Antlr4Tests/VisitorBasic.g4 by ANTLR 4.7
+// Generated from VisitorBasic.g4 by ANTLR 4.9.3
 import Antlr4
 
 open class VisitorBasicLexer: Lexer {
@@ -9,19 +9,25 @@ open class VisitorBasicLexer: Lexer {
           	    decisionToDFA.append(DFA(VisitorBasicLexer._ATN.getDecisionState(i)!, i))
           }
            return decisionToDFA
-    }()
+     }()
 
-	internal static let _sharedContextCache: PredictionContextCache = PredictionContextCache()
-	public static let A=1
-	public static let channelNames: [String] = [
+	internal static let _sharedContextCache = PredictionContextCache()
+
+	public
+	static let A=1
+
+	public
+	static let channelNames: [String] = [
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 	]
 
-	public static let modeNames: [String] = [
+	public
+	static let modeNames: [String] = [
 		"DEFAULT_MODE"
 	]
 
-	public static let ruleNames: [String] = [
+	public
+	static let ruleNames: [String] = [
 		"A"
 	]
 
@@ -31,60 +37,44 @@ open class VisitorBasicLexer: Lexer {
 	private static let _SYMBOLIC_NAMES: [String?] = [
 		nil, "A"
 	]
-	public static let VOCABULARY: Vocabulary = Vocabulary(_LITERAL_NAMES, _SYMBOLIC_NAMES)
+	public
+	static let VOCABULARY = Vocabulary(_LITERAL_NAMES, _SYMBOLIC_NAMES)
 
-	/**
-	 * @deprecated Use {@link #VOCABULARY} instead.
-	 */
-	//@Deprecated
-	public let tokenNames: [String?]? = {
-	    let length = _SYMBOLIC_NAMES.count
-	    var tokenNames = [String?](repeating: nil, count: length)
-		for i in 0..<length {
-			var name = VOCABULARY.getLiteralName(i)
-			if name == nil {
-				name = VOCABULARY.getSymbolicName(i)
-			}
-			if name == nil {
-				name = "<INVALID>"
-			}
-			tokenNames[i] = name
-		}
-		return tokenNames
-	}()
 
-	open func getTokenNames() -> [String?]? {
-		return tokenNames
+	override open
+	func getVocabulary() -> Vocabulary {
+		return VisitorBasicLexer.VOCABULARY
 	}
 
-    open override func getVocabulary() -> Vocabulary {
-        return VisitorBasicLexer.VOCABULARY
-    }
-
-	public required init(_ input: CharStream) {
-	    RuntimeMetaData.checkVersion("4.9.2", RuntimeMetaData.VERSION)
+	public
+	required init(_ input: CharStream) {
+	    RuntimeMetaData.checkVersion("4.9.3", RuntimeMetaData.VERSION)
 		super.init(input)
 		_interp = LexerATNSimulator(self, VisitorBasicLexer._ATN, VisitorBasicLexer._decisionToDFA, VisitorBasicLexer._sharedContextCache)
 	}
 
-	override
-	open func getGrammarFileName() -> String { return "VisitorBasic.g4" }
+	override open
+	func getGrammarFileName() -> String { return "VisitorBasic.g4" }
 
-    override
-	open func getRuleNames() -> [String] { return VisitorBasicLexer.ruleNames }
+	override open
+	func getRuleNames() -> [String] { return VisitorBasicLexer.ruleNames }
 
-	override
-	open func getSerializedATN() -> String { return VisitorBasicLexer._serializedATN }
+	override open
+	func getSerializedATN() -> String { return VisitorBasicLexer._serializedATN }
 
-	override
-	open func getChannelNames() -> [String] { return VisitorBasicLexer.channelNames }
+	override open
+	func getChannelNames() -> [String] { return VisitorBasicLexer.channelNames }
 
-	override
-	open func getModeNames() -> [String] { return VisitorBasicLexer.modeNames }
+	override open
+	func getModeNames() -> [String] { return VisitorBasicLexer.modeNames }
 
-	override
-	open func getATN() -> ATN { return VisitorBasicLexer._ATN }
+	override open
+	func getATN() -> ATN { return VisitorBasicLexer._ATN }
 
-    public static let _serializedATN: String = VisitorBasicLexerATN().jsonString
-	public static let _ATN: ATN = ATNDeserializer().deserializeFromJson(_serializedATN)
+
+	public
+	static let _serializedATN: String = VisitorBasicLexerATN().jsonString
+
+	public
+	static let _ATN: ATN = ATNDeserializer().deserializeFromJson(_serializedATN)
 }

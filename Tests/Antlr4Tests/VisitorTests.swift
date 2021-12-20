@@ -209,6 +209,6 @@ class VisitorTests: XCTestCase {
         let visitor = Visitor()
         let result = visitor.visit(context)
         let expected = 6
-        XCTAssertEqual(expected, result!)
+        XCTAssertEqual(expected, result)
     }
 }
