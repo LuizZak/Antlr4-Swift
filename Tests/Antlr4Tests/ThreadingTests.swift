@@ -13,15 +13,24 @@ class ThreadingTests: XCTestCase {
     /// This test verifies parallel execution of the parser
     ///
     func testParallelExecution() throws {
+        let input = [
+            "2 * 8 - 4",
+            "2 + 8 / 4",
+            "2 - 8 - 4",
+            "2 * 8 * 4",
+            "2 / 8 / 4",
+            "2 + 8 + 4",
+            "890",
+        ]
         let expectation = expectation(description: "Waiting on async-task")
         expectation.expectedFulfillmentCount = 100
-        for _ in 0...100 {
+        for i in 1...100 {
             DispatchQueue.global().async {
-                let lexer = ThreadingLexer(ANTLRInputStream("1+1"))
+                let lexer = ThreadingLexer(ANTLRInputStream(input[i % 7]))
                 let tokenStream = CommonTokenStream(lexer)
                 let parser = try? ThreadingParser(tokenStream)
 
-                let _ = try? parser?.operation()
+                let _ = try? parser?.s()
 
                 expectation.fulfill()
             }

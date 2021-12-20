@@ -15,7 +15,7 @@ open class ThreadingLexer: Lexer {
 	internal static let _sharedContextCache = PredictionContextCache()
 
 	public
-	static let T__0=1, NUMBER=2, WS=3
+	static let INT=1, MUL=2, DIV=3, ADD=4, SUB=5, WS=6
 
 	public
 	static let channelNames: [String] = [
@@ -29,14 +29,14 @@ open class ThreadingLexer: Lexer {
 
 	public
 	static let ruleNames: [String] = [
-		"T__0", "NUMBER", "WS"
+		"INT", "MUL", "DIV", "ADD", "SUB", "WS"
 	]
 
 	private static let _LITERAL_NAMES: [String?] = [
-		nil, "'+'"
+		nil, nil, "'*'", "'/'", "'+'", "'-'"
 	]
 	private static let _SYMBOLIC_NAMES: [String?] = [
-		nil, nil, "NUMBER", "WS"
+		nil, "INT", "MUL", "DIV", "ADD", "SUB", "WS"
 	]
 	public
 	static let VOCABULARY = Vocabulary(_LITERAL_NAMES, _SYMBOLIC_NAMES)
