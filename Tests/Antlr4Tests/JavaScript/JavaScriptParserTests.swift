@@ -13,14 +13,32 @@ class JavaScriptParserTests: XCTestCase {
         // 12.797 (12.797) seconds - after addressing hot path in Utils.testBitLeftShiftArray (cherry-pick of 4d91ac0f6ae9104df88a30c83232ee43d113333b)
         // 12.345 (12.345) seconds - after cherry-pick of "Convert Vocabulary and ParseTreeMatch to structs" (90ad3ff6cd8e792fbb65dfd7837c1772972cfa95)
         // 12.689 (12.689) seconds - after cherry-pick of "Removing some dubious operator overloads and simplifying some methods" (0a49b1e7794c001d408fba1fb9f39f64a1addb01)
+        // 6.295 (6.295) seconds - after enabling multithreading
         let urls = try XCTUnwrap(Bundle.module.urls(forResourcesWithExtension: ".js", subdirectory: nil))
+
+        let exp = expectation(description: "JSON parsing test")
+        
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 8
 
         for url in urls {
             let url = url as URL
             let outputUrl = _findOutputPath(url)
 
-            try _runTest(inputUrl: url, outputUrl: outputUrl, record: false)
+            queue.addOperation {
+                do {
+                    try self._runTest(inputUrl: url, outputUrl: outputUrl, record: false)
+                } catch {
+
+                }
+            }
         }
+
+        queue.addBarrierBlock {
+            exp.fulfill()
+        }
+
+        waitForExpectations(timeout: 30.0)
     }
 
     private func _findOutputPath(_ jsFileInput: URL) -> URL {
