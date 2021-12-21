@@ -3,8 +3,8 @@ import Antlr4
 
 open class VisitorBasicParser: Parser {
 
-	internal static var _decisionToDFA: [DFA<ParserATNConfig>] = {
-          var decisionToDFA = [DFA<ParserATNConfig>]()
+	internal static var _decisionToDFA: [DFAParser] = {
+          var decisionToDFA = [DFAParser]()
           let length = VisitorBasicParser._ATN.getNumberOfDecisions()
           for i in 0..<length {
             decisionToDFA.append(DFA(VisitorBasicParser._ATN.getDecisionState(i)!, i))
