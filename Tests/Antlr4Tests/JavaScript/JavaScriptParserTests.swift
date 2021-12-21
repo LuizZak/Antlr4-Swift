@@ -47,6 +47,10 @@ class JavaScriptParserTests: XCTestCase {
             XCTFail("Successfully recorded sample at \(outputUrl).")
         } else {
             let output = try String(contentsOf: outputUrl)
+            if serialized != output {
+                print("Failed test file \(inputUrl.lastPathComponent)")
+            }
+
             _diffTest(expected: output).diff(serialized)
         }
     }
