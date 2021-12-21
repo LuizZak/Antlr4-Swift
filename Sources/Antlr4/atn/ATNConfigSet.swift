@@ -475,12 +475,12 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
     }
 
     public func getAltThatFinishedDecisionEntryRule() -> Int {
-        let alts = IntervalSet()
+        var alts = IntervalSet()
         for config in configs {
             if config.getOuterContextDepth() > 0 ||
                 (config.state is RuleStopState &&
                     config.context!.hasEmptyPath()) {
-                try! alts.add(config.alt)
+                alts.add(config.alt)
             }
         }
         if alts.size() == 0 {

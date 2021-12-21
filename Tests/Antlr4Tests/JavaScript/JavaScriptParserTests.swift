@@ -7,6 +7,9 @@ class JavaScriptParserTests: XCTestCase {
         // 13.93 (13.93) seconds - after setup
         // 13.066 (13.066) seconds - after making Interval a struct
         // 13.037 (13.037) seconds - after making MultiMap a struct
+        // (making BitSet a struct failed)
+        // 12.712 (12.712) seconds - after making IntervalSet a struct
+        // 12.753 (12.753) seconds - after removing Throws from IntervalSet
         let urls = try XCTUnwrap(Bundle.module.urls(forResourcesWithExtension: ".js", subdirectory: nil))
 
         for url in urls {
