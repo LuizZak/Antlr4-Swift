@@ -79,11 +79,6 @@ public class DFAState<T: ATNConfig>: Hashable, CustomStringConvertible {
     public internal(set) var predicates: [PredPrediction]?
 
     ///
-    /// mutex for states changes.
-    ///
-    internal private(set) var mutex = Mutex()
-
-    ///
     /// Map a predicate to a predicted alternative.
     ///
     

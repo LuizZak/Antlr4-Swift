@@ -665,15 +665,13 @@ open class LexerATNSimulator: ATNSimulator {
         if LexerATNSimulator.debug {
             print("EDGE \(p) -> \(q) upon \(t)")
         }
-
-        p.mutex.synchronized {
-            if p.edges == nil {
-                //  make room for tokens 1..n and -1 masquerading as index 0
-                let count = LexerATNSimulator.MAX_DFA_EDGE - LexerATNSimulator.MIN_DFA_EDGE + 1
-                p.edges = [DFAState?](repeating: nil, count: count)
-            }
-            p.edges[t - LexerATNSimulator.MIN_DFA_EDGE] = q // connect
+        
+        if p.edges == nil {
+            //  make room for tokens 1..n and -1 masquerading as index 0
+            let count = LexerATNSimulator.MAX_DFA_EDGE - LexerATNSimulator.MIN_DFA_EDGE + 1
+            p.edges = [DFAState?](repeating: nil, count: count)
         }
+        p.edges[t - LexerATNSimulator.MIN_DFA_EDGE] = q // connect
     }
 
     ///
@@ -701,18 +699,16 @@ open class LexerATNSimulator: ATNSimulator {
 
         let dfa = decisionToDFA[mode]
 
-        return dfa.statesMutex.synchronized {
-            if let existing = dfa.states[proposed] {
-                return existing!
-            }
-
-            let newState = proposed
-            newState.stateNumber = dfa.states.count
-            configs.configLookup.removeAll()
-            newState.configs = configs
-            dfa.states[newState] = newState
-            return newState
+        if let existing = dfa.states[proposed] {
+            return existing!
         }
+
+        let newState = proposed
+        newState.stateNumber = dfa.states.count
+        configs.configLookup.removeAll()
+        newState.configs = configs
+        dfa.states[newState] = newState
+        return newState
     }
 
     public final func getDFA(_ mode: Int) -> DFA<LexerATNConfig> {

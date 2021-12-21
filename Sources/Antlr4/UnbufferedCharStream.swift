@@ -334,9 +334,6 @@ private struct UInt8StreamIterator: IteratorProtocol {
             return nil
         case .opening, .open, .reading:
             break
-        @unknown default:
-            hasErrorOccurred = true
-            return nil
         }
 
         let count = stream.read(&buffer, maxLength: buffer.count)

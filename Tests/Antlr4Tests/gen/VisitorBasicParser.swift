@@ -102,7 +102,7 @@ open class VisitorBasicParser: Parser {
 	}
 	@discardableResult
 	 open func s() throws -> SContext {
-		var _localctx: SContext = SContext(_ctx, getState())
+		let _localctx: SContext = SContext(_ctx, getState())
 		try enterRule(_localctx, 0, VisitorBasicParser.RULE_s)
 		defer {
 	    		try! exitRule()
