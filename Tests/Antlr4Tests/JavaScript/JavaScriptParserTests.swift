@@ -4,6 +4,8 @@ import XCTest
 
 class JavaScriptParserTests: XCTestCase {
     func testFixtures() throws {
+        // 13.93 (13.93) seconds - after setup
+        // 13.066 (13.066) seconds - after making Interval a struct
         let urls = try XCTUnwrap(Bundle.module.urls(forResourcesWithExtension: ".js", subdirectory: nil))
 
         for url in urls {
