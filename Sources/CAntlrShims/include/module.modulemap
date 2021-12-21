@@ -1,0 +1,3 @@
+module CAntlrShims {
+  header "_CAntlrShims.h"
+}

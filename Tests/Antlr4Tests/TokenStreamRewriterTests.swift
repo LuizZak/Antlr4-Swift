@@ -6,7 +6,7 @@ import XCTest
 import Antlr4
 
 class TokenStreamRewriterTests: XCTestCase {
-
+    
     static let allTests = [
         ("testPreservesOrderOfContiguousInserts", testPreservesOrderOfContiguousInserts),
         ("testDistinguishBetweenInsertAfterAndInsertBeforeToPreserverOrder2", testDistinguishBetweenInsertAfterAndInsertBeforeToPreserverOrder2),
@@ -52,7 +52,7 @@ class TokenStreamRewriterTests: XCTestCase {
         ("testInsertAfterLastIndex", testInsertAfterLastIndex),
         ("testInsertBeforeIndex0", testInsertBeforeIndex0)
     ]
-
+    
     func testInsertBeforeIndex0() throws {
         let input = ANTLRInputStream("abc")
         let lexer = LexerA(input)

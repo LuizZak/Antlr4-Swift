@@ -1,8 +1,9 @@
-///
+/// 
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-///
+/// 
+
 
 public class LexerInterpreter: Lexer {
     internal let grammarFileName: String
@@ -14,11 +15,10 @@ public class LexerInterpreter: Lexer {
 
     private let vocabulary: Vocabulary?
 
-    internal var _decisionToDFA: [DFA<LexerATNConfig>]
+    internal final var _decisionToDFA: [DFA]
     internal let _sharedContextCache = PredictionContextCache()
 
-    public init(_ grammarFileName: String, _ vocabulary: Vocabulary, _ ruleNames: [String],
-                _ channelNames: [String], _ modeNames: [String], _ atn: ATN, _ input: CharStream) throws {
+    public init(_ grammarFileName: String, _ vocabulary: Vocabulary, _ ruleNames: Array<String>, _ channelNames: Array<String>, _ modeNames: Array<String>, _ atn: ATN, _ input: CharStream) throws {
 
         self.grammarFileName = grammarFileName
         self.atn = atn
@@ -29,7 +29,7 @@ public class LexerInterpreter: Lexer {
 
         self._decisionToDFA = [DFA]()
         for i in 0 ..< atn.getNumberOfDecisions() {
-            _decisionToDFA[i] = DFA(atn.getDecisionState(i)!, i)
+            _decisionToDFA.append(DFA(atn.getDecisionState(i)!, i))
         }
         super.init(input)
         self._interp = LexerATNSimulator(self, atn, _decisionToDFA, _sharedContextCache)
@@ -71,6 +71,10 @@ public class LexerInterpreter: Lexer {
 
     override
     public func getVocabulary() -> Vocabulary {
-        return vocabulary ?? super.getVocabulary()
+        if vocabulary != nil {
+            return vocabulary!
+        }
+
+        return super.getVocabulary()
     }
 }

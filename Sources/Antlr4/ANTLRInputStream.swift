@@ -162,10 +162,7 @@ public class ANTLRInputStream: CharStream {
     }
 
     public func getSourceName() -> String {
-        guard let name = name, !name.isEmpty else {
-            return ANTLRInputStream.unknownSourceName
-        }
-        return name
+        return name ?? ANTLRInputStream.UNKNOWN_SOURCE_NAME
     }
 
     public func toString() -> String {

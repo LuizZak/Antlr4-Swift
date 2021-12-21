@@ -1,75 +1,80 @@
-///
+/// 
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-///
+/// 
 
-///
+
+
+
+
+/// 
 /// Represents an executor for a sequence of lexer actions which traversed during
 /// the matching operation of a lexer rule (token).
-///
+/// 
 /// The executor tracks position information for position-dependent lexer actions
 /// efficiently, ensuring that actions appearing only at the end of the rule do
 /// not cause bloating of the _org.antlr.v4.runtime.dfa.DFA_ created for the lexer.
-///
+/// 
 /// -  Sam Harwell
 /// -  4.2
-///
+/// 
 
 public class LexerActionExecutor: Hashable {
 
-    fileprivate let lexerActions: [LexerAction]
-    ///
+    fileprivate final var lexerActions: [LexerAction]
+    /// 
     /// Caches the result of _#hashCode_ since the hash code is an element
     /// of the performance-critical _org.antlr.v4.runtime.atn.LexerATNConfig#hashCode_ operation.
-    ///
-    fileprivate final let hashCode: Int
+    /// 
+    fileprivate final var hashCode: Int
 
-    ///
+    /// 
     /// Constructs an executor for a sequence of _org.antlr.v4.runtime.atn.LexerAction_ actions.
     /// - parameter lexerActions: The lexer actions to execute.
-    ///
+    /// 
     public init(_ lexerActions: [LexerAction]) {
         self.lexerActions = lexerActions
-        
-        var hash = Hasher()
-        for lexerAction in lexerActions {
-            hash.combine(lexerAction)
+
+        var hash = MurmurHash.initialize()
+        for lexerAction: LexerAction in lexerActions {
+            hash = MurmurHash.update(hash, lexerAction)
         }
 
-        self.hashCode = hash.finalize()
+        self.hashCode = MurmurHash.finish(hash, lexerActions.count)
     }
 
-    ///
+    /// 
     /// Creates a _org.antlr.v4.runtime.atn.LexerActionExecutor_ which executes the actions for
     /// the input `lexerActionExecutor` followed by a specified
     /// `lexerAction`.
-    ///
+    /// 
     /// - parameter lexerActionExecutor: The executor for actions already traversed by
     /// the lexer while matching a token within a particular
     /// _org.antlr.v4.runtime.atn.LexerATNConfig_. If this is `null`, the method behaves as
     /// though it were an empty executor.
     /// - parameter lexerAction: The lexer action to execute after the actions
     /// specified in `lexerActionExecutor`.
-    ///
+    /// 
     /// - returns: A _org.antlr.v4.runtime.atn.LexerActionExecutor_ for executing the combine actions
     /// of `lexerActionExecutor` and `lexerAction`.
-    ///
-    public static func append(_ lexerActionExecutor: LexerActionExecutor?,
-                              _ lexerAction: LexerAction) -> LexerActionExecutor {
+    /// 
+    public static func append(_ lexerActionExecutor: LexerActionExecutor?, _ lexerAction: LexerAction) -> LexerActionExecutor {
         if lexerActionExecutor == nil {
             return LexerActionExecutor([lexerAction])
         }
-        
-        var lexerActions = lexerActionExecutor!.lexerActions
+
+        //var lexerActions : [LexerAction] = lexerActionExecutor.lexerActions, //lexerActionExecutor.lexerActions.length + 1);
+        var lexerActions: [LexerAction] = lexerActionExecutor!.lexerActions
         lexerActions.append(lexerAction)
+        //lexerActions[lexerActions.length - 1] = lexerAction;
         return LexerActionExecutor(lexerActions)
     }
 
-    ///
+    /// 
     /// Creates a _org.antlr.v4.runtime.atn.LexerActionExecutor_ which encodes the current offset
     /// for position-dependent lexer actions.
-    ///
+    /// 
     /// Normally, when the executor encounters lexer actions where
     /// _org.antlr.v4.runtime.atn.LexerAction#isPositionDependent_ returns `true`, it calls
     /// _org.antlr.v4.runtime.IntStream#seek_ on the input _org.antlr.v4.runtime.CharStream_ to set the input
@@ -77,7 +82,7 @@ public class LexerActionExecutor: Hashable {
     /// for efficient DFA representation of lexer actions which appear at the end
     /// of a lexer rule, even when the lexer rule matches a variable number of
     /// characters.
-    ///
+    /// 
     /// Prior to traversing a match transition in the ATN, the current offset
     /// from the token start index is assigned to all position-dependent lexer
     /// actions which have not already been assigned a fixed offset. By storing
@@ -85,30 +90,26 @@ public class LexerActionExecutor: Hashable {
     /// lexer actions which appear in the middle of tokens remains efficient due
     /// to sharing among tokens of the same length, regardless of their absolute
     /// position in the input stream.
-    ///
+    /// 
     /// If the current executor already has offsets assigned to all
     /// position-dependent lexer actions, the method returns `this`.
-    ///
+    /// 
     /// - parameter offset: The current offset to assign to all position-dependent
     /// lexer actions which do not already have offsets assigned.
-    ///
+    /// 
     /// - returns: A _org.antlr.v4.runtime.atn.LexerActionExecutor_ which stores input stream offsets
     /// for all position-dependent lexer actions.
-    ///
+    /// 
     public func fixOffsetBeforeMatch(_ offset: Int) -> LexerActionExecutor {
         var updatedLexerActions: [LexerAction]? = nil
         let length = lexerActions.count
         for i in 0..<length {
-            if case .indexedCustomAction = lexerActions[i] {
-                continue
-            }
-            
-            if lexerActions[i].isPositionDependent() {
+            if lexerActions[i].isPositionDependent() && !(lexerActions[i] is LexerIndexedCustomAction) {
                 if updatedLexerActions == nil {
-                    updatedLexerActions = lexerActions
+                    updatedLexerActions = lexerActions   //lexerActions.clone();
                 }
 
-                updatedLexerActions![i] = LexerAction.indexedCustomAction(offset: offset, action: lexerActions[i])
+                updatedLexerActions![i] = LexerIndexedCustomAction(offset, lexerActions[i])
             }
         }
 
@@ -119,24 +120,24 @@ public class LexerActionExecutor: Hashable {
         return LexerActionExecutor(updatedLexerActions!)
     }
 
-    ///
+    /// 
     /// Gets the lexer actions to be executed by this executor.
     /// - returns: The lexer actions to be executed by this executor.
-    ///
+    /// 
     public func getLexerActions() -> [LexerAction] {
         return lexerActions
     }
 
-    ///
+    /// 
     /// Execute the actions encapsulated by this executor within the context of a
     /// particular _org.antlr.v4.runtime.Lexer_.
-    ///
+    /// 
     /// This method calls _org.antlr.v4.runtime.IntStream#seek_ to set the position of the
     /// `input` _org.antlr.v4.runtime.CharStream_ prior to calling
     /// _org.antlr.v4.runtime.atn.LexerAction#execute_ on a position-dependent action. Before the
     /// method returns, the input position will be restored to the same position
     /// it was in when the method was invoked.
-    ///
+    /// 
     /// - parameter lexer: The lexer instance.
     /// - parameter input: The input stream which is the source for the current token.
     /// When this method is called, the current _org.antlr.v4.runtime.IntStream#index_ for
@@ -145,7 +146,7 @@ public class LexerActionExecutor: Hashable {
     /// - parameter startIndex: The token start index. This value may be passed to
     /// _org.antlr.v4.runtime.IntStream#seek_ to set the `input` position to the beginning
     /// of the token.
-    ///
+    /// 
     public func execute(_ lexer: Lexer, _ input: CharStream, _ startIndex: Int) throws {
         var requiresSeek: Bool = false
         let stopIndex: Int = input.index()
@@ -154,15 +155,14 @@ public class LexerActionExecutor: Hashable {
                 try! input.seek(stopIndex)
             }
         }
-        
-        for var lexerAction in self.lexerActions {
-            
-            switch lexerAction {
-            case let .indexedCustomAction(offset, action):
+        //try {
+        for var lexerAction: LexerAction in self.lexerActions {
+            if let runLexerAction = lexerAction as? LexerIndexedCustomAction {
+                let offset: Int = runLexerAction.getOffset()
                 try input.seek(startIndex + offset)
-                lexerAction = action
+                lexerAction = runLexerAction.getAction()
                 requiresSeek = (startIndex + offset) != stopIndex
-            default:
+            } else {
                 if lexerAction.isPositionDependent() {
                     try input.seek(stopIndex)
                     requiresSeek = false
@@ -171,20 +171,30 @@ public class LexerActionExecutor: Hashable {
 
             try lexerAction.execute(lexer)
         }
+        //}
+
     }
+
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(hashCode)
     }
 }
 
-public func == (lhs: LexerActionExecutor, rhs: LexerActionExecutor) -> Bool {
+public func ==(lhs: LexerActionExecutor, rhs: LexerActionExecutor) -> Bool {
     if lhs === rhs {
         return true
     }
-    if lhs.lexerActions != rhs.lexerActions {
+    if lhs.lexerActions.count != rhs.lexerActions.count {
         return false
     }
+    let length = lhs.lexerActions.count
+    for i in 0..<length {
+        if !(lhs.lexerActions[i] == rhs.lexerActions[i]) {
+            return false
+        }
+    }
+
 
     return lhs.hashCode == rhs.hashCode
 

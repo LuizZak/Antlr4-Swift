@@ -14,11 +14,9 @@ import Foundation
 
 public struct Stack<T> {
     var items = [T]()
-
     public mutating func push(_ item: T) {
         items.append(item)
     }
-
     @discardableResult
     public mutating func pop() -> T {
         return items.removeLast()
@@ -31,8 +29,8 @@ public struct Stack<T> {
     public func peek() -> T? {
         return items.last
     }
-
     public var isEmpty: Bool {
         return items.isEmpty
     }
+
 }

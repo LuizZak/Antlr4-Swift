@@ -14,8 +14,11 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Antlr4",
+            name: "CAntlrShims",
             dependencies: []),
+        .target(
+            name: "Antlr4",
+            dependencies: ["CAntlrShims"]),
         .testTarget(
             name: "Antlr4Tests",
             dependencies: ["Antlr4"])

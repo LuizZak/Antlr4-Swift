@@ -1,15 +1,17 @@
-///
+/// 
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-///
+/// 
 
-///
+
+
+/// 
 /// This implementation of _org.antlr.v4.runtime.TokenStream_ loads tokens from a
 /// _org.antlr.v4.runtime.TokenSource_ on-demand, and places the tokens in a buffer to provide
 /// access to any previous token by index.
-///
-///
+/// 
+/// 
 /// This token stream ignores the value of _org.antlr.v4.runtime.Token#getChannel_. If your
 /// parser requires the token stream filter tokens to only those on a particular
 /// channel, such as _org.antlr.v4.runtime.Token#DEFAULT_CHANNEL_ or
@@ -18,58 +20,60 @@
 ///
 
 public class BufferedTokenStream: TokenStream {
-    ///
+    /// 
     /// The _org.antlr.v4.runtime.TokenSource_ from which tokens for this stream are fetched.
-    ///
+    /// 
     internal var tokenSource: TokenSource
 
-    ///
+    /// 
     /// A collection of all tokens fetched from the token source. The list is
     /// considered a complete view of the input once _#fetchedEOF_ is set
     /// to `true`.
-    ///
-    internal var tokens: [Token] = []
-    // [Token](100
+    /// 
+    internal var tokens = [Token]()
 
-    ///
+    /// 
     /// The index into _#tokens_ of the current token (next token to
     /// _#consume_). _#tokens_`[`_#p_`]` should be
     /// _#LT LT(1)_.
-    ///
+    /// 
     /// This field is set to -1 when the stream is first constructed or when
     /// _#setTokenSource_ is called, indicating that the first token has
     /// not yet been fetched from the token source. For additional information,
     /// see the documentation of _org.antlr.v4.runtime.IntStream_ for a description of
     /// Initializing Methods.
-    ///
-    internal var p: Int = -1
+    /// 
+    internal var p = -1
 
-    ///
+    /// 
     /// Indicates whether the _org.antlr.v4.runtime.Token#EOF_ token has been fetched from
     /// _#tokenSource_ and added to _#tokens_. This field improves
     /// performance for the following cases:
-    ///
+    /// 
     /// * _#consume_: The lookahead check in _#consume_ to prevent
     /// consuming the EOF symbol is optimized by checking the values of
     /// _#fetchedEOF_ and _#p_ instead of calling _#LA_.
-    ///
+    /// 
     /// * _#fetch_: The check to prevent adding multiple EOF symbols into
     /// _#tokens_ is trivial with this field.
-    ///
-    internal var fetchedEOF: Bool = false
+    /// 
+    internal var fetchedEOF = false
+
 
     public init(_ tokenSource: TokenSource) {
-
         self.tokenSource = tokenSource
     }
+
 
     public func getTokenSource() -> TokenSource {
         return tokenSource
     }
 
+
     public func index() -> Int {
         return p
     }
+
 
     public func mark() -> Int {
         return 0
@@ -83,14 +87,17 @@ public class BufferedTokenStream: TokenStream {
         try seek(0)
     }
 
+
     public func seek(_ index: Int) throws {
         try lazyInit()
         p = try adjustSeekIndex(index)
     }
 
+
     public func size() -> Int {
         return tokens.count
     }
+
 
     public func consume() throws {
         var skipEofCheck: Bool
@@ -117,41 +124,43 @@ public class BufferedTokenStream: TokenStream {
         }
     }
 
-    ///
+    /// 
     /// Make sure index `i` in tokens has a token.
-    ///
+    /// 
     /// - returns: `true` if a token is located at index `i`, otherwise
     /// `false`.
     /// - seealso: #get(int i)
-    ///
+    /// 
     @discardableResult
     internal func sync(_ i: Int) throws -> Bool {
         assert(i >= 0, "Expected: i>=0")
-        let n: Int = i - tokens.count + 1 // how many more elements we need?
+        let n = i - tokens.count + 1 // how many more elements we need?
         //print("sync("+i+") needs "+n);
         if n > 0 {
-            let fetched: Int = try fetch(n)
+            let fetched = try fetch(n)
             return fetched >= n
         }
 
         return true
     }
 
-    ///
+    /// 
     /// Add `n` elements to buffer.
-    ///
+    /// 
     /// - returns: The actual number of elements added to the buffer.
-    ///
+    /// 
     internal func fetch(_ n: Int) throws -> Int {
         if fetchedEOF {
             return 0
         }
 
         for i in 0..<n {
-            let t: Token = try tokenSource.nextToken()
-            (t as? WritableToken)?.setTokenIndex(tokens.count)
+            let t = try tokenSource.nextToken()
+            if let wt = t as? WritableToken {
+                wt.setTokenIndex(tokens.count)
+            }
 
-            tokens.append(t) //add
+            tokens.append(t)
             if t.getType() == BufferedTokenStream.EOF {
                 fetchedEOF = true
                 return i + 1
@@ -161,28 +170,28 @@ public class BufferedTokenStream: TokenStream {
         return n
     }
 
-    public func get(_ i: Int) -> Token {
-        precondition(i >= 0 && i < tokens.count,
-                     "token index  \(i) out of range 0..\(tokens.count)")
-        
+    public func get(_ i: Int) throws -> Token {
+        if i < 0 || i >= tokens.count {
+            throw ANTLRError.indexOutOfBounds(msg: "token index \(i) out of range 0 ..< \(tokens.count)")
+        }
         return tokens[i]
     }
 
-    ///
-    /// Get all tokens from start..stop inclusively
-    ///
-    public func get(_ start: Int, _ stop: Int) throws -> [Token]? {
+    /// 
+    /// Get all tokens from start...stop inclusively
+    /// 
+    public func get(_ start: Int,_ stop: Int) throws -> Array<Token>? {
         var stop = stop
         if start < 0 || stop < 0 {
             return nil
         }
         try lazyInit()
-        var subset: [Token] = []
+        var subset = [Token]()
         if stop >= tokens.count {
             stop = tokens.count - 1
         }
         for i in start...stop {
-            let t: Token = tokens[i]
+            let t = tokens[i]
             if t.getType() == BufferedTokenStream.EOF {
                 break
             }
@@ -202,6 +211,7 @@ public class BufferedTokenStream: TokenStream {
         return tokens[p - k]
     }
 
+
     public func LT(_ k: Int) throws -> Token? {
         try lazyInit()
         if k == 0 {
@@ -211,30 +221,29 @@ public class BufferedTokenStream: TokenStream {
             return try LB(-k)
         }
 
-        let i: Int = p + k - 1
+        let i = p + k - 1
         try sync(i)
         if i >= tokens.count {
             // return EOF token
             // EOF must be last token
-            return tokens[tokens.count - 1]
+            return tokens.last!
         }
-        //		if ( i>range ) range = i;
         return tokens[i]
     }
 
-    ///
+    /// 
     /// Allowed derived classes to modify the behavior of operations which change
     /// the current stream position by adjusting the target token index of a seek
     /// operation. The default implementation simply returns `i`. If an
     /// exception is thrown in this method, the current stream index should not be
     /// changed.
-    ///
+    /// 
     /// For example, _org.antlr.v4.runtime.CommonTokenStream_ overrides this method to ensure that
     /// the seek target is always an on-channel token.
-    ///
+    /// 
     /// - parameter i: The target token index.
     /// - returns: The adjusted target token index.
-    ///
+    /// 
     internal func adjustSeekIndex(_ i: Int) throws -> Int {
         return i
     }
@@ -250,9 +259,9 @@ public class BufferedTokenStream: TokenStream {
         p = try adjustSeekIndex(0)
     }
 
-    ///
+    /// 
     /// Reset this token stream by setting its token source.
-    ///
+    /// 
     public func setTokenSource(_ tokenSource: TokenSource) {
         self.tokenSource = tokenSource
         tokens.removeAll()
@@ -268,16 +277,16 @@ public class BufferedTokenStream: TokenStream {
         return try getTokens(start, stop, nil)
     }
 
-    ///
+    /// 
     /// Given a start and stop index, return a List of all tokens in
     /// the token type BitSet.  Return null if no tokens were found.  This
     /// method looks at both on and off channel tokens.
-    ///
+    /// 
     public func getTokens(_ start: Int, _ stop: Int, _ types: Set<Int>?) throws -> [Token]? {
         try lazyInit()
         if start < 0 || start >= tokens.count ||
             stop < 0 || stop >= tokens.count {
-            throw ANTLRError.indexOutOfBounds(msg: "start \(start) or stop \(stop) not in 0...\(tokens.count - 1)")
+            throw ANTLRError.indexOutOfBounds(msg: "start \(start) or stop \(stop) not in 0 ..< \(tokens.count)")
 
         }
         if start > stop {
@@ -288,7 +297,8 @@ public class BufferedTokenStream: TokenStream {
         for i in start...stop {
             let t = tokens[i]
             if let types = types, !types.contains(t.getType()) {
-            } else {
+            }
+            else {
                 filteredTokens.append(t)
             }
         }
@@ -304,12 +314,12 @@ public class BufferedTokenStream: TokenStream {
         return try getTokens(start, stop, s)
     }
 
-    ///
+    /// 
     /// Given a starting index, return the index of the next token on channel.
     /// Return `i` if `tokens[i]` is on channel. Return the index of
     /// the EOF token if there are no tokens on channel between `i` and
     /// EOF.
-    ///
+    /// 
     internal func nextTokenOnChannel(_ i: Int, _ channel: Int) throws -> Int {
         var i = i
         try sync(i)
@@ -317,7 +327,7 @@ public class BufferedTokenStream: TokenStream {
             return size() - 1
         }
 
-        var token: Token = tokens[i]
+        var token = tokens[i]
         while token.getChannel() != channel {
             if token.getType() == BufferedTokenStream.EOF {
                 return i
@@ -331,16 +341,16 @@ public class BufferedTokenStream: TokenStream {
         return i
     }
 
-    ///
+    /// 
     /// Given a starting index, return the index of the previous token on
     /// channel. Return `i` if `tokens[i]` is on channel. Return -1
     /// if there are no tokens on channel between `i` and 0.
-    ///
-    ///
+    /// 
+    /// 
     /// If `i` specifies an index at or after the EOF token, the EOF token
     /// index is returned. This is due to the fact that the EOF token is treated
     /// as though it were on every channel.
-    ///
+    /// 
     internal func previousTokenOnChannel(_ i: Int, _ channel: Int) throws -> Int {
         var i = i
         try sync(i)
@@ -350,7 +360,7 @@ public class BufferedTokenStream: TokenStream {
         }
 
         while i >= 0 {
-            let token: Token = tokens[i]
+            let token = tokens[i]
             if token.getType() == BufferedTokenStream.EOF || token.getChannel() == channel {
                 return i
             }
@@ -361,26 +371,25 @@ public class BufferedTokenStream: TokenStream {
         return i
     }
 
-    ///
+    /// 
     /// Collect all tokens on specified channel to the right of
     /// the current token up until we see a token on DEFAULT_TOKEN_CHANNEL or
     /// EOF. If channel is -1, find any non default channel token.
-    ///
-    public func getHiddenTokensToRight(_ tokenIndex: Int, _ channel: Int) throws -> [Token]? {
+    /// 
+    public func getHiddenTokensToRight(_ tokenIndex: Int, _ channel: Int = -1) throws -> [Token]? {
         try lazyInit()
         if tokenIndex < 0 || tokenIndex >= tokens.count {
-            throw ANTLRError.indexOutOfBounds(msg: "\(tokenIndex)   not in 0..\(tokens.count - 1)")
-
+            throw ANTLRError.indexOutOfBounds(msg: "\(tokenIndex) not in 0 ..< \(tokens.count)")
         }
 
-        let nextOnChannel: Int =
-            try nextTokenOnChannel(tokenIndex + 1, Lexer.DEFAULT_TOKEN_CHANNEL)
-        var to: Int
-        let from: Int = tokenIndex + 1
+        let nextOnChannel = try nextTokenOnChannel(tokenIndex + 1, Lexer.DEFAULT_TOKEN_CHANNEL)
+        let from = tokenIndex + 1
+        let to: Int
         // if none onchannel to right, nextOnChannel=-1 so set to = last token
         if nextOnChannel == -1 {
             to = size() - 1
-        } else {
+        }
+        else {
             to = nextOnChannel
         }
 
@@ -388,23 +397,14 @@ public class BufferedTokenStream: TokenStream {
     }
 
     ///
-    /// Collect all hidden tokens (any off-default channel) to the right of
-    /// the current token up until we see a token on DEFAULT_TOKEN_CHANNEL
-    /// or EOF.
-    ///
-    public func getHiddenTokensToRight(_ tokenIndex: Int) throws -> [Token]? {
-        return try getHiddenTokensToRight(tokenIndex, -1)
-    }
-
-    ///
     /// Collect all tokens on specified channel to the left of
     /// the current token up until we see a token on DEFAULT_TOKEN_CHANNEL.
     /// If channel is -1, find any non default channel token.
-    ///
-    public func getHiddenTokensToLeft(_ tokenIndex: Int, _ channel: Int) throws -> [Token]? {
+    /// 
+    public func getHiddenTokensToLeft(_ tokenIndex: Int, _ channel: Int = -1) throws -> [Token]? {
         try lazyInit()
         if tokenIndex < 0 || tokenIndex >= tokens.count {
-            throw ANTLRError.indexOutOfBounds(msg: "\(tokenIndex) not in 0..\(tokens.count - 1)")
+            throw ANTLRError.indexOutOfBounds(msg: "\(tokenIndex) not in 0 ..< \(tokens.count)")
         }
 
         if tokenIndex == 0 {
@@ -412,24 +412,14 @@ public class BufferedTokenStream: TokenStream {
             return nil
         }
 
-        let prevOnChannel: Int =
-            try previousTokenOnChannel(tokenIndex - 1, Lexer.DEFAULT_TOKEN_CHANNEL)
+        let prevOnChannel = try previousTokenOnChannel(tokenIndex - 1, Lexer.DEFAULT_TOKEN_CHANNEL)
         if prevOnChannel == tokenIndex - 1 {
             return nil
         }
         // if none onchannel to left, prevOnChannel=-1 then from=0
-        let from: Int = prevOnChannel + 1
-        let to: Int = tokenIndex - 1
-
+        let from = prevOnChannel + 1
+        let to = tokenIndex - 1
         return filterForChannel(from, to, channel)
-    }
-
-    ///
-    /// Collect all hidden tokens (any off-default channel) to the left of
-    /// the current token up until we see a token on DEFAULT_TOKEN_CHANNEL.
-    ///
-    public func getHiddenTokensToLeft(_ tokenIndex: Int) throws -> [Token]? {
-        return try  getHiddenTokensToLeft(tokenIndex, -1)
     }
 
     internal func filterForChannel(_ from: Int, _ to: Int, _ channel: Int) -> [Token]? {
@@ -451,30 +441,27 @@ public class BufferedTokenStream: TokenStream {
         return hidden
     }
 
+
     public func getSourceName() -> String {
         return tokenSource.getSourceName()
     }
 
-    ///
+    /// 
     /// Get the text of all tokens in this buffer.
-    ///
+    /// 
     public func getText() throws -> String {
         return try getText(Interval.of(0, size() - 1))
     }
 
     public func getText(_ interval: Interval) throws -> String {
         let start = interval.a
-        var stop = interval.b
-        if start < 0 || stop < 0 {
+        if start < 0 {
             return ""
         }
         try fill()
-        if stop >= tokens.count {
-            stop = tokens.count - 1
-        }
-
+        let stop = min(tokens.count, interval.b + 1)
         var buf = ""
-        for t in tokens[start...stop] {
+        for t in tokens[start ..< stop] {
             if t.getType() == BufferedTokenStream.EOF {
                 break
             }
@@ -483,9 +470,11 @@ public class BufferedTokenStream: TokenStream {
         return buf
     }
 
+
     public func getText(_ ctx: RuleContext) throws -> String {
         return try getText(ctx.getSourceInterval())
     }
+
 
     public func getText(_ start: Token?, _ stop: Token?) throws -> String {
         if let start = start, let stop = stop {
@@ -495,9 +484,9 @@ public class BufferedTokenStream: TokenStream {
         return ""
     }
 
-    ///
+    /// 
     /// Get all tokens from lexer until EOF
-    ///
+    /// 
     public func fill() throws {
         try lazyInit()
         let blockSize = 1000

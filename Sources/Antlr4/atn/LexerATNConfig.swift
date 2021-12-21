@@ -1,221 +1,101 @@
-///
+/// 
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-///
+/// 
 
-public class LexerATNConfigPool: Pooler<LexerATNConfig> {
-    
-    public override init() {
-        
-    }
-    
-    public func pull(_ state: ATNState,
-                     _ alt: Int,
-                     _ context: PredictionContext) -> LexerATNConfig {
-        
-        var value = pull {
-            return LexerATNConfig()
-        }
-        
-        value = ParserATNConfigPool.config(value: value, state, alt, context)
-        
-        value.passedThroughNonGreedyDecision = false
-        value.lexerActionExecutor = nil
-        
-        return value
-    }
-    
-    public func pull(_ state: ATNState,
-                     _ alt: Int,
-                     _ context: PredictionContext,
-                     _ lexerActionExecutor: LexerActionExecutor?) -> LexerATNConfig {
-        
-        var value = pull {
-            return LexerATNConfig()
-        }
-        
-        value = ParserATNConfigPool.config(value: value, state, alt, context, SemanticContext.none)
-        
-        value.lexerActionExecutor = lexerActionExecutor
-        value.passedThroughNonGreedyDecision = false
-        
-        return value
-    }
-    
-    public func pull(_ c: LexerATNConfig, _ state: ATNState) -> LexerATNConfig {
-        
-        var value = pull {
-            LexerATNConfig()
-        }
-        
-        value = ParserATNConfigPool.config(value: value, c, state, c.context, c.semanticContext)
-        
-        value.lexerActionExecutor = c.lexerActionExecutor
-        value.passedThroughNonGreedyDecision = LexerATNConfig.checkNonGreedyDecision(c, state)
-        
-        return value
-    }
-    
-    public func pull(_ c: LexerATNConfig,
-                     _ state: ATNState,
-                     _ lexerActionExecutor: LexerActionExecutor?) -> LexerATNConfig {
-        
-        var value = pull {
-            return LexerATNConfig()
-        }
-        
-        value = ParserATNConfigPool.config(value: value, c, state, c.context, c.semanticContext)
-        
-        value.lexerActionExecutor = lexerActionExecutor
-        value.passedThroughNonGreedyDecision = LexerATNConfig.checkNonGreedyDecision(c, state)
-        
-        return value
-    }
-    
-    public func pull(_ c: LexerATNConfig,
-                     _ state: ATNState,
-                     _ context: PredictionContext) -> LexerATNConfig {
-        
-        var value = pull {
-            return LexerATNConfig()
-        }
-        
-        value = ParserATNConfigPool.config(value: value, c, state, context, c.semanticContext)
-        
-        value.lexerActionExecutor = c.lexerActionExecutor
-        value.passedThroughNonGreedyDecision = LexerATNConfig.checkNonGreedyDecision(c, state)
-        
-        return value
-    }
-    
-}
 
-public struct LexerATNConfig: ATNConfig {
-    public mutating func reset() {
-        context = nil
-        state = BasicState()
-        alt = 0
-        reachesIntoOuterContext = 0
-        semanticContext = .none
-        lexerActionExecutor = nil
-        passedThroughNonGreedyDecision = false
-    }
-    
-    ///
-    /// This field stores the bit mask for implementing the
-    /// _#isPrecedenceFilterSuppressed_ property as a bit within the
-    /// existing _#reachesIntoOuterContext_ field.
-    ///
-    private let SUPPRESS_PRECEDENCE_FILTER: Int = 0x40000000
-    
-    public var state: ATNState
-    
-    public var alt: Int
-    
-    public var context: PredictionContext?
-    
-    public var reachesIntoOuterContext: Int = 0
-    //=0 intital by janyou
-    
-    public var semanticContext: SemanticContext
-    
-    ///
+public class LexerATNConfig: ATNConfig {
+    /// 
     /// This is the backing field for _#getLexerActionExecutor_.
-    ///
-    var lexerActionExecutor: LexerActionExecutor?
-    
-    var passedThroughNonGreedyDecision: Bool
-    
-    public var description: String {
-        //return "MyClass \(string)"
-        return toString(nil, true)
+    /// 
+    private let lexerActionExecutor: LexerActionExecutor?
+
+    fileprivate let passedThroughNonGreedyDecision: Bool
+
+    public init(_ state: ATNState,
+                _ alt: Int,
+                _ context: PredictionContext) {
+
+        self.passedThroughNonGreedyDecision = false
+        self.lexerActionExecutor = nil
+        super.init(state, alt, context, SemanticContext.NONE)
     }
-    
-    internal init() {
-        context = nil
-        state = BasicState()
-        alt = 0
-        reachesIntoOuterContext = 0
-        semanticContext = .none
-        lexerActionExecutor = nil
-        passedThroughNonGreedyDecision = false
+
+    public init(_ state: ATNState,
+                _ alt: Int,
+                _ context: PredictionContext,
+                _ lexerActionExecutor: LexerActionExecutor?) {
+
+        self.lexerActionExecutor = lexerActionExecutor
+        self.passedThroughNonGreedyDecision = false
+        super.init(state, alt, context, SemanticContext.NONE)
     }
-    
-    public func getOuterContextDepth() -> Int {
-        return reachesIntoOuterContext & ~SUPPRESS_PRECEDENCE_FILTER
+
+    public init(_ c: LexerATNConfig, _ state: ATNState) {
+        self.lexerActionExecutor = c.lexerActionExecutor
+        self.passedThroughNonGreedyDecision = LexerATNConfig.checkNonGreedyDecision(c, state)
+        super.init(c, state, c.context, c.semanticContext)
+
     }
-    
-    public func isPrecedenceFilterSuppressed() -> Bool {
-        return (reachesIntoOuterContext & SUPPRESS_PRECEDENCE_FILTER) != 0
+
+    public init(_ c: LexerATNConfig, _ state: ATNState,
+                _ lexerActionExecutor: LexerActionExecutor?) {
+
+        self.lexerActionExecutor = lexerActionExecutor
+        self.passedThroughNonGreedyDecision = LexerATNConfig.checkNonGreedyDecision(c, state)
+        super.init(c, state, c.context, c.semanticContext)
     }
-    
-    public mutating func setPrecedenceFilterSuppressed(_ value: Bool) {
-        if value {
-            self.reachesIntoOuterContext |= 0x40000000
-        } else {
-            self.reachesIntoOuterContext &= ~SUPPRESS_PRECEDENCE_FILTER
-        }
+
+    public init(_ c: LexerATNConfig, _ state: ATNState,
+                _ context: PredictionContext) {
+
+        self.lexerActionExecutor = c.lexerActionExecutor
+        self.passedThroughNonGreedyDecision = LexerATNConfig.checkNonGreedyDecision(c, state)
+
+        super.init(c, state, context, c.semanticContext)
     }
-    
-    public func toString<T>(_ recog: Recognizer<T>?, _ showAlt: Bool) -> String {
-        var buf = "(\(state)"
-        if showAlt {
-            buf += ",\(alt)"
-        }
-        if let context = context {
-            buf += ",[\(context)]"
-        }
-        if semanticContext != SemanticContext.none {
-            buf += ",\(semanticContext)"
-        }
-        let outerDepth = getOuterContextDepth()
-        if outerDepth > 0 {
-            buf += ",up=\(outerDepth)"
-        }
-        buf += ")"
-        return buf
+
+    private static func checkNonGreedyDecision(_ source: LexerATNConfig, _ target: ATNState) -> Bool {
+        return source.passedThroughNonGreedyDecision
+                || target is DecisionState && (target as! DecisionState).nonGreedy
     }
-    
-    ///
+    /// 
     /// Gets the _org.antlr.v4.runtime.atn.LexerActionExecutor_ capable of executing the embedded
     /// action(s) for the current configuration.
-    ///
-    public func getLexerActionExecutor() -> LexerActionExecutor? {
+    /// 
+    public final func getLexerActionExecutor() -> LexerActionExecutor? {
         return lexerActionExecutor
     }
 
-    public func hasPassedThroughNonGreedyDecision() -> Bool {
+    public final func hasPassedThroughNonGreedyDecision() -> Bool {
         return passedThroughNonGreedyDecision
     }
-    
-    ///
-    /// An ATN configuration is equal to another if both have
-    /// the same state, they predict the same alternative, and
-    /// syntactic/semantic contexts are the same.
-    ///
-    
-    public func hash(into hasher: inout Hasher) {
+
+    public override func hash(into hasher: inout Hasher) {
         hasher.combine(state.stateNumber)
         hasher.combine(alt)
         hasher.combine(context)
         hasher.combine(semanticContext)
-        hasher.combine(passedThroughNonGreedyDecision ? 1 : 0)
+        hasher.combine(passedThroughNonGreedyDecision)
         hasher.combine(lexerActionExecutor)
-    }
-
-    static func checkNonGreedyDecision(_ source: LexerATNConfig, _ target: ATNState) -> Bool {
-        return source.passedThroughNonGreedyDecision
-            || (target as? DecisionState)?.nonGreedy ?? false
     }
 }
 
 //useless
-public func == (lhs: LexerATNConfig, rhs: LexerATNConfig) -> Bool {
-    
+public func ==(lhs: LexerATNConfig, rhs: LexerATNConfig) -> Bool {
+
+    if lhs === rhs {
+        return true
+    }
+
+
+    //let lexerOther : LexerATNConfig = rhs  // as! LexerATNConfig;
     if lhs.passedThroughNonGreedyDecision != rhs.passedThroughNonGreedyDecision {
         return false
     }
+
+
 
     if lhs.state.stateNumber != rhs.state.stateNumber {
         return false
@@ -228,13 +108,32 @@ public func == (lhs: LexerATNConfig, rhs: LexerATNConfig) -> Bool {
         return false
     }
 
-    if lhs.getLexerActionExecutor() != rhs.getLexerActionExecutor() {
+    if lhs.getLexerActionExecutor() == nil && rhs.getLexerActionExecutor() != nil {
+        return false
+    } else if lhs.getLexerActionExecutor() != nil && rhs.getLexerActionExecutor() == nil {
+        return false
+    } else if lhs.getLexerActionExecutor() == nil && rhs.getLexerActionExecutor() == nil {
+
+    } else if !(lhs.getLexerActionExecutor()! == rhs.getLexerActionExecutor()!) {
         return false
     }
 
-    if lhs.context != rhs.context {
+
+    var contextCompare = false
+
+    if lhs.context == nil && rhs.context == nil {
+        contextCompare = true
+    } else if lhs.context == nil && rhs.context != nil {
+        contextCompare = false
+    } else if lhs.context != nil && rhs.context == nil {
+        contextCompare = false
+    } else {
+        contextCompare = (lhs.context! == rhs.context!)
+    }
+
+    if !contextCompare{
         return false
     }
 
-    return lhs.semanticContext == rhs.semanticContext
+    return  lhs.semanticContext == rhs.semanticContext
 }

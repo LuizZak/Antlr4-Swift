@@ -3,16 +3,17 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-///
+
+/// 
 /// This implementation of _org.antlr.v4.runtime.ANTLRErrorListener_ dispatches all calls to a
 /// collection of delegate listeners. This reduces the effort required to support multiple
 /// listeners.
-///
+/// 
 /// - Author: Sam Harwell
-///
+/// 
 
 public class ProxyErrorListener: ANTLRErrorListener {
-    private let delegates: [ANTLRErrorListener]
+    private final var delegates: [ANTLRErrorListener]
 
     public init(_ delegates: [ANTLRErrorListener]) {
         self.delegates = delegates
@@ -23,41 +24,45 @@ public class ProxyErrorListener: ANTLRErrorListener {
                                _ line: Int,
                                _ charPositionInLine: Int,
                                _ msg: String,
-                               _ e: AnyObject?) {
+                               _ e: AnyObject?)
+    {
         for listener in delegates {
             listener.syntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e)
         }
     }
 
+
     public func reportAmbiguity(_ recognizer: Parser,
-                                _ dfa: DFA<ParserATNConfig>,
+                                _ dfa: DFA,
                                 _ startIndex: Int,
                                 _ stopIndex: Int,
                                 _ exact: Bool,
                                 _ ambigAlts: BitSet,
-                                _ configs: ATNConfigSet<ParserATNConfig>) {
+                                _ configs: ATNConfigSet) {
         for listener in delegates {
             listener.reportAmbiguity(recognizer, dfa, startIndex, stopIndex, exact, ambigAlts, configs)
         }
     }
 
+
     public func reportAttemptingFullContext(_ recognizer: Parser,
-                                            _ dfa: DFA<ParserATNConfig>,
+                                            _ dfa: DFA,
                                             _ startIndex: Int,
                                             _ stopIndex: Int,
                                             _ conflictingAlts: BitSet?,
-                                            _ configs: ATNConfigSet<ParserATNConfig>) {
+                                            _ configs: ATNConfigSet) {
         for listener in delegates {
             listener.reportAttemptingFullContext(recognizer, dfa, startIndex, stopIndex, conflictingAlts, configs)
         }
     }
 
+
     public func reportContextSensitivity(_ recognizer: Parser,
-                                         _ dfa: DFA<ParserATNConfig>,
+                                         _ dfa: DFA,
                                          _ startIndex: Int,
                                          _ stopIndex: Int,
                                          _ prediction: Int,
-                                         _ configs: ATNConfigSet<ParserATNConfig>) {
+                                         _ configs: ATNConfigSet) {
         for listener in delegates {
             listener.reportContextSensitivity(recognizer, dfa, startIndex, stopIndex, prediction, configs)
         }

@@ -1,15 +1,16 @@
-///
+/// 
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-///
+/// 
 
-///
+
+/// 
 /// A lexer is recognizer that draws input symbols from a character stream.
 /// lexer grammars result in a subclass of this object. A Lexer object
 /// uses simplified match() and error recovery mechanisms in the interest
 /// of speed.
-///
+/// 
 
 import Foundation
 
@@ -19,20 +20,20 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
     public static let MORE = -2
     public static let SKIP = -3
 
-    public static let DEFAULT_TOKEN_CHANNEL = CommonToken.defaultChannel
-    public static let HIDDEN = CommonToken.hiddenChannel
-    public static let MIN_CHAR_VALUE = Character.minValue
-    public static let MAX_CHAR_VALUE = Character.maxValue
+    public static let DEFAULT_TOKEN_CHANNEL = CommonToken.DEFAULT_CHANNEL
+    public static let HIDDEN = CommonToken.HIDDEN_CHANNEL
+    public static let MIN_CHAR_VALUE = Character.MIN_VALUE;
+    public static let MAX_CHAR_VALUE = Character.MAX_VALUE;
 
     public var _input: CharStream?
     internal var _tokenFactorySourcePair: TokenSourceAndStream
 
-    ///
+    /// 
     /// How to create token objects
-    ///
+    /// 
     internal var _factory = CommonTokenFactory.DEFAULT
 
-    ///
+    /// 
     /// The goal of all lexer rules/methods is to create a token object.
     /// This is an instance variable as multiple rules may collaborate to
     /// create a single token.  nextToken will return this object after
@@ -40,49 +41,49 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
     /// emissions, then set this to the last token to be matched or
     /// something nonnull so that the auto token emit mechanism will not
     /// emit another token.
-    ///
+    /// 
     public var _token: Token?
 
-    ///
+    /// 
     /// What character index in the stream did the current token start at?
     /// Needed, for example, to get the text for current token.  Set at
     /// the start of nextToken.
-    ///
+    /// 
     public var _tokenStartCharIndex = -1
 
-    ///
+    /// 
     /// The line on which the first character of the token resides
-    ///
+    /// 
     public var _tokenStartLine = 0
 
-    ///
+    /// 
     /// The character position of first character within the line
-    ///
+    /// 
     public var _tokenStartCharPositionInLine = 0
 
-    ///
+    /// 
     /// Once we see EOF on char stream, next token will be EOF.
     /// If you have DONE : EOF ; then you see DONE EOF.
-    ///
+    /// 
     public var _hitEOF = false
 
-    ///
+    /// 
     /// The channel number for the current token
-    ///
+    /// 
     public var _channel = 0
 
-    ///
+    /// 
     /// The token type for the current token
-    ///
+    /// 
     public var _type = 0
 
-    public var _modeStack = Stack<Int>()
+    public final var _modeStack = Stack<Int>()
     public var _mode = Lexer.DEFAULT_MODE
 
-    ///
+    /// 
     /// You can set the text for the current token to override what is in
     /// the input char buffer.  Use setText() or can set this instance var.
-    ///
+    /// 
     public var _text: String?
 
     public override init() {
@@ -105,8 +106,8 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
             try  _input.seek(0) // rewind the input
         }
         _token = nil
-        _type = CommonToken.invalidType
-        _channel = CommonToken.defaultChannel
+        _type = CommonToken.INVALID_TYPE
+        _channel = CommonToken.DEFAULT_CHANNEL
         _tokenStartCharIndex = -1
         _tokenStartCharPositionInLine = -1
         _tokenStartLine = -1
@@ -119,10 +120,10 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
         getInterpreter().reset()
     }
 
-    ///
+    /// 
     /// Return a token from this source; i.e., match a token on the char
     /// stream.
-    ///
+    /// 
 
     open func nextToken() throws -> Token {
         guard let _input = _input else {
@@ -135,61 +136,60 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
         defer {
             // make sure we release marker after match or
             // unbuffered char stream will keep buffering
-            _input.release(tokenStartMarker)
+            try! _input.release(tokenStartMarker)
         }
         do {
             outer:
-                while true {
-                    if _hitEOF {
-                        return emitEOF()
-                    }
+            while true {
+                if _hitEOF {
+                    emitEOF()
+                    return _token!
+                }
 
-                    _token = nil
-                    _channel = CommonToken.defaultChannel
-                    _tokenStartCharIndex = _input.index()
-                    _tokenStartCharPositionInLine = getInterpreter().getCharPositionInLine()
-                    _tokenStartLine = getInterpreter().getLine()
-                    _text = nil
-                    repeat {
-                        _type = CommonToken.invalidType
-                        var ttype: Int
-                        do {
-                            ttype = try getInterpreter().match(_input, _mode)
-                        } catch  ANTLRException.recognition(let e) {
-                            notifyListeners(e as! LexerNoViableAltException, recognizer: self)
-                            try recover(e as! LexerNoViableAltException)
-                            ttype = Lexer.SKIP
-                        }
-                        if try _input.LA(1) == BufferedTokenStream.EOF {
-                            _hitEOF = true
-                        }
-                        if _type == CommonToken.invalidType {
-                            _type = ttype
-                        }
-                        if _type == Lexer.SKIP {
-                            continue outer
-                        }
-                    } while _type == Lexer.MORE
-
-                    let token: Token
-                    if let _token = _token {
-                        token = _token
-                    } else {
-                        token = emit()
+                _token = nil
+                _channel = CommonToken.DEFAULT_CHANNEL
+                _tokenStartCharIndex = _input.index()
+                _tokenStartCharPositionInLine = getInterpreter().getCharPositionInLine()
+                _tokenStartLine = getInterpreter().getLine()
+                _text = nil
+                repeat {
+                    _type = CommonToken.INVALID_TYPE
+                    var ttype: Int
+                    do {
+                        ttype = try getInterpreter().match(_input, _mode)
                     }
-                    return token
+                    catch  ANTLRException.recognition(let e) {
+                        notifyListeners(e as! LexerNoViableAltException, recognizer: self)
+                        try recover(e as! LexerNoViableAltException)
+                        ttype = Lexer.SKIP
+                    }
+                    if try _input.LA(1) == BufferedTokenStream.EOF {
+                        _hitEOF = true
+                    }
+                    if _type == CommonToken.INVALID_TYPE {
+                        _type = ttype
+                    }
+                    if _type == Lexer.SKIP {
+                        continue outer
+                    }
+                } while _type == Lexer.MORE
+
+                if _token == nil {
+                    emit()
+                }
+                return _token!
             }
         }
 
     }
 
-    ///
+    /// 
     /// Instruct the lexer to skip creating a token for current lexer rule
     /// and look for another token.  nextToken() knows to keep looking when
     /// a lexer rule finishes with token set to SKIP_TOKEN.  Recall that
     /// if token==null at end of any token rule, it creates one for you
     /// and emits it.
-    ///
+    /// 
     open func skip() {
         _type = Lexer.SKIP
     }
@@ -222,17 +222,19 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
         return _mode
     }
 
+
     open override func setTokenFactory(_ factory: TokenFactory) {
         self._factory = factory
     }
+
 
     open override func getTokenFactory() -> TokenFactory {
         return _factory
     }
 
-    ///
+    /// 
     /// Set the char stream and reset the lexer
-    ///
+    /// 
 
     open override func setInputStream(_ input: IntStream) throws {
         self._input = nil
@@ -242,36 +244,37 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
         self._tokenFactorySourcePair = makeTokenSourceAndStream()
     }
 
+
     open func getSourceName() -> String {
         return _input!.getSourceName()
     }
+
 
     open func getInputStream() -> CharStream? {
         return _input
     }
 
-    ///
+    /// 
     /// By default does not support multiple emits per nextToken invocation
     /// for efficiency reasons.  Subclass and override this method, nextToken,
     /// and getToken (to push tokens into a list and pull from that list
     /// rather than a single variable as this implementation does).
-    ///
+    /// 
     open func emit(_ token: Token) {
+        //System.err.println("emit "+token);
         self._token = token
     }
 
-    ///
+    /// 
     /// The standard method called to automatically emit a token at the
     /// outermost lexical rule.  The token object should point into the
     /// char buffer start..stop.  If there is a text override in 'text',
     /// use that to set the token's text.  Override this method to emit
     /// custom Token objects or provide a new factory.
-    ///
+    /// 
     @discardableResult
     open func emit() -> Token {
-        let t = _factory.create(_tokenFactorySourcePair, _type, _text, _channel,
-                                _tokenStartCharIndex, getCharIndex() - 1,
-                                _tokenStartLine, _tokenStartCharPositionInLine)
+        let t = _factory.create(_tokenFactorySourcePair, _type, _text, _channel, _tokenStartCharIndex, getCharIndex() - 1, _tokenStartLine, _tokenStartCharPositionInLine)
         emit(t)
         return t
     }
@@ -285,7 +288,7 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
             _tokenFactorySourcePair,
             CommonToken.EOF,
             nil,
-            CommonToken.defaultChannel,
+            CommonToken.DEFAULT_CHANNEL,
             idx,
             idx - 1,
             line,
@@ -294,9 +297,11 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
         return eof
     }
 
+
     open func getLine() -> Int {
         return getInterpreter().getLine()
     }
+
 
     open func getCharPositionInLine() -> Int {
         return getInterpreter().getCharPositionInLine()
@@ -310,35 +315,35 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
         getInterpreter().setCharPositionInLine(charPositionInLine)
     }
 
-    ///
+    /// 
     /// What is the index of the current character of lookahead?
-    ///
+    /// 
     open func getCharIndex() -> Int {
         return _input!.index()
     }
 
-    ///
+    /// 
     /// Return the text matched so far for the current token or any
     /// text override.
-    ///
+    /// 
     open func getText() -> String {
-        if let text = _text {
-            return text
+        if _text != nil {
+            return _text!
         }
         return getInterpreter().getText(_input!)
     }
 
-    ///
+    /// 
     /// Set the complete text of this token; it wipes any previous
     /// changes to the text.
-    ///
+    /// 
     open func setText(_ text: String) {
         self._text = text
     }
 
-    ///
+    /// 
     /// Override if emitting multiple tokens.
-    ///
+    /// 
     open func getToken() -> Token {
         return _token!
     }
@@ -371,10 +376,10 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
         return nil
     }
 
-    ///
+    /// 
     /// Return a list of all Token objects in input char stream.
     /// Forces load of all tokens. Does not include EOF token.
-    ///
+    /// 
     open func getAllTokens() throws -> [Token] {
         var tokens = [Token]()
         var t = try nextToken()
@@ -397,7 +402,8 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
         let text: String
         do {
             text = try _input!.getText(Interval.of(_tokenStartCharIndex, _input!.index()))
-        } catch {
+        }
+        catch {
             text = "<unknown>"
         }
         let msg = "token recognition error at: '\(getErrorDisplay(text))'"
@@ -435,12 +441,12 @@ open class Lexer: Recognizer<LexerATNSimulator>, TokenSource {
         return "'\(s)'"
     }
 
-    ///
+    /// 
     /// Lexers can normally match any char in it's vocabulary after matching
     /// a token, so do the easy thing and just kill a character and hope
     /// it all works out.  You can instead use the rule invocation stack
     /// to do sophisticated error recovery if you are in a fragment rule.
-    ///
+    /// 
     open func recover(_ re: AnyObject) throws {
         // TODO: Do we lose character or line position information?
         try _input!.consume()

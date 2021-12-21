@@ -1,8 +1,8 @@
-///
+/// 
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-///
+/// 
 
 //
 //  LookupDictionary.swift
@@ -18,23 +18,15 @@ public enum LookupDictionaryType: Int {
     case ordered
 }
 
-public struct LookupDictionary<T: ATNConfig> {
-    @usableFromInline
-    private(set) internal var type: LookupDictionaryType
-    
-    @usableFromInline
-    internal var cache: [Int: T] = [:]
-    
-    public var isEmpty: Bool {
-        return cache.isEmpty
-    }
-    
+public struct LookupDictionary {
+    private let type: LookupDictionaryType
+    private var cache = [Int: ATNConfig]()
+
     public init(type: LookupDictionaryType = LookupDictionaryType.lookup) {
         self.type = type
     }
-    
-    @usableFromInline
-    func hash(_ config: T) -> Int {
+
+    private func hash(_ config: ATNConfig) -> Int {
         if type == LookupDictionaryType.lookup {
             /* migrating to XCode 12.3/Swift 5.3 introduced a very weird bug
              where reading hashValue from a SemanticContext.AND instance woul:
@@ -62,33 +54,52 @@ public struct LookupDictionary<T: ATNConfig> {
             return config.hashValue
         }
     }
-    
-    @inlinable
-    public mutating func getOrAdd(_ config: T) -> (added: Bool, T) {
+
+    private func equal(_ lhs: ATNConfig, _ rhs: ATNConfig) -> Bool {
+        if type == LookupDictionaryType.lookup {
+            if lhs === rhs {
+                return true
+            }
+
+            return
+                lhs.state.stateNumber == rhs.state.stateNumber &&
+                    lhs.alt == rhs.alt &&
+                    lhs.semanticContext == rhs.semanticContext
+        }
+        else {
+            //Ordered
+            return lhs == rhs
+        }
+    }
+
+    public mutating func getOrAdd(_ config: ATNConfig) -> ATNConfig {
         let h = hash(config)
 
         if let configList = cache[h] {
-            return (false, configList)
-        } else {
+            return configList
+        }
+        else {
             cache[h] = config
         }
 
-        return (true, config)
+        return config
     }
-    
-    @usableFromInline
-    mutating func update(_ config: T) {
-        let h = hash(config)
-        cache[h] = config
+
+    public var isEmpty: Bool {
+        return cache.isEmpty
     }
-    
-    @inlinable
-    public func contains(_ config: T) -> Bool {
+
+    public func contains(_ config: ATNConfig) -> Bool {
         let h = hash(config)
         return cache[h] != nil
     }
-    
+
     public mutating func removeAll() {
-        cache = [:]
+        cache.removeAll()
     }
+
 }
+
+
+
+

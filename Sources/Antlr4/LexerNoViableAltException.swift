@@ -1,24 +1,25 @@
-///
+/// 
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-///
+/// 
+
 
 public class LexerNoViableAltException: RecognitionException, CustomStringConvertible {
-    ///
+    /// 
     /// Matching attempted at what input index?
-    ///
+    /// 
     private let startIndex: Int
 
-    ///
+    /// 
     /// Which configurations did we try at input.index() that couldn't match input.LA(1)?
-    ///
-    private let deadEndConfigs: ATNConfigSet<LexerATNConfig>
+    /// 
+    private let deadEndConfigs: ATNConfigSet
 
     public init(_ lexer: Lexer?,
                 _ input: CharStream,
                 _ startIndex: Int,
-                _ deadEndConfigs: ATNConfigSet<LexerATNConfig>) {
+                _ deadEndConfigs: ATNConfigSet) {
         let ctx: ParserRuleContext? = nil
         self.startIndex = startIndex
         self.deadEndConfigs = deadEndConfigs
@@ -30,7 +31,7 @@ public class LexerNoViableAltException: RecognitionException, CustomStringConver
         return startIndex
     }
 
-    public func getDeadEndConfigs() -> ATNConfigSet<LexerATNConfig> {
+    public func getDeadEndConfigs() -> ATNConfigSet {
         return deadEndConfigs
     }
 

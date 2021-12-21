@@ -1,69 +1,70 @@
-///
+/// 
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-///
+/// 
 
-///
-///
+
+/// 
+/// 
 /// The following images show the relation of states and
 /// _org.antlr.v4.runtime.atn.ATNState#transitions_ for various grammar constructs.
-///
-///
+/// 
+/// 
 /// * Solid edges marked with an &#0949; indicate a required
 /// _org.antlr.v4.runtime.atn.EpsilonTransition_.
-///
+/// 
 /// * Dashed edges indicate locations where any transition derived from
 /// _org.antlr.v4.runtime.atn.Transition_ might appear.
-///
+/// 
 /// * Dashed nodes are place holders for either a sequence of linked
 /// _org.antlr.v4.runtime.atn.BasicState_ states or the inclusion of a block representing a nested
 /// construct in one of the forms below.
-///
+/// 
 /// * Nodes showing multiple outgoing alternatives with a `...` support
 /// any number of alternatives (one or more). Nodes without the `...` only
 /// support the exact number of alternatives shown in the diagram.
-///
-///
+/// 
+/// 
 /// ## Basic Blocks
-///
+/// 
 /// ### Rule
-///
-///
-///
+/// 
+/// 
+/// 
 /// ## Block of 1 or more alternatives
-///
-///
-///
+/// 
+/// 
+/// 
 /// ## Greedy Loops
-///
+/// 
 /// ### Greedy Closure: `(...)*`
-///
-///
-///
+/// 
+/// 
+/// 
 /// ### Greedy Positive Closure: `(...)+`
-///
-///
-///
+/// 
+/// 
+/// 
 /// ### Greedy Optional: `(...)?`
-///
-///
-///
+/// 
+/// 
+/// 
 /// ## Non-Greedy Loops
-///
+/// 
 /// ### Non-Greedy Closure: `(...)*?`
-///
-///
-///
+/// 
+/// 
+/// 
 /// ### Non-Greedy Positive Closure: `(...)+?`
-///
-///
-///
+/// 
+/// 
+/// 
 /// ### Non-Greedy Optional: `(...)??`
-///
-///
-///
-///
+/// 
+/// 
+/// 
+/// 
 public class ATNState: Hashable, CustomStringConvertible {
     // constants for serialization
     public static let INVALID_TYPE: Int = 0
@@ -80,8 +81,9 @@ public class ATNState: Hashable, CustomStringConvertible {
     public static let PLUS_LOOP_BACK: Int = 11
     public static let LOOP_END: Int = 12
 
-    public static let serializationNames: [String] = [
-        "INVALID",
+    public static let serializationNames: Array<String> =
+
+    ["INVALID",
         "BASIC",
         "RULE_START",
         "BLOCK_START",
@@ -93,47 +95,47 @@ public class ATNState: Hashable, CustomStringConvertible {
         "STAR_LOOP_BACK",
         "STAR_LOOP_ENTRY",
         "PLUS_LOOP_BACK",
-        "LOOP_END"
-    ]
+        "LOOP_END"]
+
 
     public static let INVALID_STATE_NUMBER: Int = -1
 
-    ///
+    /// 
     /// Which ATN are we in?
-    ///
-    public var atn: ATN?
+    /// 
+    public final var atn: ATN? = nil
 
-    public internal(set) var stateNumber: Int = INVALID_STATE_NUMBER
+    public internal(set) final var stateNumber: Int = INVALID_STATE_NUMBER
 
-    public internal(set) var ruleIndex: Int?
+    public internal(set) final var ruleIndex: Int?
     // at runtime, we don't have Rule objects
 
-    public private(set) var epsilonOnlyTransitions: Bool = false
+    public private(set) final var epsilonOnlyTransitions: Bool = false
 
-    ///
+    /// 
     /// Track the transitions emanating from this ATN state.
-    ///
-    @usableFromInline
-    internal var transitions: [Transition] = []
+    /// 
+    internal private(set) final var transitions = [Transition]()
 
-    ///
+    /// 
     /// Used to cache lookahead during parsing, not used during construction
-    ///
-    public internal(set) var nextTokenWithinRule: IntervalSet?
+    /// 
+    public internal(set) final var nextTokenWithinRule: IntervalSet?
+
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(stateNumber)
+    }
 
     public func isNonGreedyExitState() -> Bool {
         return false
     }
 
+
     public var description: String {
         //return "MyClass \(string)"
         return String(stateNumber)
     }
-    
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(stateNumber)
-    }
-    
     public final func getTransitions() -> [Transition] {
         return transitions
     }
@@ -150,7 +152,7 @@ public class ATNState: Hashable, CustomStringConvertible {
             print("ATN state %d has both epsilon and non-epsilon transitions.\n", String(stateNumber))
             epsilonOnlyTransitions = false
         }
-        
+
         var alreadyPresent = false
         for t in transitions {
             if t.target.stateNumber == e.target.stateNumber {
@@ -166,29 +168,22 @@ public class ATNState: Hashable, CustomStringConvertible {
                 }
             }
         }
-        
+
         if !alreadyPresent {
             transitions.append(e)
         }
     }
 
-    @inlinable
     public final func transition(_ i: Int) -> Transition {
         return transitions[i]
     }
 
     public final func setTransition(_ i: Int, _ e: Transition) {
-        if epsilonOnlyTransitions != e.isEpsilon() {
-            
-            print("ATN state %d has both epsilon and non-epsilon transitions.\n", String(stateNumber))
-            epsilonOnlyTransitions = false
-        }
-        
         transitions[i] = e
     }
 
-    @inlinable
     public final func removeTransition(_ index: Int) -> Transition {
+
         return transitions.remove(at: index)
     }
 
@@ -196,7 +191,6 @@ public class ATNState: Hashable, CustomStringConvertible {
         fatalError(#function + " must be overridden")
     }
 
-    @inlinable
     public final func onlyHasEpsilonTransitions() -> Bool {
         return epsilonOnlyTransitions
     }
@@ -206,7 +200,7 @@ public class ATNState: Hashable, CustomStringConvertible {
     }
 }
 
-public func == (lhs: ATNState, rhs: ATNState) -> Bool {
+public func ==(lhs: ATNState, rhs: ATNState) -> Bool {
     if lhs === rhs {
         return true
     }
@@ -214,3 +208,4 @@ public func == (lhs: ATNState, rhs: ATNState) -> Bool {
     return lhs.stateNumber == rhs.stateNumber
 
 }
+

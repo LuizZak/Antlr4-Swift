@@ -6,6 +6,7 @@
 
 import Foundation
 
+
 /** Do not buffer up the entire char stream. It does keep a small buffer
  *  for efficiency and also buffers while a mark exists (set by the
  *  lookahead prediction in parser). "Unbuffered" here refers to fact
@@ -71,6 +72,7 @@ open class UnbufferedCharStream: CharStream {
 
     internal let input: InputStream
     private var unicodeIterator: UnicodeScalarStreamIterator
+
 
     /** The name or source of this char stream. */
     public var name: String = ""
@@ -142,9 +144,11 @@ open class UnbufferedCharStream: CharStream {
     internal func nextChar() -> Int? {
         if let next = unicodeIterator.next() {
             return Int(next.value)
-        } else if unicodeIterator.hasErrorOccurred {
+        }
+        else if unicodeIterator.hasErrorOccurred {
             return nil
-        } else {
+        }
+        else {
             return nil
         }
     }
@@ -192,7 +196,7 @@ open class UnbufferedCharStream: CharStream {
     /** Decrement number of markers, resetting buffer if we hit 0.
      * @param marker
      */
-    public func release(_ marker: Int) {
+    public func release(_ marker: Int) throws {
         let expectedMark = -numMarkers
         if marker != expectedMark {
             preconditionFailure("release() called with an invalid marker.")
@@ -209,7 +213,8 @@ open class UnbufferedCharStream: CharStream {
                     data = [Int](repeating: 0, count: bufferSize)
                 }
                 n = 0
-            } else {
+            }
+            else {
                 data = Array(data[p ..< n])
                 n -= p
             }
@@ -241,7 +246,8 @@ open class UnbufferedCharStream: CharStream {
         let i = index - getBufferStartIndex()
         if i < 0 {
             throw ANTLRError.illegalArgument(msg: "cannot seek to negative index \(index)")
-        } else if i >= n {
+        }
+        else if i >= n {
             let si = getBufferStartIndex()
             let ei = si + n
             let msg = "seek to index outside buffer: \(index) not in \(si)..\(ei)"
@@ -252,7 +258,8 @@ open class UnbufferedCharStream: CharStream {
         currentCharIndex = index
         if p == 0 {
             lastChar = lastCharBufferStart
-        } else {
+        }
+        else {
             lastChar = data[p - 1]
         }
     }
@@ -301,7 +308,8 @@ open class UnbufferedCharStream: CharStream {
     }
 }
 
-private struct UInt8StreamIterator: IteratorProtocol {
+
+fileprivate struct UInt8StreamIterator: IteratorProtocol {
     private static let bufferSize = 1024
 
     private let stream: InputStream
@@ -309,6 +317,7 @@ private struct UInt8StreamIterator: IteratorProtocol {
     private var buffGen: IndexingIterator<ArraySlice<UInt8>>
 
     var hasErrorOccurred = false
+
 
     init(_ stream: InputStream) {
         self.stream = stream
@@ -334,13 +343,16 @@ private struct UInt8StreamIterator: IteratorProtocol {
             return nil
         case .opening, .open, .reading:
             break
+        @unknown default:
+            fatalError()
         }
 
         let count = stream.read(&buffer, maxLength: buffer.count)
         if count < 0 {
             hasErrorOccurred = true
             return nil
-        } else if count == 0 {
+        }
+        else if count == 0 {
             return nil
         }
 
@@ -349,7 +361,8 @@ private struct UInt8StreamIterator: IteratorProtocol {
     }
 }
 
-private struct UnicodeScalarStreamIterator: IteratorProtocol {
+
+fileprivate struct UnicodeScalarStreamIterator: IteratorProtocol {
     private var streamIterator: UInt8StreamIterator
     private var codec = Unicode.UTF8()
 
@@ -365,12 +378,7 @@ private struct UnicodeScalarStreamIterator: IteratorProtocol {
             return nil
         }
 
-        var iterator = streamIterator
-        defer {
-            streamIterator = iterator
-        }
-
-        switch codec.decode(&iterator) {
+        switch codec.decode(&streamIterator) {
         case .scalarValue(let scalar):
             return scalar
         case .emptyInput:

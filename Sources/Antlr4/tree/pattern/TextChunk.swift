@@ -3,33 +3,34 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-///
+
+/// 
 /// Represents a span of raw text (concrete syntax) between tags in a tree
 /// pattern string.
-///
+/// 
 
 public class TextChunk: Chunk, CustomStringConvertible {
-    ///
+    /// 
     /// This is the backing field for _#getText_.
-    ///
+    /// 
 
     private let text: String
 
-    ///
+    /// 
     /// Constructs a new instance of _org.antlr.v4.runtime.tree.pattern.TextChunk_ with the specified text.
-    ///
+    /// 
     /// - Parameter text: The text of this chunk.
     /// - Throws: ANTLRError.illegalArgument if `text` is `null`.
-    ///
+    /// 
     public init(_ text: String) {
         self.text = text
     }
 
-    ///
+    /// 
     /// Gets the raw text of this chunk.
-    ///
+    /// 
     /// - Returns: The text of the chunk.
-    ///
+    /// 
 
     public final func getText() -> String {
         return text
@@ -43,8 +44,9 @@ public class TextChunk: Chunk, CustomStringConvertible {
         return "'\(text)'"
     }
 
-    override public func isEqual(_ a: Chunk) -> Bool {
-        guard let other = a as? TextChunk else {
+
+    override public func isEqual(_ other: Chunk) -> Bool {
+        guard let other = other as? TextChunk else {
             return false
         }
         return text == other.text

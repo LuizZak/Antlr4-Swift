@@ -1,8 +1,9 @@
-///
+/// 
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-///
+/// 
+
 
 public class EmptyPredictionContext: SingletonPredictionContext {
     public init() {
@@ -29,13 +30,15 @@ public class EmptyPredictionContext: SingletonPredictionContext {
         return returnState
     }
 
+
     override
     public var description: String {
         return "$"
     }
 }
 
-public func == (lhs: EmptyPredictionContext, rhs: EmptyPredictionContext) -> Bool {
+
+public func ==(lhs: EmptyPredictionContext, rhs: EmptyPredictionContext) -> Bool {
     if lhs === rhs {
         return true
     }

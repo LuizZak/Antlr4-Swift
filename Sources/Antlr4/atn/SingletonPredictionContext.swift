@@ -1,8 +1,10 @@
-///
+/// 
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-///
+/// 
+
+
 
 public class SingletonPredictionContext: PredictionContext {
     public final let parent: PredictionContext?
@@ -15,10 +17,8 @@ public class SingletonPredictionContext: PredictionContext {
         self.parent = parent
         self.returnState = returnState
 
-        super.init(
-            parent != nil
-                ? PredictionContext.calculateHashCode(parent!, returnState)
-                : PredictionContext.calculateEmptyHashCode())
+
+        super.init(parent != nil ? PredictionContext.calculateHashCode(parent!, returnState) : PredictionContext.calculateEmptyHashCode())
     }
 
     public static func create(_ parent: PredictionContext?, _ returnState: Int) -> SingletonPredictionContext {
@@ -46,6 +46,7 @@ public class SingletonPredictionContext: PredictionContext {
         return returnState
     }
 
+
     override
     public var description: String {
         let up = parent?.description ?? ""
@@ -59,7 +60,8 @@ public class SingletonPredictionContext: PredictionContext {
     }
 }
 
-public func == (lhs: SingletonPredictionContext, rhs: SingletonPredictionContext) -> Bool {
+
+public func ==(lhs: SingletonPredictionContext, rhs: SingletonPredictionContext) -> Bool {
     if lhs === rhs {
         return true
     }
@@ -72,7 +74,7 @@ public func == (lhs: SingletonPredictionContext, rhs: SingletonPredictionContext
     var parentCompare = false
     if (lhs.parent == nil) && (rhs.parent == nil) {
         parentCompare = true
-    } else if lhs.parent == nil || rhs.parent == nil {
+    } else if lhs.parent == nil || rhs.parent == nil  {
         parentCompare = false
     } else {
         parentCompare = (lhs.parent! == rhs.parent!)
@@ -80,3 +82,5 @@ public func == (lhs: SingletonPredictionContext, rhs: SingletonPredictionContext
 
     return parentCompare
 }
+
+
