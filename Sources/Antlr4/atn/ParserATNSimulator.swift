@@ -1955,14 +1955,12 @@ open class ParserATNSimulator: ATNSimulator {
         if t < -1 || t > atn.maxTokenType {
             return to
         }
-        from.mutex.synchronized {
-            [unowned self] in
-            if from.edges == nil {
-                from.edges = [DFAState?](repeating: nil, count: self.atn.maxTokenType + 1 + 1)       //new DFAState[atn.maxTokenType+1+1];
-            }
 
-            from.edges[t + 1] = to // connect
+        if from.edges == nil {
+            from.edges = [DFAState?](repeating: nil, count: self.atn.maxTokenType + 1 + 1)       //new DFAState[atn.maxTokenType+1+1];
         }
+
+        from.edges[t + 1] = to // connect
 
         if debug {
             print("DFA=\n" + dfa.toString(parser.getVocabulary()))
@@ -1991,25 +1989,23 @@ open class ParserATNSimulator: ATNSimulator {
             return D
         }
         
-        return dfa.statesMutex.synchronized {
-            if let existing = dfa.states[D] {
-                return existing
-            }
-
-            D.stateNumber = dfa.states.count
-            
-            if !D.configs.isReadonly() {
-                try! D.configs.optimizeConfigs(self)
-                D.configs.setReadonly(true)
-            }
-            
-            dfa.states[D] = D
-            if debug {
-                print("adding new DFA state: \(D)")
-            }
-
-            return D
+        if let existing = dfa.states[D] {
+            return existing
         }
+
+        D.stateNumber = dfa.states.count
+        
+        if !D.configs.isReadonly() {
+            try! D.configs.optimizeConfigs(self)
+            D.configs.setReadonly(true)
+        }
+        
+        dfa.states[D] = D
+        if debug {
+            print("adding new DFA state: \(D)")
+        }
+
+        return D
     }
 
     func reportAttemptingFullContext(_ dfa: DFA, _ conflictingAlts: BitSet?, _ configs: ATNConfigSet, _ startIndex: Int, _ stopIndex: Int) {
