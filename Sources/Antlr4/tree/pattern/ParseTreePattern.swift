@@ -9,7 +9,7 @@
 /// _org.antlr.v4.runtime.tree.pattern.ParseTreePatternMatcher#compile(String, int)_.
 /// 
 
-public class ParseTreePattern {
+public struct ParseTreePattern {
     /// 
     /// This is the backing field for _#getPatternRuleIndex()_.
     /// 

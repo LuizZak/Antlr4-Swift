@@ -108,7 +108,7 @@ public extension Vocabulary {
     /// - Returns: A _org.antlr.v4.runtime.Vocabulary_ instance which uses `tokenNames` for
     /// the display names of tokens.
     ///
-    public static func fromTokenNames(_ tokenNames: [String?]?) -> Vocabulary {
+    static func fromTokenNames(_ tokenNames: [String?]?) -> Vocabulary {
         guard let tokenNames = tokenNames, tokenNames.count > 0 else {
             return EMPTY_VOCABULARY
         }

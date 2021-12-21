@@ -16,22 +16,6 @@ func errPrint(_ msg: String) {
     fputs(msg + "\n", stderr)
 }
 
-public func +(lhs: String, rhs: Int) -> String {
-    return lhs + String(rhs)
-}
-
-public func +(lhs: Int, rhs: String) -> String {
-    return String(lhs) + rhs
-}
-
-public func +(lhs: String, rhs: Token) -> String {
-    return lhs + rhs.description
-}
-
-public func +(lhs: Token, rhs: String) -> String {
-    return lhs.description + rhs
-}
-
 infix operator >>> : BitwiseShiftPrecedence
 
 func >>>(lhs: Int32, rhs: Int32) -> Int32 {
@@ -49,10 +33,8 @@ func >>>(lhs: Int64, rhs: Int64) -> Int64 {
 }
 
 func >>>(lhs: Int, rhs: Int) -> Int {
-    let numberOfBits: UInt = MemoryLayout<UInt>.size == MemoryLayout<UInt64>.size ? 64 : 32
-
     let left = UInt(bitPattern: lhs)
-    let right = UInt(bitPattern: rhs) % numberOfBits
+    let right = UInt(bitPattern: rhs) % UInt(Int.bitWidth)
 
     return Int(bitPattern: left >> right)
 }
@@ -80,27 +62,12 @@ func toInt32(_ data: [Character], _ offset: Int) -> Int {
 
 func toLong(_ data: [Character], _ offset: Int) -> Int64 {
     let mask: Int64 = 0x00000000FFFFFFFF
-    let lowOrder: Int64 = Int64(toInt32(data, offset)) & mask
+    let lowOrder = Int64(toInt32(data, offset)) & mask
     return lowOrder | Int64(toInt32(data, offset + 2) << 32)
 }
 
 func toUUID(_ data: [Character], _ offset: Int) -> UUID {
-    let leastSigBits: Int64 = toLong(data, offset)
-    let mostSigBits: Int64 = toLong(data, offset + 4)
+    let leastSigBits = toLong(data, offset)
+    let mostSigBits = toLong(data, offset + 4)
     return UUID(mostSigBits: mostSigBits, leastSigBits: leastSigBits)
-}
-
-func ==<T:Equatable>(_ lhs: [T?], _ rhs: [T?]) -> Bool {
-
-    if lhs.count != rhs.count {
-        return false
-    }
-
-    for i in 0..<lhs.count {
-        if lhs[i] != rhs[i] {
-            return false
-        }
-    }
-
-    return true
 }
