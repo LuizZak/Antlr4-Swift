@@ -3,6 +3,8 @@ import XCTest
 @testable import Antlr4
 
 class JavaScriptParserTests: XCTestCase {
+    #if JS_TEST_FIXTURES
+
     func testFixtures() throws {
         // 13.93 (13.93) seconds - after setup
         // 13.066 (13.066) seconds - after making Interval a struct
@@ -40,6 +42,8 @@ class JavaScriptParserTests: XCTestCase {
 
         waitForExpectations(timeout: 30.0)
     }
+
+    #endif
 
     private func _findOutputPath(_ jsFileInput: URL) -> URL {
         URL(fileURLWithPath: #filePath)
