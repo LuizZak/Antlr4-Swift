@@ -346,18 +346,19 @@ public class ATNDeserializer {
         for _ in 0..<nsets {
             let nintervals = data[p]
             p += 1
-            let set = IntervalSet()
-            sets.append(set)
+            var set = IntervalSet()
 
             let containsEof = (data[p] != 0)
             p += 1
             if containsEof {
-                try! set.add(-1)
+                set.add(-1)
             }
 
             for _ in 0..<nintervals {
-                try! set.add(readUnicode(data, &p), readUnicode(data, &p))
+                set.add(readUnicode(data, &p), readUnicode(data, &p))
             }
+
+            sets.append(set)
         }
     }
 
@@ -496,19 +497,20 @@ public class ATNDeserializer {
             let setBuilder = intervalSet[i]
             let nintervals = setBuilder["size"] as! Int
 
-            let set = IntervalSet()
-            sets.append(set)
+            var set = IntervalSet()
 
             let containsEof = (setBuilder["containsEof"] as! Int) != 0
             if containsEof {
-                try! set.add(-1)
+                set.add(-1)
             }
             let intervalsBuilder = setBuilder["Intervals"] as! [[String: Any]]
 
             for j in 0..<nintervals {
                 let vals = intervalsBuilder[j]
-                try! set.add((vals["a"] as! Int), (vals["b"] as! Int))
+                set.add((vals["a"] as! Int), (vals["b"] as! Int))
             }
+
+            sets.append(set)
         }
 
 

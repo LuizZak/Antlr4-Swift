@@ -17,9 +17,7 @@ public protocol IntSet {
     /// 
     /// - parameter el: the value to add
     /// 
-    /// - throws: _ANTLRError.illegalState_ if the current set is read-only
-    /// 
-    func add(_ el: Int) throws
+    mutating func add(_ el: Int)
 
     /// 
     /// Modify the current _org.antlr.v4.runtime.misc.IntSet_ object to contain all elements that are
@@ -29,9 +27,7 @@ public protocol IntSet {
     /// treated as though it were an empty set.
     /// - returns: `this` (to support chained calls)
     /// 
-    /// - throws: _ANTLRError.illegalState_ if the current set is read-only
-    /// 
-    func addAll(_ set: IntSet?) throws -> IntSet
+    mutating func addAll(_ set: IntSet?) -> IntSet
 
     /// 
     /// Return a new _org.antlr.v4.runtime.misc.IntSet_ object containing all elements that are
@@ -93,7 +89,7 @@ public protocol IntSet {
     /// `elements` but not present in the current set. The value
     /// `null` may be returned in place of an empty result set.
     /// 
-    func subtract(_ a: IntSet?) -> IntSet
+    mutating func subtract(_ a: IntSet?) -> IntSet
 
     /// 
     /// Return the total number of elements represented by the current set.
@@ -134,9 +130,7 @@ public protocol IntSet {
     /// 
     /// - parameter el: the value to remove
     /// 
-    /// - throws: _ANTLRError.illegalState_ if the current set is read-only
-    /// 
-    func remove(_ el: Int) throws
+    mutating func remove(_ el: Int)
 
     /// 
     /// Return a list containing the elements represented by the current set. The

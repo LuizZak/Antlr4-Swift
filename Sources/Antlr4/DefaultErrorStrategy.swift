@@ -158,7 +158,7 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
         if lastErrorStates == nil {
             lastErrorStates = IntervalSet()
         }
-        try lastErrorStates!.add(recognizer.getState())
+        lastErrorStates!.add(recognizer.getState())
         let followSet = getErrorRecoverySet(recognizer)
         try consumeUntil(recognizer, followSet)
     }
@@ -722,16 +722,16 @@ open class DefaultErrorStrategy: ANTLRErrorStrategy {
     open func getErrorRecoverySet(_ recognizer: Parser) -> IntervalSet {
         let atn = recognizer.getInterpreter().atn
         var ctx: RuleContext? = recognizer._ctx
-        let recoverSet = IntervalSet()
+        var recoverSet = IntervalSet()
         while let ctxWrap = ctx, ctxWrap.invokingState >= 0 {
             // compute what follows who invoked us
             let invokingState = atn.states[ctxWrap.invokingState]!
             let rt = invokingState.transition(0) as! RuleTransition
             let follow = atn.nextTokens(rt.followState)
-            try! recoverSet.addAll(follow)
+            recoverSet.addAll(follow)
             ctx = ctxWrap.parent
         }
-        try! recoverSet.remove(CommonToken.EPSILON)
+        recoverSet.remove(CommonToken.EPSILON)
 //		print("recover set "+recoverSet.toString(recognizer.getTokenNames()));
         return recoverSet
     }

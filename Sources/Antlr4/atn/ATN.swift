@@ -84,7 +84,6 @@ public class ATN {
         }
         let intervalSet = nextTokens(s, nil)
         s.nextTokenWithinRule = intervalSet
-        intervalSet.makeReadonly()
         return intervalSet
     }
 
@@ -150,21 +149,21 @@ public class ATN {
             return following
         }
 
-        let expected = IntervalSet()
-        try! expected.addAll(following)
-        try! expected.remove(CommonToken.EPSILON)
+        var expected = IntervalSet()
+        expected.addAll(following)
+        expected.remove(CommonToken.EPSILON)
 
         while let ctxWrap = ctx, ctxWrap.invokingState >= 0 && following.contains(CommonToken.EPSILON) {
             let invokingState = states[ctxWrap.invokingState]!
             let rt = invokingState.transition(0) as! RuleTransition
             following = nextTokens(rt.followState)
-            try! expected.addAll(following)
-            try! expected.remove(CommonToken.EPSILON)
+            expected.addAll(following)
+            expected.remove(CommonToken.EPSILON)
             ctx = ctxWrap.parent
         }
 
         if following.contains(CommonToken.EPSILON) {
-            try! expected.add(CommonToken.EOF)
+            expected.add(CommonToken.EOF)
         }
 
         return expected

@@ -9,7 +9,7 @@
 /// An immutable inclusive interval a..b
 /// 
 
-public class Interval: Hashable {
+public struct Interval: Hashable {
     public static let INTERVAL_POOL_MAX_VALUE: Int = 1000
 
     public static let INVALID: Interval = Interval(-1, -2)
