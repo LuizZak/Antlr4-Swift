@@ -127,8 +127,8 @@ public class ParseTreePatternMatcher {
     /// compiled pattern instead of a string representation of a tree pattern.
     /// 
     public func matches(_ tree: ParseTree, _ pattern: ParseTreePattern) throws -> Bool {
-        let labels: MultiMap<String, ParseTree> = MultiMap<String, ParseTree>()
-        let mismatchedNode: ParseTree? = try matchImpl(tree, pattern.getPatternTree(), labels)
+        var labels: MultiMap<String, ParseTree> = MultiMap<String, ParseTree>()
+        let mismatchedNode: ParseTree? = try matchImpl(tree, pattern.getPatternTree(), &labels)
         return mismatchedNode == nil
     }
 
@@ -149,8 +149,8 @@ public class ParseTreePatternMatcher {
     /// string representation of a tree pattern.
     /// 
     public func match(_ tree: ParseTree, _ pattern: ParseTreePattern) throws -> ParseTreeMatch {
-        let labels: MultiMap<String, ParseTree> = MultiMap<String, ParseTree>()
-        let mismatchedNode: ParseTree? = try matchImpl(tree, pattern.getPatternTree(), labels)
+        var labels: MultiMap<String, ParseTree> = MultiMap<String, ParseTree>()
+        let mismatchedNode: ParseTree? = try matchImpl(tree, pattern.getPatternTree(), &labels)
         return ParseTreeMatch(tree, pattern, labels, mismatchedNode)
     }
 
@@ -209,7 +209,7 @@ public class ParseTreePatternMatcher {
     /// 
     internal func matchImpl(_ tree: ParseTree,
                             _ patternTree: ParseTree,
-                            _ labels: MultiMap<String, ParseTree>) throws -> ParseTree? {
+                            _ labels: inout MultiMap<String, ParseTree>) throws -> ParseTree? {
 
         // x and <ID>, x and y, or x and x; or could be mismatched types
         if tree is TerminalNode && patternTree is TerminalNode {
@@ -276,7 +276,7 @@ public class ParseTreePatternMatcher {
             }
 
             for i in 0 ..< r1.getChildCount() {
-                if let childMatch = try matchImpl(r1[i], patternTree[i], labels) {
+                if let childMatch = try matchImpl(r1[i], patternTree[i], &labels) {
                     return childMatch
                 }
             }

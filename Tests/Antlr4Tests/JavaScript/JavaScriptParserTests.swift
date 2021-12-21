@@ -6,6 +6,7 @@ class JavaScriptParserTests: XCTestCase {
     func testFixtures() throws {
         // 13.93 (13.93) seconds - after setup
         // 13.066 (13.066) seconds - after making Interval a struct
+        // 13.037 (13.037) seconds - after making MultiMap a struct
         let urls = try XCTUnwrap(Bundle.module.urls(forResourcesWithExtension: ".js", subdirectory: nil))
 
         for url in urls {
