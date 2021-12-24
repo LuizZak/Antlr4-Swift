@@ -1,4 +1,3 @@
-#include <malloc.h>
 #include "_CAntlrShims.h"
 
 void atomic_int_init(volatile _AtomicIntStorage *value) {
