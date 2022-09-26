@@ -3,17 +3,33 @@ import Antlr4
 
 open class ThreadingParser: Parser {
 
-	internal static var _decisionToDFA: [DFA] = {
-          var decisionToDFA = [DFA]()
-          let length = ThreadingParser._ATN.getNumberOfDecisions()
-          for i in 0..<length {
-            decisionToDFA.append(DFA(ThreadingParser._ATN.getDecisionState(i)!, i))
-           }
-           return decisionToDFA
-     }()
-
-	internal static let _sharedContextCache = PredictionContextCache()
-
+    public class State {
+        public let _ATN: ATN = try! ATNDeserializer().deserialize(_serializedATN)
+        
+        internal var _decisionToDFA: [DFA]
+        internal let _sharedContextCache: PredictionContextCache = PredictionContextCache()
+        
+        public init() {
+            var decisionToDFA = [DFA]()
+            let length = _ATN.getNumberOfDecisions()
+            for i in 0..<length {
+                decisionToDFA.append(DFA(_ATN.getDecisionState(i)!, i))
+            }
+            _decisionToDFA = decisionToDFA
+        }
+    }
+    
+    public var _ATN: ATN {
+        return state._ATN
+    }
+    internal var _decisionToDFA: [DFA] {
+        return state._decisionToDFA
+    }
+    internal var _sharedContextCache: PredictionContextCache {
+        return state._sharedContextCache
+    }
+    
+    public var state: State
 	public
 	enum Tokens: Int {
 		case EOF = -1, INT = 1, MUL = 2, DIV = 3, ADD = 4, SUB = 5, WS = 6
@@ -46,20 +62,21 @@ open class ThreadingParser: Parser {
 	func getSerializedATN() -> [Int] { return ThreadingParser._serializedATN }
 
 	override open
-	func getATN() -> ATN { return ThreadingParser._ATN }
+	func getATN() -> ATN { return _ATN }
 
 
-	override open
-	func getVocabulary() -> Vocabulary {
-	    return ThreadingParser.VOCABULARY
-	}
-
-	override public
-	init(_ input:TokenStream) throws {
-	    RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION)
-		try super.init(input)
-		_interp = ParserATNSimulator(self,ThreadingParser._ATN,ThreadingParser._decisionToDFA, ThreadingParser._sharedContextCache)
-	}
+    override public convenience
+    init(_ input: TokenStream) throws {
+        try self.init(input, State())
+    }
+    
+    public
+    init(_ input: TokenStream, _ state: State) throws {
+        self.state = state
+        RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION)
+        try super.init(input)
+        _interp = ParserATNSimulator(self, _ATN, _decisionToDFA, _sharedContextCache)
+    }
 
 
 	public class SContext: ParserRuleContext {
@@ -385,7 +402,4 @@ open class ThreadingParser: Parser {
 		20,1,0,0,0,18,16,1,0,0,0,18,19,1,0,0,0,19,3,1,0,0,0,20,18,1,0,0,0,2,16,
 		18
 	]
-
-	public
-	static let _ATN = try! ATNDeserializer().deserialize(_serializedATN)
 }

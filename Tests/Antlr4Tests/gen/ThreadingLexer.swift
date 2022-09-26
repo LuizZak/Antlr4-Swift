@@ -3,17 +3,34 @@ import Antlr4
 
 open class ThreadingLexer: Lexer {
 
-	internal static var _decisionToDFA: [DFA] = {
-          var decisionToDFA = [DFA]()
-          let length = ThreadingLexer._ATN.getNumberOfDecisions()
-          for i in 0..<length {
-          	    decisionToDFA.append(DFA(ThreadingLexer._ATN.getDecisionState(i)!, i))
-          }
-           return decisionToDFA
-     }()
+    public class State {
+        public let _ATN: ATN = try! ATNDeserializer().deserialize(_serializedATN)
+        
+        internal var _decisionToDFA: [DFA]
+        internal let _sharedContextCache: PredictionContextCache = PredictionContextCache()
+        
+        public init() {
+            var decisionToDFA = [DFA]()
+            let length = _ATN.getNumberOfDecisions()
+            for i in 0..<length {
+                decisionToDFA.append(DFA(_ATN.getDecisionState(i)!, i))
+            }
+            _decisionToDFA = decisionToDFA
+        }
+    }
+    
+    public var _ATN: ATN {
+        return state._ATN
+    }
+    internal var _decisionToDFA: [DFA] {
+        return state._decisionToDFA
+    }
+    internal var _sharedContextCache: PredictionContextCache {
+        return state._sharedContextCache
+    }
 
-	internal static let _sharedContextCache = PredictionContextCache()
-
+    public var state: State
+    
 	public
 	static let INT=1, MUL=2, DIV=3, ADD=4, SUB=5, WS=6
 
@@ -47,11 +64,18 @@ open class ThreadingLexer: Lexer {
 		return ThreadingLexer.VOCABULARY
 	}
 
+	public required convenience
+ 	init(_ input: CharStream) {
+		self.init(input, State())
+	}
+
 	public
-	required init(_ input: CharStream) {
+	required init(_ input: CharStream, _ state: State) {
+		self.state = state
+
 	    RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION)
 		super.init(input)
-		_interp = LexerATNSimulator(self, ThreadingLexer._ATN, ThreadingLexer._decisionToDFA, ThreadingLexer._sharedContextCache)
+		_interp = LexerATNSimulator(self, _ATN, _decisionToDFA, _sharedContextCache)
 	}
 
 	override open
@@ -70,7 +94,7 @@ open class ThreadingLexer: Lexer {
 	func getModeNames() -> [String] { return ThreadingLexer.modeNames }
 
 	override open
-	func getATN() -> ATN { return ThreadingLexer._ATN }
+	func getATN() -> ATN { return _ATN }
 
 	static let _serializedATN:[Int] = [
 		4,0,6,33,6,-1,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,1,0,4,0,
@@ -84,7 +108,4 @@ open class ThreadingLexer: Lexer {
 		0,0,0,26,28,7,1,0,0,27,26,1,0,0,0,28,29,1,0,0,0,29,27,1,0,0,0,29,30,1,
 		0,0,0,30,31,1,0,0,0,31,32,6,5,0,0,32,12,1,0,0,0,3,0,16,29,1,0,1,0
 	]
-
-	public
-	static let _ATN: ATN = try! ATNDeserializer().deserialize(_serializedATN)
 }
