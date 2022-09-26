@@ -18,6 +18,7 @@ class JavaScriptParserTests: XCTestCase {
         // 6.295 (6.295) seconds - after enabling multithreading
         // 5.519 seconds - in Linux machine
         // 5.698 - After upstream re-merge; replacing 'throw's with 'precondition's
+        // 5.974 - After merging 3365938 & 0a49b1e
         let urls = try XCTUnwrap(Bundle.module.urls(forResourcesWithExtension: ".js", subdirectory: nil))
 
         let exp = expectation(description: "JSON parsing test")

@@ -30,14 +30,3 @@ extension String {
         return String(self[range])
     }
 }
-
-
-// Implement Substring.hasPrefix, which is not currently in the Linux stdlib.
-// https://bugs.swift.org/browse/SR-5627
-#if os(Linux)
-extension Substring {
-    func hasPrefix(_ prefix: String) -> Bool {
-        return String(self).hasPrefix(prefix)
-    }
-}
-#endif

@@ -16,22 +16,6 @@ func errPrint(_ msg: String) {
     fputs(msg + "\n", stderr)
 }
 
-public func +(lhs: String, rhs: Int) -> String {
-    return lhs + String(rhs)
-}
-
-public func +(lhs: Int, rhs: String) -> String {
-    return String(lhs) + rhs
-}
-
-public func +(lhs: String, rhs: Token) -> String {
-    return lhs + rhs.description
-}
-
-public func +(lhs: Token, rhs: String) -> String {
-    return lhs.description + rhs
-}
-
 infix operator >>> : BitwiseShiftPrecedence
 
 func >>>(lhs: Int32, rhs: Int32) -> Int32 {
@@ -74,7 +58,7 @@ func toLong(_ data: [Character], _ offset: Int) -> Int64 {
 }
 
 func toUUID(_ data: [Character], _ offset: Int) -> UUID {
-    let leastSigBits: Int64 = toLong(data, offset)
-    let mostSigBits: Int64 = toLong(data, offset + 4)
+    let leastSigBits = toLong(data, offset)
+    let mostSigBits = toLong(data, offset + 4)
     return UUID(mostSigBits: mostSigBits, leastSigBits: leastSigBits)
 }
