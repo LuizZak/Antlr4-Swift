@@ -792,6 +792,17 @@ open class JavaScriptParserVisitor<T>: ParseTreeVisitor<T> {
 	}
 
 	/**
+	 * Visit a parse tree produced by the {@code OptionalChainExpression}
+	 * labeled alternative in {@link JavaScriptParser#singleExpression}.
+	- Parameters:
+	  - ctx: the parse tree
+	- returns: the visitor result
+	 */
+	open func visitOptionalChainExpression(_ ctx: JavaScriptParser.OptionalChainExpressionContext) -> T {
+	 	fatalError(#function + " must be overridden")
+	}
+
+	/**
 	 * Visit a parse tree produced by the {@code NotExpression}
 	 * labeled alternative in {@link JavaScriptParser#singleExpression}.
 	- Parameters:

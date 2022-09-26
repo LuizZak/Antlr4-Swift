@@ -548,6 +548,13 @@ open class JavaScriptParserBaseVisitor<T>: AbstractParseTreeVisitor<T> {
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	open func visitOptionalChainExpression(_ ctx: JavaScriptParser.OptionalChainExpressionContext) -> T? { return visitChildren(ctx) }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	open func visitNotExpression(_ ctx: JavaScriptParser.NotExpressionContext) -> T? { return visitChildren(ctx) }
 	/**
 	 * {@inheritDoc}

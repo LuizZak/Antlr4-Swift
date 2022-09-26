@@ -1003,6 +1003,19 @@ open class JavaScriptParserBaseListener: JavaScriptParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	open func enterOptionalChainExpression(_ ctx: JavaScriptParser.OptionalChainExpressionContext) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	open func exitOptionalChainExpression(_ ctx: JavaScriptParser.OptionalChainExpressionContext) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	open func enterNotExpression(_ ctx: JavaScriptParser.NotExpressionContext) { }
 	/**
 	 * {@inheritDoc}

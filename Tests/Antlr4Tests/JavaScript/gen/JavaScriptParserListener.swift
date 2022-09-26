@@ -963,6 +963,20 @@ public protocol JavaScriptParserListener: ParseTreeListener {
 	 */
 	func exitLogicalOrExpression(_ ctx: JavaScriptParser.LogicalOrExpressionContext)
 	/**
+	 * Enter a parse tree produced by the {@code OptionalChainExpression}
+	 * labeled alternative in {@link JavaScriptParser#singleExpression}.
+	 - Parameters:
+	   - ctx: the parse tree
+	 */
+	func enterOptionalChainExpression(_ ctx: JavaScriptParser.OptionalChainExpressionContext)
+	/**
+	 * Exit a parse tree produced by the {@code OptionalChainExpression}
+	 * labeled alternative in {@link JavaScriptParser#singleExpression}.
+	 - Parameters:
+	   - ctx: the parse tree
+	 */
+	func exitOptionalChainExpression(_ ctx: JavaScriptParser.OptionalChainExpressionContext)
+	/**
 	 * Enter a parse tree produced by the {@code NotExpression}
 	 * labeled alternative in {@link JavaScriptParser#singleExpression}.
 	 - Parameters:
