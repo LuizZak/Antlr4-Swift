@@ -168,7 +168,7 @@ open class JavaScriptLexer: JavaScriptLexerBase {
 	required init(_ input: CharStream, _ state: State) {
         self.state = state
         
-	    RuntimeMetaData.checkVersion("4.10.0", RuntimeMetaData.VERSION)
+	    RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION)
 		super.init(input)
 		_interp = LexerATNSimulator(
 			self,

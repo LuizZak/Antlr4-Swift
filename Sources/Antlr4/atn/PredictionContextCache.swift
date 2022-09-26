@@ -24,8 +24,8 @@ public final class PredictionContextCache {
     /// 
     @discardableResult
     public func add(_ ctx: PredictionContext) -> PredictionContext {
-        if ctx === PredictionContext.EMPTY {
-            return PredictionContext.EMPTY
+        if ctx === EmptyPredictionContext.Instance {
+            return EmptyPredictionContext.Instance
         }
         if let existing = cache[ctx] {
 //			print(name+" reuses "+existing);

@@ -39,27 +39,4 @@ public class Utils {
         }
         return m
     }
-
-    public static func bitLeftShift(_ n: Int) -> Int64 {
-        return (Int64(1) &<< n)
-    }
-
-    public static func testBitLeftShiftArray(_ nArray: [Int], _ bitsShift: Int) -> Bool {
-        let test: Bool = ((nArray[0] - bitsShift) & ~0x3f) == 0
-        
-        if !test {
-            return false
-        }
-
-        var temp =  Int64(nArray[0] - bitsShift)
-        temp = temp < 0 ? 64 + (temp % 64) : temp % 64
-        let test1 = (1 as Int64) << temp
-        
-        var test2 = Utils.bitLeftShift(nArray[1] - bitsShift)
-        
-        for i in 1 ..< nArray.count {
-            test2 = test2 |  Utils.bitLeftShift(nArray[i] - bitsShift)
-        }
-        return (test1 & test2) != 0
-    }
 }

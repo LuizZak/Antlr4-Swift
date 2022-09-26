@@ -19,12 +19,6 @@ import Foundation
 
 public class SemanticContext: Hashable, CustomStringConvertible {
     /// 
-    /// The default _org.antlr.v4.runtime.atn.SemanticContext_, which is semantically equivalent to
-    /// a predicate of the form `{true`?}.
-    /// 
-    public static let NONE: SemanticContext = Predicate()
-
-    /// 
     /// For context independent predicates, we evaluate them without a local
     /// context (i.e., null context). That way, we can evaluate them without
     /// having to create proper rule-specific context during prediction (as
@@ -67,6 +61,22 @@ public class SemanticContext: Hashable, CustomStringConvertible {
 
     public var description: String {
         fatalError(#function + " must be overridden")
+    }
+
+    public class Empty: SemanticContext {
+        //
+        /// The default _org.antlr.v4.runtime.atn.SemanticContext_, which is semantically equivalent to
+        /// a predicate of the form `{true?}.
+        ///
+        public static let Instance: Empty = Empty()
+
+        public override func hash(into hasher: inout Hasher) {
+        }
+
+        override
+        public var description: String {
+            return "{true}?"
+        }
     }
 
     public class Predicate: SemanticContext {
@@ -127,7 +137,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
         override
         public func evalPrecedence<T>(_ parser: Recognizer<T>, _ parserCallStack: RuleContext) throws -> SemanticContext? {
             if parser.precpred(parserCallStack, precedence) {
-                return SemanticContext.NONE
+                return SemanticContext.Empty.Instance
             } else {
                 return nil
             }
@@ -242,7 +252,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
                     // The AND context is false if any element is false
                     return nil
                 }
-                else if evaluated != SemanticContext.NONE {
+                else if evaluated != SemanticContext.Empty.Instance {
                     // Reduce the result by skipping true elements
                     operands.append(evaluated!)
                 }
@@ -252,7 +262,7 @@ public class SemanticContext: Hashable, CustomStringConvertible {
                 return self
             }
 
-            return operands.reduce(SemanticContext.NONE, SemanticContext.and)
+            return operands.reduce(SemanticContext.Empty.Instance, SemanticContext.and)
         }
 
         override
@@ -329,9 +339,9 @@ public class SemanticContext: Hashable, CustomStringConvertible {
             for context in opnds {
                 let evaluated = try context.evalPrecedence(parser, parserCallStack)
                 differs = differs || (evaluated != context)
-                if evaluated == SemanticContext.NONE {
+                if evaluated == SemanticContext.Empty.Instance {
                     // The OR context is true if any element is true
-                    return SemanticContext.NONE
+                    return SemanticContext.Empty.Instance
                 }
                 else if let evaluated = evaluated {
                     // Reduce the result by skipping false elements
@@ -354,10 +364,10 @@ public class SemanticContext: Hashable, CustomStringConvertible {
     }
 
     public static func and(_ a: SemanticContext?, _ b: SemanticContext?) -> SemanticContext {
-        if a == nil || a == SemanticContext.NONE {
+        if a == nil || a == SemanticContext.Empty.Instance {
             return b!
         }
-        if b == nil || b == SemanticContext.NONE {
+        if b == nil || b == SemanticContext.Empty.Instance {
             return a!
         }
         let result: AND = AND(a!, b!)
@@ -379,8 +389,8 @@ public class SemanticContext: Hashable, CustomStringConvertible {
         if b == nil {
             return a!
         }
-        if a == SemanticContext.NONE || b == SemanticContext.NONE {
-            return SemanticContext.NONE
+        if a == SemanticContext.Empty.Instance || b == SemanticContext.Empty.Instance {
+            return SemanticContext.Empty.Instance
         }
         let result: OR = OR(a!, b!)
         if result.opnds.count == 1 {

@@ -27,6 +27,8 @@
 /// satisfy the superclass interface.
 /// 
 open class ParserRuleContext: RuleContext {
+    public static let EMPTY = ParserRuleContext()
+    
     public var visited = false
 
     /// If we are debugging or building a parse tree for a visitor,

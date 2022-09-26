@@ -48,7 +48,7 @@ public class ATNDeserializer {
                 continue
             }
 
-            var ruleIndex = data[p]
+            let ruleIndex = data[p]
             p += 1
 
             let s = try stateFactory(stype, ruleIndex)!

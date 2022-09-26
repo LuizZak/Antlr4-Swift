@@ -60,12 +60,12 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     /// Return _#EMPTY_ if `outerContext` is empty or null.
     /// 
     public static func fromRuleContext(_ atn: ATN, _ outerContext: RuleContext?) -> PredictionContext {
-        let _outerContext = outerContext ?? RuleContext.EMPTY
+        let _outerContext = outerContext ?? ParserRuleContext.EMPTY
 
         // if we are in RuleContext of start rule, s, then PredictionContext
         // is EMPTY. Nobody called us. (if we are empty, return empty)
-        if (_outerContext.parent == nil || _outerContext === RuleContext.EMPTY) {
-            return PredictionContext.EMPTY
+        if (_outerContext.parent == nil || _outerContext === ParserRuleContext.EMPTY) {
+            return EmptyPredictionContext.Instance
         }
 
         // If we have a parent, convert it to a PredictionContext graph
@@ -95,7 +95,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     /// This means only the _#EMPTY_ context is in set.
     /// 
     public func isEmpty() -> Bool {
-        return self === PredictionContext.EMPTY
+        return self === EmptyPredictionContext.Instance
     }
 
     public func hasEmptyPath() -> Bool {
@@ -332,24 +332,24 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         _ b: SingletonPredictionContext,
         _ rootIsWildcard: Bool) -> PredictionContext? {
             if rootIsWildcard {
-                if a === PredictionContext.EMPTY {
-                    return PredictionContext.EMPTY
+                if a === EmptyPredictionContext.Instance {
+                    return EmptyPredictionContext.Instance
                 }  // * + b = *
-                if b === PredictionContext.EMPTY {
-                    return PredictionContext.EMPTY
+                if b === EmptyPredictionContext.Instance {
+                    return EmptyPredictionContext.Instance
                 }  // a + * = *
             } else {
-                if a === PredictionContext.EMPTY && b === PredictionContext.EMPTY {
-                    return PredictionContext.EMPTY
+                if a === EmptyPredictionContext.Instance && b === EmptyPredictionContext.Instance {
+                    return EmptyPredictionContext.Instance
                 } // $ + $ = $
-                if a === PredictionContext.EMPTY {
+                if a === EmptyPredictionContext.Instance {
                     // $ + x = [$,x]
                     let payloads = [b.returnState, EMPTY_RETURN_STATE]
                     let parents = [b.parent, nil]
                     let joined = ArrayPredictionContext(parents, payloads)
                     return joined
                 }
-                if b === PredictionContext.EMPTY {
+                if b === EmptyPredictionContext.Instance {
                     // x + $ = [$,x] ($ is always first if present)
                     let payloads = [a.returnState, EMPTY_RETURN_STATE]
                     let parents = [a.parent, nil]
@@ -668,7 +668,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     }
 
     public func toStrings<T>(_ recognizer: Recognizer<T>, _ currentState: Int) -> [String] {
-        return toStrings(recognizer, PredictionContext.EMPTY, currentState)
+        return toStrings(recognizer, EmptyPredictionContext.Instance, currentState)
     }
 
     // FROM SAM

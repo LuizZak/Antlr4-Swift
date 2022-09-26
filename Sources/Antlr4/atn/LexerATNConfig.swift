@@ -19,7 +19,7 @@ public class LexerATNConfig: ATNConfig {
 
         self.passedThroughNonGreedyDecision = false
         self.lexerActionExecutor = nil
-        super.init(state, alt, context, SemanticContext.NONE)
+        super.init(state, alt, context, SemanticContext.Empty.Instance)
     }
 
     public init(_ state: ATNState,
@@ -29,7 +29,7 @@ public class LexerATNConfig: ATNConfig {
 
         self.lexerActionExecutor = lexerActionExecutor
         self.passedThroughNonGreedyDecision = false
-        super.init(state, alt, context, SemanticContext.NONE)
+        super.init(state, alt, context, SemanticContext.Empty.Instance)
     }
 
     public init(_ c: LexerATNConfig, _ state: ATNState) {

@@ -6,6 +6,12 @@
 
 
 public class EmptyPredictionContext: SingletonPredictionContext {
+    ///
+    /// Represents `$` in local context prediction, which means wildcard.
+    /// `+x = *`.
+    ///
+    public static let Instance = EmptyPredictionContext()
+
     public init() {
         super.init(nil, PredictionContext.EMPTY_RETURN_STATE)
     }

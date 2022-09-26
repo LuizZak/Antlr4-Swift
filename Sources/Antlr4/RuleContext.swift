@@ -56,8 +56,6 @@
 /// 
 
 open class RuleContext: RuleNode {
-    public static let EMPTY = ParserRuleContext()
-
     /// What context invoked this rule?
     public weak var parent: RuleContext?
 

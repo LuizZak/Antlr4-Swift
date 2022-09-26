@@ -98,7 +98,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
                 throw ANTLRError.illegalState(msg: "This set is readonly")
             }
 
-            if config.semanticContext != SemanticContext.NONE {
+            if config.semanticContext != SemanticContext.Empty.Instance {
                 hasSemanticContext = true
             }
             if config.getOuterContextDepth() > 0 {
@@ -171,7 +171,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
     public func getPredicates() -> [SemanticContext] {
         var preds = [SemanticContext]()
         for config in configs {
-            if config.semanticContext != SemanticContext.NONE {
+            if config.semanticContext != SemanticContext.Empty.Instance {
                 preds.append(config.semanticContext)
             }
         }
@@ -456,9 +456,9 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
         var nPredAlts = 0
         for i in 1...nalts {
             if altToPred[i] == nil {
-                altToPred[i] = SemanticContext.NONE
+                altToPred[i] = SemanticContext.Empty.Instance
             }
-            else if altToPred[i] != SemanticContext.NONE {
+            else if altToPred[i] != SemanticContext.Empty.Instance {
                 nPredAlts += 1
             }
         }
@@ -503,7 +503,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
         let succeeded = ATNConfigSet(fullCtx)
         let failed = ATNConfigSet(fullCtx)
         for config in configs {
-            if config.semanticContext != SemanticContext.NONE {
+            if config.semanticContext != SemanticContext.Empty.Instance {
                 let predicateEvaluationResult = try evalSemanticContext(config.semanticContext, outerContext, config.alt,fullCtx)
                 if predicateEvaluationResult {
                     try! succeeded.add(config)
@@ -520,7 +520,7 @@ public final class ATNConfigSet: Hashable, CustomStringConvertible {
     public func dupConfigsWithoutSemanticPredicates() -> ATNConfigSet {
         let dup = ATNConfigSet()
         for config in configs {
-            let c = ATNConfig(config, SemanticContext.NONE)
+            let c = ATNConfig(config, SemanticContext.Empty.Instance)
             try! dup.add(c)
         }
         return dup

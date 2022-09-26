@@ -1109,18 +1109,18 @@ open class ParserATNSimulator: ATNSimulator {
         _ configs: ATNConfigSet,
         _ nalts: Int) -> [SemanticContext?]? {
             // REACH=[1|1|[]|0:0, 1|2|[]|0:1]
-            /// 
+            ///
             /// altToPred starts as an array of all null contexts. The entry at index i
             /// corresponds to alternative i. altToPred[i] may have one of three values:
             /// 1. null: no ATNConfig c is found such that c.alt==i
-            /// 2. SemanticContext.NONE: At least one ATNConfig c exists such that
-            /// c.alt==i and c.semanticContext==SemanticContext.NONE. In other words,
+            /// 2. SemanticContext.Empty.Instance: At least one ATNConfig c exists such that
+            /// c.alt==i and c.semanticContext==SemanticContext.Empty.Instance. In other words,
             /// alt i has at least one unpredicated config.
             /// 3. Non-NONE Semantic Context: There exists at least one, and for all
-            /// ATNConfig c such that c.alt==i, c.semanticContext!=SemanticContext.NONE.
-            /// 
+            /// ATNConfig c such that c.alt==i, c.semanticContext!=SemanticContext.Empty.Instance.
+            ///
             /// From this, it is clear that NONE||anything==NONE.
-            /// 
+            ///
             let altToPred = configs.getPredsForAmbigAlts(ambigAlts,nalts)
             if debug {
                 print("getPredsForAmbigAlts result \(String(describing: altToPred))")
@@ -1134,13 +1134,13 @@ open class ParserATNSimulator: ATNSimulator {
             var containsPredicate = false
             for (i, pred) in altToPred.enumerated().dropFirst() {
 
-                // unpredicated is indicated by SemanticContext.NONE
+                // unpredicated is indicated by SemanticContext.Empty.Instance
                 assert(pred != nil, "Expected: pred!=null")
 
                 if let ambigAlts = ambigAlts, try! ambigAlts.get(i) {
                     pairs.append(DFAState.PredPrediction(pred!, i))
                 }
-                if pred != SemanticContext.NONE {
+                if pred != SemanticContext.Empty.Instance {
                     containsPredicate = true
                 }
             }
@@ -1245,7 +1245,7 @@ open class ParserATNSimulator: ATNSimulator {
         _ complete: Bool) throws -> BitSet {
             let predictions = BitSet()
             for pair in predPredictions {
-                if pair.pred == SemanticContext.NONE {
+                if pair.pred == SemanticContext.Empty.Instance {
                     try! predictions.set(pair.alt)
                     if !complete {
                         break
@@ -1344,7 +1344,7 @@ open class ParserATNSimulator: ATNSimulator {
                     for i in 0..<length {
                         if configContext.getReturnState(i) == PredictionContext.EMPTY_RETURN_STATE {
                             if fullCtx {
-                                try! configs.add(ATNConfig(config, config.state, PredictionContext.EMPTY), &mergeCache)
+                                try! configs.add(ATNConfig(config, config.state, EmptyPredictionContext.Instance), &mergeCache)
                                 continue
                             } else {
                                 // we have no context info, just chase follow links (if greedy)

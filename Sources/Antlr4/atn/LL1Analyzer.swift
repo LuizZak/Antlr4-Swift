@@ -29,7 +29,6 @@ public class LL1Analyzer {
     /// - returns: the expected symbols for each outgoing transition of `s`.
     /// 
     public func getDecisionLookahead(_ s: ATNState?) -> [IntervalSet?]? {
-        
         guard let s = s else {
              return nil
         }
@@ -40,7 +39,7 @@ public class LL1Analyzer {
             look[alt] = IntervalSet()
             var lookBusy = Set<ATNConfig>()
             let seeThruPreds = false // fail to get lookahead upon pred
-            _LOOK(s.transition(alt).target, nil, PredictionContext.EMPTY,
+            _LOOK(s.transition(alt).target, nil, EmptyPredictionContext.Instance,
                     &lookAlt, &lookBusy, BitSet(), seeThruPreds, false)
             look[alt] = lookAlt
             // Wipe out lookahead for this alternative if we found nothing
@@ -170,7 +169,7 @@ public class LL1Analyzer {
                 return
             }
 
-            if ctx != PredictionContext.EMPTY {
+            if ctx != EmptyPredictionContext.Instance {
                 let removed = try! calledRuleStack.get(s.ruleIndex!)
                 try! calledRuleStack.clear(s.ruleIndex!)
                 defer {

@@ -69,7 +69,7 @@ public class ATNConfig: Hashable, CustomStringConvertible {
     public init(_ state: ATNState,
                 _ alt: Int,
                 _ context: PredictionContext?,
-                _ semanticContext: SemanticContext = SemanticContext.NONE) {
+                _ semanticContext: SemanticContext = SemanticContext.Empty.Instance) {
         self.state = state
         self.alt = alt
         self.context = context
@@ -145,7 +145,7 @@ public class ATNConfig: Hashable, CustomStringConvertible {
         if let context = context {
             buf += ",[\(context)]"
         }
-        if semanticContext != SemanticContext.NONE {
+        if semanticContext != SemanticContext.Empty.Instance {
             buf += ",\(semanticContext)"
         }
         let outerDepth = getOuterContextDepth()

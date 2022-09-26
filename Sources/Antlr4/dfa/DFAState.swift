@@ -83,7 +83,7 @@ public final class DFAState: Hashable, CustomStringConvertible {
 
     public final class PredPrediction: CustomStringConvertible {
         public let pred: SemanticContext
-        // never null; at least SemanticContext.NONE
+        // never null; at least SemanticContext.Empty.Instance
         public let alt: Int
 
         public init(_ pred: SemanticContext, _ alt: Int) {

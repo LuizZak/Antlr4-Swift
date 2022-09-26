@@ -192,7 +192,7 @@ open class JavaScriptParser: JavaScriptParserBase {
     public
     init(_ input: TokenStream, _ state: State) throws {
         self.state = state
-	    RuntimeMetaData.checkVersion("4.10.0", RuntimeMetaData.VERSION)
+	    RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION)
 		try super.init(input)
 		_interp = ParserATNSimulator(
 			self,
