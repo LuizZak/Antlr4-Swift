@@ -16,6 +16,7 @@ class JavaScriptParserTests: XCTestCase {
         // 12.345 (12.345) seconds - after cherry-pick of "Convert Vocabulary and ParseTreeMatch to structs" (90ad3ff6cd8e792fbb65dfd7837c1772972cfa95)
         // 12.689 (12.689) seconds - after cherry-pick of "Removing some dubious operator overloads and simplifying some methods" (0a49b1e7794c001d408fba1fb9f39f64a1addb01)
         // 6.295 (6.295) seconds - after enabling multithreading
+        // 5.519 seconds - in Linux machine
         let urls = try XCTUnwrap(Bundle.module.urls(forResourcesWithExtension: ".js", subdirectory: nil))
 
         let exp = expectation(description: "JSON parsing test")
