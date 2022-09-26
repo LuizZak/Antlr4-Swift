@@ -1,8 +1,8 @@
-/// 
+///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
+///
 
 import Foundation
 
@@ -16,7 +16,6 @@ public class ATNDeserializer {
     }
 
     public func deserialize(_ data: [Int]) throws -> ATN {
-//        let data = str.utf16.map { element in Int(element) }
         var p = 0
 
         let version = data[p]
@@ -50,7 +49,6 @@ public class ATNDeserializer {
 
             let ruleIndex = data[p]
             p += 1
-
             let s = try stateFactory(stype, ruleIndex)!
             if stype == ATNState.LOOP_END {
                 // special case
@@ -106,7 +104,6 @@ public class ATNDeserializer {
             if atn.grammarType == ATNType.lexer {
                 let tokenType = data[p]
                 p += 1
-
                 ruleToTokenType.append(tokenType)
             }
         }
@@ -132,7 +129,7 @@ public class ATNDeserializer {
         // SETS
         //
         var sets = [IntervalSet]()
-        
+
         readSets(data, &p, &sets, readInt)
 
         //
@@ -184,10 +181,8 @@ public class ATNDeserializer {
                 p += 1
                 let data1 = data[p]
                 p += 1
-
                 let data2 = data[p]
                 p += 1
-
                 let lexerAction = lexerActionFactory(actionType, data1, data2)
                 lexerActions.append(lexerAction)
             }
@@ -210,7 +205,7 @@ public class ATNDeserializer {
         for _ in 0..<nsets {
             let nintervals = data[p]
             p += 1
-            var set = IntervalSet()
+            let set = IntervalSet()
             sets.append(set)
 
             let containsEof = (data[p] != 0)

@@ -80,11 +80,11 @@ public class ParserInterpreter: Parser {
         }
 
         // identify the ATN states where pushNewRecursionContext() must be called
-        self.statesNeedingLeftRecursionContext = try! BitSet(atn.states.count)
+        self.statesNeedingLeftRecursionContext = BitSet(atn.states.count)
         for  state in atn.states {
             if let state = state as? StarLoopEntryState {
                 if state.precedenceRuleDecision {
-                    try! self.statesNeedingLeftRecursionContext.set(state.stateNumber)
+                    self.statesNeedingLeftRecursionContext.set(state.stateNumber)
                 }
             }
 
@@ -191,7 +191,7 @@ public class ParserInterpreter: Parser {
         let transition = p.transition(altNum - 1)
         switch transition.getSerializationType() {
         case Transition.EPSILON:
-            if try statesNeedingLeftRecursionContext.get(p.stateNumber) &&
+            if statesNeedingLeftRecursionContext.get(p.stateNumber) &&
                     !(transition.target is LoopEndState) {
                 // We are at the start of a left recursive rule's (...)* loop
                 // but it's not the exit branch of loop.

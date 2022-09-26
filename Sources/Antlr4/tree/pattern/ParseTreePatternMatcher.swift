@@ -127,8 +127,8 @@ public class ParseTreePatternMatcher {
     /// compiled pattern instead of a string representation of a tree pattern.
     /// 
     public func matches(_ tree: ParseTree, _ pattern: ParseTreePattern) throws -> Bool {
-        var labels: MultiMap<String, ParseTree> = MultiMap<String, ParseTree>()
-        let mismatchedNode: ParseTree? = try matchImpl(tree, pattern.getPatternTree(), &labels)
+        let labels: MultiMap<String, ParseTree> = MultiMap<String, ParseTree>()
+        let mismatchedNode: ParseTree? = try matchImpl(tree, pattern.getPatternTree(), labels)
         return mismatchedNode == nil
     }
 
@@ -149,8 +149,8 @@ public class ParseTreePatternMatcher {
     /// string representation of a tree pattern.
     /// 
     public func match(_ tree: ParseTree, _ pattern: ParseTreePattern) throws -> ParseTreeMatch {
-        var labels: MultiMap<String, ParseTree> = MultiMap<String, ParseTree>()
-        let mismatchedNode: ParseTree? = try matchImpl(tree, pattern.getPatternTree(), &labels)
+        let labels: MultiMap<String, ParseTree> = MultiMap<String, ParseTree>()
+        let mismatchedNode: ParseTree? = try matchImpl(tree, pattern.getPatternTree(), labels)
         return ParseTreeMatch(tree, pattern, labels, mismatchedNode)
     }
 
@@ -209,7 +209,7 @@ public class ParseTreePatternMatcher {
     /// 
     internal func matchImpl(_ tree: ParseTree,
                             _ patternTree: ParseTree,
-                            _ labels: inout MultiMap<String, ParseTree>) throws -> ParseTree? {
+                            _ labels: MultiMap<String, ParseTree>) throws -> ParseTree? {
 
         // x and <ID>, x and y, or x and x; or could be mismatched types
         if tree is TerminalNode && patternTree is TerminalNode {
@@ -223,8 +223,8 @@ public class ParseTreePatternMatcher {
                     let tokenTagToken: TokenTagToken = t2.getSymbol() as! TokenTagToken
                     // track label->list-of-nodes for both token name and label (if any)
                     labels.map(tokenTagToken.getTokenName(), tree)
-                    if tokenTagToken.getLabel() != nil {
-                        labels.map(tokenTagToken.getLabel()!, tree)
+                    if let label = tokenTagToken.getLabel() {
+                        labels.map(label, tree)
                     }
                 } else {
                     if t1.getText() == t2.getText() {
@@ -276,7 +276,7 @@ public class ParseTreePatternMatcher {
             }
 
             for i in 0 ..< r1.getChildCount() {
-                if let childMatch = try matchImpl(r1[i], patternTree[i], &labels) {
+                if let childMatch = try matchImpl(r1[i], patternTree[i], labels) {
                     return childMatch
                 }
             }

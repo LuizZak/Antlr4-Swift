@@ -499,7 +499,7 @@ public enum PredictionMode {
         let viableAlts = BitSet()
         for alts in altsets {
             let minAlt = alts.firstSetBit()
-            try! viableAlts.set(minAlt)
+            viableAlts.set(minAlt)
             if viableAlts.cardinality() > 1 {
                 // more than 1 viable alt
                 return ATN.INVALID_ALT_NUMBER

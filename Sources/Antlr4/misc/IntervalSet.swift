@@ -18,10 +18,19 @@
 /// (inclusive).
 /// 
 
-public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
-    public static let COMPLETE_CHAR_SET: IntervalSet = IntervalSet.of(Lexer.MIN_CHAR_VALUE, Lexer.MAX_CHAR_VALUE)
+public class IntervalSet: IntSet, Hashable, CustomStringConvertible {
+    public static let COMPLETE_CHAR_SET: IntervalSet =
+    {
+        let set = IntervalSet.of(Lexer.MIN_CHAR_VALUE, Lexer.MAX_CHAR_VALUE)
+        set.makeReadonly()
+        return set
+    }()
 
-    public static let EMPTY_SET: IntervalSet = IntervalSet()
+    public static let EMPTY_SET: IntervalSet = {
+        let set = IntervalSet()
+        set.makeReadonly()
+        return set
+    }()
 
 
     /// 
@@ -29,11 +38,13 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     /// 
     internal var intervals: [Interval]
 
+    internal var readonly = false
+
     public init(_ intervals: [Interval]) {
         self.intervals = intervals
     }
 
-    public init(_ set: IntervalSet) {
+    public convenience init(_ set: IntervalSet) {
         self.init()
         addAll(set)
     }
@@ -53,12 +64,14 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     /// Create a set with all ints within range [a..b] (inclusive)
     /// 
     public static func of(_ a: Int, _ b: Int) -> IntervalSet {
-        var s = IntervalSet()
+        let s = IntervalSet()
         s.add(a, b)
         return s
     }
 
-    public mutating func clear() {
+    public func clear() throws {
+        precondition(!readonly, "can't alter readonly IntervalSet")
+        
         intervals.removeAll()
     }
 
@@ -67,7 +80,9 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     /// as a range el..el.
     /// 
 
-    public mutating func add(_ el: Int) {
+    public func add(_ el: Int) {
+        precondition(!readonly, "can't alter readonly IntervalSet")
+        
         add(el, el)
     }
 
@@ -79,12 +94,14 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     /// If this is {1..5, 10..20}, adding 6..7 yields
     /// {1..5, 6..7, 10..20}.  Adding 4..8 yields {1..8, 10..20}.
     /// 
-    public mutating func add(_ a: Int, _ b: Int) {
+    public func add(_ a: Int, _ b: Int) {
         add(Interval.of(a, b))
     }
 
     // copy on write so we can cache a..a intervals and sets of that
-    internal mutating func add(_ addition: Interval) {
+    internal func add(_ addition: Interval) {
+        precondition(!readonly, "can't alter readonly IntervalSet")
+        
         if addition.b < addition.a {
             return
         }
@@ -143,7 +160,7 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     /// combine all sets in the array returned the or'd value
     /// 
     public func or(_ sets: [IntervalSet]) -> IntSet {
-        var r = IntervalSet()
+        let r = IntervalSet()
         for s in sets {
             r.addAll(s)
         }
@@ -151,7 +168,7 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     }
 
     @discardableResult
-    public mutating func addAll(_ set: IntSet?) -> IntSet {
+    public func addAll(_ set: IntSet?) -> IntSet {
 
         guard let set = set else {
              return self
@@ -195,7 +212,7 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     }
 
 
-    public mutating func subtract(_ a: IntSet?) -> IntSet {
+    public func subtract(_ a: IntSet?) -> IntSet {
         guard let a = a, !a.isNil() else {
             return IntervalSet(self)
         }
@@ -203,7 +220,7 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
             return subtract(self, a)
         }
 
-        var other = IntervalSet()
+        let other = IntervalSet()
         other.addAll(a)
         return subtract(self, other)
     }
@@ -214,13 +231,13 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     /// `null`, it is treated as though it was an empty set.
     /// 
 
-    public mutating func subtract(_ left: IntervalSet?, _ right: IntervalSet?) -> IntervalSet {
+    public func subtract(_ left: IntervalSet?, _ right: IntervalSet?) -> IntervalSet {
 
         guard let left = left, !left.isNil() else {
             return IntervalSet()
         }
 
-        var result = IntervalSet(left)
+        let result = IntervalSet(left)
 
         guard let right = right, !right.isNil() else {
             // right set has no elements; just return the copy of the current set
@@ -291,7 +308,7 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
 
 
     public func or(_ a: IntSet) -> IntSet {
-        var o = IntervalSet()
+        let o = IntervalSet()
         o.addAll(self)
         o.addAll(a)
         return o
@@ -630,7 +647,9 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
         return -1
     }
 
-    public mutating func remove(_ el: Int) {
+    public func remove(_ el: Int) {
+        precondition(!readonly, "can't alter readonly IntervalSet")
+        
         var idx = intervals.startIndex
         while idx < intervals.endIndex {
             defer { intervals.formIndex(after: &idx) }
@@ -670,6 +689,14 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
                 add(el + 1, oldb) // add [x+1..b]
             }
         }
+    }
+
+    public func isReadonly() -> Bool {
+        return readonly
+    }
+
+    public func makeReadonly() {
+        readonly = true
     }
 }
 

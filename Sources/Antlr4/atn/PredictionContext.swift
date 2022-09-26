@@ -1,64 +1,61 @@
-/// 
+///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
+///
 
 
 import Foundation
-import CAntlrShims
 
 public class PredictionContext: Hashable, CustomStringConvertible {
-    private static let _globalNodeCount: AtomicInt = AtomicInt()
-    
-    /// 
-    /// Represents `$` in local context prediction, which means wildcard.
-    /// `+x = *`.
-    /// 
-    public static let EMPTY = EmptyPredictionContext()
-
-    /// 
+    ///
     /// Represents `$` in an array in full context mode, when `$`
     /// doesn't mean wildcard: `$ + x = [$,x]`. Here,
     /// `$` = _#EMPTY_RETURN_STATE_.
-    /// 
+    ///
     public static let EMPTY_RETURN_STATE = Int(Int32.max)
 
     private static let INITIAL_HASH = UInt32(1)
 
-    public final let id: Int = PredictionContext._globalNodeCount.increment()
+    public static var globalNodeCount = 0
 
-    /// 
+    public final let id: Int = {
+        let oldGlobalNodeCount = globalNodeCount
+        globalNodeCount += 1
+        return oldGlobalNodeCount
+    }()
+
+    ///
     /// Stores the computed hash code of this _org.antlr.v4.runtime.atn.PredictionContext_. The hash
     /// code is computed in parts to match the following reference algorithm.
-    /// 
-    /// 
+    ///
+    ///
     /// private int referenceHashCode() {
     /// int hash = _org.antlr.v4.runtime.misc.MurmurHash#initialize MurmurHash.initialize_(_#INITIAL_HASH_);
-    /// 
+    ///
     /// for (int i = 0; i &lt; _#size()_; i++) {
     /// hash = _org.antlr.v4.runtime.misc.MurmurHash#update MurmurHash.update_(hash, _#getParent getParent_(i));
     /// }
-    /// 
+    ///
     /// for (int i = 0; i &lt; _#size()_; i++) {
     /// hash = _org.antlr.v4.runtime.misc.MurmurHash#update MurmurHash.update_(hash, _#getReturnState getReturnState_(i));
     /// }
-    /// 
+    ///
     /// hash = _org.antlr.v4.runtime.misc.MurmurHash#finish MurmurHash.finish_(hash, 2 * _#size()_);
     /// return hash;
     /// }
-    /// 
-    /// 
+    ///
+    ///
     public let cachedHashCode: Int
 
     init(_ cachedHashCode: Int) {
         self.cachedHashCode = cachedHashCode
     }
 
-    /// 
+    ///
     /// Convert a _org.antlr.v4.runtime.RuleContext_ tree to a _org.antlr.v4.runtime.atn.PredictionContext_ graph.
     /// Return _#EMPTY_ if `outerContext` is empty or null.
-    /// 
+    ///
     public static func fromRuleContext(_ atn: ATN, _ outerContext: RuleContext?) -> PredictionContext {
         let _outerContext = outerContext ?? ParserRuleContext.EMPTY
 
@@ -91,9 +88,9 @@ public class PredictionContext: Hashable, CustomStringConvertible {
     }
 
 
-    /// 
+    ///
     /// This means only the _#EMPTY_ context is in set.
-    /// 
+    ///
     public func isEmpty() -> Bool {
         return self === EmptyPredictionContext.Instance
     }
@@ -173,33 +170,33 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                 rootIsWildcard, &mergeCache)
     }
 
-    /// 
+    ///
     /// Merge two _org.antlr.v4.runtime.atn.SingletonPredictionContext_ instances.
-    /// 
+    ///
     /// Stack tops equal, parents merge is same; return left graph.
-    /// 
-    /// 
+    ///
+    ///
     /// Same stack top, parents differ; merge parents giving array node, then
     /// remainders of those graphs. A new root node is created to point to the
     /// merged parents.
-    /// 
-    /// 
+    ///
+    ///
     /// Different stack tops pointing to same parent. Make array node for the
     /// root where both element in the root point to the same (original)
     /// parent.
-    /// 
-    /// 
+    ///
+    ///
     /// Different stack tops pointing to different parents. Make array node for
     /// the root where each element points to the corresponding original
     /// parent.
-    /// 
-    /// 
+    ///
+    ///
     /// - parameter a: the first _org.antlr.v4.runtime.atn.SingletonPredictionContext_
     /// - parameter b: the second _org.antlr.v4.runtime.atn.SingletonPredictionContext_
     /// - parameter rootIsWildcard: `true` if this is a local-context merge,
     /// otherwise false to indicate a full-context merge
     /// - parameter mergeCache:
-    /// 
+    ///
     public static func mergeSingletons(
         _ a: SingletonPredictionContext,
         _ b: SingletonPredictionContext,
@@ -208,20 +205,18 @@ public class PredictionContext: Hashable, CustomStringConvertible {
 
             if let mergeCache = mergeCache {
                 var previous = mergeCache.get(a, b)
-                if previous != nil {
-                    return previous!
+                if let previous = previous {
+                    return previous
                 }
                 previous = mergeCache.get(b, a)
-                if previous != nil {
-                    return previous!
+                if let previous = previous {
+                    return previous
                 }
             }
 
 
             if let rootMerge = mergeRoot(a, b, rootIsWildcard) {
-                if mergeCache != nil {
-                    mergeCache!.put(a, b, rootMerge)
-                }
+                mergeCache?.put(a, b, rootMerge)
                 return rootMerge
             }
 
@@ -240,9 +235,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                 // of those graphs.  dup a, a' points at merged array
                 // new joined parent so create new singleton pointing to it, a'
                 let a_ = SingletonPredictionContext.create(parent, a.returnState);
-                if mergeCache != nil {
-                    mergeCache!.put(a, b, a_)
-                }
+                mergeCache?.put(a, b, a_)
                 return a_
             } else {
                 // a != b payloads differ
@@ -253,7 +246,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                     // ax + bx = [a,b]x
                     singleParent = a.parent
                 }
-                if singleParent != nil {
+                if let singleParent = singleParent {
                     // parents are same
                     // sort payloads and use same parent
                     var payloads = [a.returnState, b.returnState]
@@ -263,9 +256,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                     }
                     let parents = [singleParent, singleParent]
                     let a_ = ArrayPredictionContext(parents, payloads)
-                    if mergeCache != nil {
-                        mergeCache!.put(a, b, a_)
-                    }
+                    mergeCache?.put(a, b, a_)
                     return a_
                 }
                 // parents differ and can't merge them. Just pack together
@@ -283,51 +274,49 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                     // print("parent is null")
                 }
                 let a_ = ArrayPredictionContext(parents, payloads)
-                if mergeCache != nil {
-                    mergeCache!.put(a, b, a_)
-                }
+                mergeCache?.put(a, b, a_)
                 return a_
             }
     }
 
-    /// 
+    ///
     /// Handle case where at least one of `a` or `b` is
     /// _#EMPTY_. In the following diagrams, the symbol `$` is used
     /// to represent _#EMPTY_.
-    /// 
+    ///
     /// Local-Context Merges
-    /// 
+    ///
     /// These local-context merge operations are used when `rootIsWildcard`
     /// is true.
-    /// 
+    ///
     /// _#EMPTY_ is superset of any graph; return _#EMPTY_.
-    /// 
-    /// 
+    ///
+    ///
     /// _#EMPTY_ and anything is `#EMPTY`, so merged parent is
     /// `#EMPTY`; return left graph.
-    /// 
-    /// 
+    ///
+    ///
     /// Special case of last merge if local context.
-    /// 
-    /// 
+    ///
+    ///
     /// Full-Context Merges
-    /// 
+    ///
     /// These full-context merge operations are used when `rootIsWildcard`
     /// is false.
-    /// 
-    /// 
-    /// 
+    ///
+    ///
+    ///
     /// Must keep all contexts; _#EMPTY_ in array is a special value (and
     /// null parent).
-    /// 
-    /// 
-    /// 
-    /// 
+    ///
+    ///
+    ///
+    ///
     /// - parameter a: the first _org.antlr.v4.runtime.atn.SingletonPredictionContext_
     /// - parameter b: the second _org.antlr.v4.runtime.atn.SingletonPredictionContext_
     /// - parameter rootIsWildcard: `true` if this is a local-context merge,
     /// otherwise false to indicate a full-context merge
-    /// 
+    ///
     public static func mergeRoot(_ a: SingletonPredictionContext,
         _ b: SingletonPredictionContext,
         _ rootIsWildcard: Bool) -> PredictionContext? {
@@ -360,40 +349,33 @@ public class PredictionContext: Hashable, CustomStringConvertible {
             return nil
     }
 
-    /// 
+    ///
     /// Merge two _org.antlr.v4.runtime.atn.ArrayPredictionContext_ instances.
-    /// 
+    ///
     /// Different tops, different parents.
-    /// 
-    /// 
+    ///
+    ///
     /// Shared top, same parents.
-    /// 
-    /// 
+    ///
+    ///
     /// Shared top, different parents.
-    /// 
-    /// 
+    ///
+    ///
     /// Shared top, all shared parents.
-    /// 
-    /// 
+    ///
+    ///
     /// Equal tops, merge parents and reduce top to
     /// _org.antlr.v4.runtime.atn.SingletonPredictionContext_.
-    /// 
-    /// 
+    ///
+    ///
     public static func mergeArrays(
         _ a: ArrayPredictionContext,
         _ b: ArrayPredictionContext,
         _ rootIsWildcard: Bool,
         _ mergeCache: inout DoubleKeyMap<PredictionContext, PredictionContext, PredictionContext>?) -> PredictionContext {
 
-            if mergeCache != nil {
-                var previous = mergeCache!.get(a, b)
-                if previous != nil {
-                    return previous!
-                }
-                previous = mergeCache!.get(b, a)
-                if previous != nil {
-                    return previous!
-                }
+            if let previous = mergeCache?.get(a, b) ?? mergeCache?.get(b, a) {
+                return previous
             }
 
             // merge sorted payloads a + b => M
@@ -422,7 +404,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                     let payload = aReturnStates[i]
                     // $+$ = $
                     let both$ = ((payload == EMPTY_RETURN_STATE) && a_parent == nil && b_parent == nil)
-                    let ax_ax = (a_parent != nil && b_parent != nil && a_parent! == b_parent!)
+                    let ax_ax = (a_parent != nil && b_parent != nil && a_parent == b_parent)
 
                     if both$ || ax_ax {
                         mergedParents[k] = a_parent // choose left
@@ -471,9 +453,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
                 if k == 1 {
                     // for just one merged element, return singleton top
                     let a_ = SingletonPredictionContext.create(mergedParents[0], mergedReturnStates[0])
-                    if mergeCache != nil {
-                        mergeCache!.put(a, b, a_)
-                    }
+                    mergeCache?.put(a, b, a_)
                     //print("merge array 1 \(a_)")
                     return a_
                 }
@@ -486,15 +466,11 @@ public class PredictionContext: Hashable, CustomStringConvertible {
             // if we created same array as a or b, return that instead
             // TODO: track whether this is possible above during merge sort for speed
             if M == a {
-                if mergeCache != nil {
-                    mergeCache!.put(a, b, a)
-                }
+                mergeCache?.put(a, b, a)
                 return a
             }
             if M == b {
-                if mergeCache != nil {
-                    mergeCache!.put(a, b, b)
-                }
+                mergeCache?.put(a, b, b)
                 return b
             }
 
@@ -502,9 +478,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
             //combineCommonParents(&mergedParents)
             M.combineCommonParents()
 
-            if mergeCache != nil {
-                mergeCache!.put(a, b, M)
-            }
+            mergeCache?.put(a, b, M)
             // print("merge array 4 \(M)")
             return M
     }
@@ -550,7 +524,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         }
 
         for current in nodes {
-            if current === EMPTY {
+            if current === EmptyPredictionContext.Instance {
                 continue
             }
             let length = current.size()
@@ -593,12 +567,12 @@ public class PredictionContext: Hashable, CustomStringConvertible {
         var parents = [PredictionContext?](repeating: nil, count: context.size())
         let length = parents.count
         for i in 0..<length {
-            if context.getParent(i) == nil {
+            guard let p = context.getParent(i) else {
                 return context
             }
 
-            let parent = getCachedContext(context.getParent(i)!, contextCache, &visited)
-            if changed || parent !== context.getParent(i) {
+            let parent = getCachedContext(p, contextCache, &visited)
+            if changed || parent !== p {
                 if !changed {
                     parents = [PredictionContext?](repeating: nil, count: context.size())
 
@@ -621,7 +595,7 @@ public class PredictionContext: Hashable, CustomStringConvertible {
 
         let updated: PredictionContext
         if parents.isEmpty {
-            updated = EMPTY
+            updated = EmptyPredictionContext.Instance
         }
         else if parents.count == 1 {
             updated = SingletonPredictionContext.create(parents[0], context.getReturnState(0))

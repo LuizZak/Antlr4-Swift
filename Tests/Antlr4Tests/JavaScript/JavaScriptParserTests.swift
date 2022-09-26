@@ -17,6 +17,7 @@ class JavaScriptParserTests: XCTestCase {
         // 12.689 (12.689) seconds - after cherry-pick of "Removing some dubious operator overloads and simplifying some methods" (0a49b1e7794c001d408fba1fb9f39f64a1addb01)
         // 6.295 (6.295) seconds - after enabling multithreading
         // 5.519 seconds - in Linux machine
+        // 5.698 - After upstream re-merge; replacing 'throw's with 'precondition's
         let urls = try XCTUnwrap(Bundle.module.urls(forResourcesWithExtension: ".js", subdirectory: nil))
 
         let exp = expectation(description: "JSON parsing test")
@@ -28,13 +29,13 @@ class JavaScriptParserTests: XCTestCase {
             let url = url as URL
             let outputUrl = _findOutputPath(url)
 
-            //queue.addOperation {
+            queue.addOperation {
                 do {
                     try self._runTest(inputUrl: url, outputUrl: outputUrl, record: false)
                 } catch {
 
                 }
-            //}
+            }
         }
 
         queue.addBarrierBlock {

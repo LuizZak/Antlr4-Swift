@@ -84,6 +84,7 @@ public class ATN {
         }
         let intervalSet = nextTokens(s, nil)
         s.nextTokenWithinRule = intervalSet
+        intervalSet.makeReadonly()
         return intervalSet
     }
 
@@ -149,7 +150,7 @@ public class ATN {
             return following
         }
 
-        var expected = IntervalSet()
+        let expected = IntervalSet()
         expected.addAll(following)
         expected.remove(CommonToken.EPSILON)
 

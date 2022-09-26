@@ -31,7 +31,7 @@ extension String {
     }
 }
 
-/*
+
 // Implement Substring.hasPrefix, which is not currently in the Linux stdlib.
 // https://bugs.swift.org/browse/SR-5627
 #if os(Linux)
@@ -41,4 +41,3 @@ extension Substring {
     }
 }
 #endif
-*/

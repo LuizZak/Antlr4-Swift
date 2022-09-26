@@ -1,8 +1,8 @@
-/// 
+///
 /// Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 /// Use of this file is governed by the BSD 3-clause license that
 /// can be found in the LICENSE.txt file in the project root.
-/// 
+///
 
 
 
@@ -18,13 +18,13 @@ public class SingletonPredictionContext: PredictionContext {
         self.returnState = returnState
 
 
-        super.init(parent != nil ? PredictionContext.calculateHashCode(parent!, returnState) : PredictionContext.calculateEmptyHashCode())
+        super.init(parent.map { PredictionContext.calculateHashCode($0, returnState) } ?? PredictionContext.calculateEmptyHashCode())
     }
 
     public static func create(_ parent: PredictionContext?, _ returnState: Int) -> SingletonPredictionContext {
         if returnState == PredictionContext.EMPTY_RETURN_STATE && parent == nil {
             // someone can pass in the bits of an array ctx that mean $
-            return PredictionContext.EMPTY
+            return EmptyPredictionContext.Instance
         }
         return SingletonPredictionContext(parent, returnState)
     }
@@ -71,7 +71,7 @@ public func ==(lhs: SingletonPredictionContext, rhs: SingletonPredictionContext)
     if lhs.returnState != rhs.returnState {
         return false
     }
-    
+
     return lhs.parent == rhs.parent
 }
 

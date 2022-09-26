@@ -13,7 +13,6 @@ extension Array {
         return self + addArray
     }
 
-    @inlinable
     mutating func removeObject<T:Equatable>(_ object: T) {
         var index: Int?
         for (idx, objectToCompare) in self.enumerated() {
@@ -37,7 +36,6 @@ extension Array {
     /// 
     /// :returns: The removed element
     /// 
-    @inlinable
     mutating func pop() -> Element {
         return removeLast()
     }
@@ -46,7 +44,6 @@ extension Array {
     /// 
     /// :param: newElement Element to append
     /// 
-    @inlinable
     mutating func push(_ newElement: Element) {
         return append(newElement)
     }
@@ -68,9 +65,14 @@ extension Array {
     /// :param: test Function to call for each element
     /// :returns: True if test returns true for all the elements in self
     /// 
-    @inlinable
     func every(_ test: (Element) -> Bool) -> Bool {
-        allSatisfy(test)
+        for item in self {
+            if !test(item) {
+                return false
+            }
+        }
+
+        return true
     }
 
     /// 
@@ -79,9 +81,14 @@ extension Array {
     /// :param: test Function to call for each element
     /// :returns: true if test returns true for any element of self
     /// 
-    @inlinable
     func any(_ test: (Element) -> Bool) -> Bool {
-        contains(where: test)
+        for item in self {
+            if test(item) {
+                return true
+            }
+        }
+
+        return false
     }
 
 
