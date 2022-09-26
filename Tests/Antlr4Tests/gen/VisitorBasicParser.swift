@@ -1,10 +1,10 @@
-// Generated from VisitorBasic.g4 by ANTLR 4.9.3
+// Generated from java-escape by ANTLR 4.11.1
 import Antlr4
 
 open class VisitorBasicParser: Parser {
 
-	internal static var _decisionToDFA: [DFAParser] = {
-          var decisionToDFA = [DFAParser]()
+	internal static var _decisionToDFA: [DFA] = {
+          var decisionToDFA = [DFA]()
           let length = VisitorBasicParser._ATN.getNumberOfDecisions()
           for i in 0..<length {
             decisionToDFA.append(DFA(VisitorBasicParser._ATN.getDecisionState(i)!, i))
@@ -37,13 +37,13 @@ open class VisitorBasicParser: Parser {
 	static let VOCABULARY = Vocabulary(_LITERAL_NAMES, _SYMBOLIC_NAMES)
 
 	override open
-	func getGrammarFileName() -> String { return "VisitorBasic.g4" }
+	func getGrammarFileName() -> String { return "java-escape" }
 
 	override open
 	func getRuleNames() -> [String] { return VisitorBasicParser.ruleNames }
 
 	override open
-	func getSerializedATN() -> String { return VisitorBasicParser._serializedATN }
+	func getSerializedATN() -> [Int] { return VisitorBasicParser._serializedATN }
 
 	override open
 	func getATN() -> ATN { return VisitorBasicParser._ATN }
@@ -56,7 +56,7 @@ open class VisitorBasicParser: Parser {
 
 	override public
 	init(_ input:TokenStream) throws {
-	    RuntimeMetaData.checkVersion("4.9.3", RuntimeMetaData.VERSION)
+	    RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION)
 		try super.init(input)
 		_interp = ParserATNSimulator(self,VisitorBasicParser._ATN,VisitorBasicParser._decisionToDFA, VisitorBasicParser._sharedContextCache)
 	}
@@ -102,7 +102,8 @@ open class VisitorBasicParser: Parser {
 	}
 	@discardableResult
 	 open func s() throws -> SContext {
-		let _localctx: SContext = SContext(_ctx, getState())
+		var _localctx: SContext
+		_localctx = SContext(_ctx, getState())
 		try enterRule(_localctx, 0, VisitorBasicParser.RULE_s)
 		defer {
 	    		try! exitRule()
@@ -124,10 +125,11 @@ open class VisitorBasicParser: Parser {
 		return _localctx
 	}
 
+	static let _serializedATN:[Int] = [
+		4,1,1,6,2,0,7,0,1,0,1,0,1,0,1,0,0,0,1,0,0,0,4,0,2,1,0,0,0,2,3,5,1,0,0,
+		3,4,5,0,0,1,4,1,1,0,0,0,0
+	]
 
 	public
-	static let _serializedATN = VisitorBasicParserATN().jsonString
-
-	public
-	static let _ATN = ATNDeserializer().deserializeFromJson(_serializedATN)
+	static let _ATN = try! ATNDeserializer().deserialize(_serializedATN)
 }

@@ -1,36 +1,16 @@
-// Generated from VisitorCalc.g4 by ANTLR 4.9.3
+// Generated from java-escape by ANTLR 4.11.1
 import Antlr4
 
 open class VisitorCalcParser: Parser {
 
-    public class State {
-        public let _ATN: ATN = ATNDeserializer().deserializeFromJson(_serializedATN)
-        
-        internal var _decisionToDFA: [DFAParser]
-        internal let _sharedContextCache: PredictionContextCache = PredictionContextCache()
-        // let atnConfigPool = ParserATNConfigPool()
-        
-        public init() {
-            var decisionToDFA = [DFAParser]()
-            let length = _ATN.getNumberOfDecisions()
-            for i in 0..<length {
-                decisionToDFA.append(DFA(_ATN.getDecisionState(i)!, i))
-            }
-            _decisionToDFA = decisionToDFA
-        }
-    }
-    
-    public var _ATN: ATN {
-        return state._ATN
-    }
-    internal var _decisionToDFA: [DFAParser] {
-        return state._decisionToDFA
-    }
-    internal var _sharedContextCache: PredictionContextCache {
-        return state._sharedContextCache
-    }
-    
-    public var state: State
+	internal static var _decisionToDFA: [DFA] = {
+          var decisionToDFA = [DFA]()
+          let length = VisitorCalcParser._ATN.getNumberOfDecisions()
+          for i in 0..<length {
+            decisionToDFA.append(DFA(VisitorCalcParser._ATN.getDecisionState(i)!, i))
+           }
+           return decisionToDFA
+     }()
 
 	internal static let _sharedContextCache = PredictionContextCache()
 
@@ -57,40 +37,29 @@ open class VisitorCalcParser: Parser {
 	static let VOCABULARY = Vocabulary(_LITERAL_NAMES, _SYMBOLIC_NAMES)
 
 	override open
-	func getGrammarFileName() -> String { return "VisitorCalc.g4" }
+	func getGrammarFileName() -> String { return "java-escape" }
 
 	override open
 	func getRuleNames() -> [String] { return VisitorCalcParser.ruleNames }
 
 	override open
-	func getSerializedATN() -> String { return VisitorCalcParser._serializedATN }
+	func getSerializedATN() -> [Int] { return VisitorCalcParser._serializedATN }
 
 	override open
-	func getATN() -> ATN { return _ATN }
+	func getATN() -> ATN { return VisitorCalcParser._ATN }
 
 
 	override open
 	func getVocabulary() -> Vocabulary {
 	    return VisitorCalcParser.VOCABULARY
 	}
-    
-    override public convenience
-    init(_ input: TokenStream) throws {
-        try self.init(input, State())
-    }
-    
-    public
-    init(_ input: TokenStream, _ state: State) throws {
-        self.state = state
-        RuntimeMetaData.checkVersion("4.9.3", RuntimeMetaData.VERSION)
-        try super.init(input)
-        _interp = ParserATNSimulator(
-			self,
-			_ATN,
-			_decisionToDFA,
-			_sharedContextCache //, atnConfigPool: state.atnConfigPool
-		)
-    }
+
+	override public
+	init(_ input:TokenStream) throws {
+	    RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION)
+		try super.init(input)
+		_interp = ParserATNSimulator(self,VisitorCalcParser._ATN,VisitorCalcParser._decisionToDFA, VisitorCalcParser._sharedContextCache)
+	}
 
 
 	public class SContext: ParserRuleContext {
@@ -133,7 +102,8 @@ open class VisitorCalcParser: Parser {
 	}
 	@discardableResult
 	 open func s() throws -> SContext {
-		let _localctx: SContext = SContext(_ctx, getState())
+		var _localctx: SContext
+		_localctx = SContext(_ctx, getState())
 		try enterRule(_localctx, 0, VisitorCalcParser.RULE_s)
 		defer {
 	    		try! exitRule()
@@ -302,7 +272,8 @@ open class VisitorCalcParser: Parser {
 	private func expr(_ _p: Int) throws -> ExprContext   {
 		let _parentctx: ParserRuleContext? = _ctx
 		let _parentState: Int = getState()
-		var _localctx: ExprContext = ExprContext(_ctx, _parentState)
+		var _localctx: ExprContext
+		_localctx = ExprContext(_ctx, _parentState)
 		let _startState: Int = 2
 		try enterRecursionRule(_localctx, 2, VisitorCalcParser.RULE_expr, _p)
 		var _la: Int = 0
@@ -339,11 +310,7 @@ open class VisitorCalcParser: Parser {
 						}
 						setState(11)
 						_la = try _input.LA(1)
-						if (!(//closure
-						 { () -> Bool in
-						      let testSet: Bool = _la == VisitorCalcParser.Tokens.MUL.rawValue || _la == VisitorCalcParser.Tokens.DIV.rawValue
-						      return testSet
-						 }())) {
+						if (!(_la == VisitorCalcParser.Tokens.MUL.rawValue || _la == VisitorCalcParser.Tokens.DIV.rawValue)) {
 						try _errHandler.recoverInline(self)
 						}
 						else {
@@ -363,11 +330,7 @@ open class VisitorCalcParser: Parser {
 						}
 						setState(14)
 						_la = try _input.LA(1)
-						if (!(//closure
-						 { () -> Bool in
-						      let testSet: Bool = _la == VisitorCalcParser.Tokens.ADD.rawValue || _la == VisitorCalcParser.Tokens.SUB.rawValue
-						      return testSet
-						 }())) {
+						if (!(_la == VisitorCalcParser.Tokens.ADD.rawValue || _la == VisitorCalcParser.Tokens.SUB.rawValue)) {
 						try _errHandler.recoverInline(self)
 						}
 						else {
@@ -413,7 +376,16 @@ open class VisitorCalcParser: Parser {
 		}
 	}
 
+	static let _serializedATN:[Int] = [
+		4,1,6,22,2,0,7,0,2,1,7,1,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+		1,5,1,17,8,1,10,1,12,1,20,9,1,1,1,0,1,2,2,0,2,0,2,1,0,2,3,1,0,4,5,21,0,
+		4,1,0,0,0,2,7,1,0,0,0,4,5,3,2,1,0,5,6,5,0,0,1,6,1,1,0,0,0,7,8,6,1,-1,0,
+		8,9,5,1,0,0,9,18,1,0,0,0,10,11,10,2,0,0,11,12,7,0,0,0,12,17,3,2,1,3,13,
+		14,10,1,0,0,14,15,7,1,0,0,15,17,3,2,1,2,16,10,1,0,0,0,16,13,1,0,0,0,17,
+		20,1,0,0,0,18,16,1,0,0,0,18,19,1,0,0,0,19,3,1,0,0,0,20,18,1,0,0,0,2,16,
+		18
+	]
 
 	public
-	static let _serializedATN = VisitorCalcParserATN().jsonString
+	static let _ATN = try! ATNDeserializer().deserialize(_serializedATN)
 }

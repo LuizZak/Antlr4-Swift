@@ -593,10 +593,7 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
         for interval in intervals {
             let a = interval.a
             let b = interval.b
-
-            for v in a...b  {
-                values.append(v)
-            }
+            values.append(contentsOf: a...b)
         }
         return values
     }
@@ -634,7 +631,17 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
     }
 
     public mutating func remove(_ el: Int) {
-        for (i, interval) in intervals.enumerated() {
+        var idx = intervals.startIndex
+        while idx < intervals.endIndex {
+            defer { intervals.formIndex(after: &idx) }
+            var interval: Interval {
+                get {
+                    return intervals[idx]
+                }
+                set {
+                    intervals[idx] = newValue
+                }
+            } 
             let a = interval.a
             let b = interval.b
             if el < a {
@@ -642,24 +649,24 @@ public struct IntervalSet: IntSet, Hashable, CustomStringConvertible {
             }
             // if whole interval x..x, rm
             if el == a && el == b {
-                intervals.remove(at: i)
+                intervals.remove(at: idx)
                 break
             }
             // if on left edge x..b, adjust left
             if el == a {
-                intervals[i].a += 1
+                interval.a += 1
                 break
             }
             // if on right edge a..x, adjust right
             if el == b {
-                intervals[i].b -= 1
+                interval.b -= 1
                 break
             }
             // if in middle a..x..b, split interval
             if el > a && el < b {
                 // found in this interval
                 let oldb = interval.b
-                intervals[i].b = el - 1      // [a..x-1]
+                interval.b = el - 1      // [a..x-1]
                 add(el + 1, oldb) // add [x+1..b]
             }
         }

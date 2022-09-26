@@ -1,10 +1,10 @@
-// Generated from VisitorBasic.g4 by ANTLR 4.9.3
+// Generated from java-escape by ANTLR 4.11.1
 import Antlr4
 
 open class VisitorBasicLexer: Lexer {
 
-	internal static var _decisionToDFA: [DFALexer] = {
-          var decisionToDFA = [DFALexer]()
+	internal static var _decisionToDFA: [DFA] = {
+          var decisionToDFA = [DFA]()
           let length = VisitorBasicLexer._ATN.getNumberOfDecisions()
           for i in 0..<length {
           	    decisionToDFA.append(DFA(VisitorBasicLexer._ATN.getDecisionState(i)!, i))
@@ -49,7 +49,7 @@ open class VisitorBasicLexer: Lexer {
 
 	public
 	required init(_ input: CharStream) {
-	    RuntimeMetaData.checkVersion("4.9.3", RuntimeMetaData.VERSION)
+	    RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION)
 		super.init(input)
 		_interp = LexerATNSimulator(self, VisitorBasicLexer._ATN, VisitorBasicLexer._decisionToDFA, VisitorBasicLexer._sharedContextCache)
 	}
@@ -61,7 +61,7 @@ open class VisitorBasicLexer: Lexer {
 	func getRuleNames() -> [String] { return VisitorBasicLexer.ruleNames }
 
 	override open
-	func getSerializedATN() -> String { return VisitorBasicLexer._serializedATN }
+	func getSerializedATN() -> [Int] { return VisitorBasicLexer._serializedATN }
 
 	override open
 	func getChannelNames() -> [String] { return VisitorBasicLexer.channelNames }
@@ -72,10 +72,11 @@ open class VisitorBasicLexer: Lexer {
 	override open
 	func getATN() -> ATN { return VisitorBasicLexer._ATN }
 
+	static let _serializedATN:[Int] = [
+		4,0,1,5,6,-1,2,0,7,0,1,0,1,0,0,0,1,1,1,1,0,0,4,0,1,1,0,0,0,1,3,1,0,0,0,
+		3,4,5,65,0,0,4,2,1,0,0,0,1,0,0
+	]
 
 	public
-	static let _serializedATN: String = VisitorBasicLexerATN().jsonString
-
-	public
-	static let _ATN: ATN = ATNDeserializer().deserializeFromJson(_serializedATN)
+	static let _ATN: ATN = try! ATNDeserializer().deserialize(_serializedATN)
 }

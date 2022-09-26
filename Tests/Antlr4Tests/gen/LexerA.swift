@@ -1,10 +1,10 @@
-// Generated from LexerA.g4 by ANTLR 4.9.3
+// Generated from java-escape by ANTLR 4.11.1
 import Antlr4
 
 open class LexerA: Lexer {
 
-	internal static var _decisionToDFA: [DFALexer] = {
-          var decisionToDFA = [DFALexer]()
+	internal static var _decisionToDFA: [DFA] = {
+          var decisionToDFA = [DFA]()
           let length = LexerA._ATN.getNumberOfDecisions()
           for i in 0..<length {
           	    decisionToDFA.append(DFA(LexerA._ATN.getDecisionState(i)!, i))
@@ -49,7 +49,7 @@ open class LexerA: Lexer {
 
 	public
 	required init(_ input: CharStream) {
-	    RuntimeMetaData.checkVersion("4.9.3", RuntimeMetaData.VERSION)
+	    RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION)
 		super.init(input)
 		_interp = LexerATNSimulator(self, LexerA._ATN, LexerA._decisionToDFA, LexerA._sharedContextCache)
 	}
@@ -61,7 +61,7 @@ open class LexerA: Lexer {
 	func getRuleNames() -> [String] { return LexerA.ruleNames }
 
 	override open
-	func getSerializedATN() -> String { return LexerA._serializedATN }
+	func getSerializedATN() -> [Int] { return LexerA._serializedATN }
 
 	override open
 	func getChannelNames() -> [String] { return LexerA.channelNames }
@@ -72,10 +72,13 @@ open class LexerA: Lexer {
 	override open
 	func getATN() -> ATN { return LexerA._ATN }
 
+	static let _serializedATN:[Int] = [
+		4,0,3,13,6,-1,2,0,7,0,2,1,7,1,2,2,7,2,1,0,1,0,1,1,1,1,1,2,1,2,0,0,3,1,
+		1,3,2,5,3,1,0,0,12,0,1,1,0,0,0,0,3,1,0,0,0,0,5,1,0,0,0,1,7,1,0,0,0,3,9,
+		1,0,0,0,5,11,1,0,0,0,7,8,5,97,0,0,8,2,1,0,0,0,9,10,5,98,0,0,10,4,1,0,0,
+		0,11,12,5,99,0,0,12,6,1,0,0,0,1,0,0
+	]
 
 	public
-	static let _serializedATN: String = LexerAATN().jsonString
-
-	public
-	static let _ATN: ATN = ATNDeserializer().deserializeFromJson(_serializedATN)
+	static let _ATN: ATN = try! ATNDeserializer().deserialize(_serializedATN)
 }

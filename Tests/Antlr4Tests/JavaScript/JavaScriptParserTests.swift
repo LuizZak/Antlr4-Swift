@@ -28,13 +28,13 @@ class JavaScriptParserTests: XCTestCase {
             let url = url as URL
             let outputUrl = _findOutputPath(url)
 
-            queue.addOperation {
+            //queue.addOperation {
                 do {
                     try self._runTest(inputUrl: url, outputUrl: outputUrl, record: false)
                 } catch {
 
                 }
-            }
+            //}
         }
 
         queue.addBarrierBlock {

@@ -11,10 +11,6 @@ import Foundation
 /// 
 
 open class LexerATNSimulator: ATNSimulator {
-    private static let _match_calls: AtomicInt = AtomicInt()
-
-    public static var match_calls: Int { _match_calls.load() }
-
     public static let debug = false
     public let dfa_debug = false
 
@@ -105,8 +101,6 @@ open class LexerATNSimulator: ATNSimulator {
     }
 
     open func match(_ input: CharStream, _ mode: Int) throws -> Int {
-        LexerATNSimulator._match_calls.increment()
-
         self.mode = mode
         let mark = input.mark()
         defer {

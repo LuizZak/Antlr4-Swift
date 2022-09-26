@@ -1,10 +1,10 @@
-// Generated from JavaScriptParser.g4 by ANTLR 4.9.3
+// Generated from java-escape by ANTLR 4.11.1
 import Antlr4
 
 open class JavaScriptParser: JavaScriptParserBase {
 
 	public class State {
-        public let _ATN: ATN = ATNDeserializer().deserializeFromJson(_serializedATN)
+        public let _ATN: ATN = try! ATNDeserializer().deserialize(_serializedATN)
         
         internal var _decisionToDFA: [DFAParser]
         internal let _sharedContextCache: PredictionContextCache = PredictionContextCache()
@@ -167,13 +167,13 @@ open class JavaScriptParser: JavaScriptParserBase {
 	static let VOCABULARY = Vocabulary(_LITERAL_NAMES, _SYMBOLIC_NAMES)
 
 	override open
-	func getGrammarFileName() -> String { return "JavaScriptParser.g4" }
+	func getGrammarFileName() -> String { return "java-escape" }
 
 	override open
 	func getRuleNames() -> [String] { return JavaScriptParser.ruleNames }
 
 	override open
-	func getSerializedATN() -> String { return JavaScriptParser._serializedATN }
+	func getSerializedATN() -> [Int] { return JavaScriptParser._serializedATN }
 
 	override open
 	func getATN() -> ATN { return _ATN }
@@ -192,7 +192,7 @@ open class JavaScriptParser: JavaScriptParserBase {
     public
     init(_ input: TokenStream, _ state: State) throws {
         self.state = state
-	    RuntimeMetaData.checkVersion("4.9.3", RuntimeMetaData.VERSION)
+	    RuntimeMetaData.checkVersion("4.10.0", RuntimeMetaData.VERSION)
 		try super.init(input)
 		_interp = ParserATNSimulator(
 			self,
@@ -247,7 +247,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func program() throws -> ProgramContext {
-		let _localctx: ProgramContext = ProgramContext(_ctx, getState())
+		var _localctx: ProgramContext
+		_localctx = ProgramContext(_ctx, getState())
 		try enterRule(_localctx, 0, JavaScriptParser.RULE_program)
 		defer {
 	    		try! exitRule()
@@ -323,7 +324,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func sourceElement() throws -> SourceElementContext {
-		let _localctx: SourceElementContext = SourceElementContext(_ctx, getState())
+		var _localctx: SourceElementContext
+		_localctx = SourceElementContext(_ctx, getState())
 		try enterRule(_localctx, 2, JavaScriptParser.RULE_sourceElement)
 		defer {
 	    		try! exitRule()
@@ -455,7 +457,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func statement() throws -> StatementContext {
-		let _localctx: StatementContext = StatementContext(_ctx, getState())
+		var _localctx: StatementContext
+		_localctx = StatementContext(_ctx, getState())
 		try enterRule(_localctx, 4, JavaScriptParser.RULE_statement)
 		defer {
 	    		try! exitRule()
@@ -640,7 +643,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func block() throws -> BlockContext {
-		let _localctx: BlockContext = BlockContext(_ctx, getState())
+		var _localctx: BlockContext
+		_localctx = BlockContext(_ctx, getState())
 		try enterRule(_localctx, 6, JavaScriptParser.RULE_block)
 		defer {
 	    		try! exitRule()
@@ -712,7 +716,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func statementList() throws -> StatementListContext {
-		let _localctx: StatementListContext = StatementListContext(_ctx, getState())
+		var _localctx: StatementListContext
+		_localctx = StatementListContext(_ctx, getState())
 		try enterRule(_localctx, 8, JavaScriptParser.RULE_statementList)
 		defer {
 	    		try! exitRule()
@@ -789,7 +794,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func importStatement() throws -> ImportStatementContext {
-		let _localctx: ImportStatementContext = ImportStatementContext(_ctx, getState())
+		var _localctx: ImportStatementContext
+		_localctx = ImportStatementContext(_ctx, getState())
 		try enterRule(_localctx, 10, JavaScriptParser.RULE_importStatement)
 		defer {
 	    		try! exitRule()
@@ -867,7 +873,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func importFromBlock() throws -> ImportFromBlockContext {
-		let _localctx: ImportFromBlockContext = ImportFromBlockContext(_ctx, getState())
+		var _localctx: ImportFromBlockContext
+		_localctx = ImportFromBlockContext(_ctx, getState())
 		try enterRule(_localctx, 12, JavaScriptParser.RULE_importFromBlock)
 		defer {
 	    		try! exitRule()
@@ -1090,7 +1097,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func moduleItems() throws -> ModuleItemsContext {
-		let _localctx: ModuleItemsContext = ModuleItemsContext(_ctx, getState())
+		var _localctx: ModuleItemsContext
+		_localctx = ModuleItemsContext(_ctx, getState())
 		try enterRule(_localctx, 14, JavaScriptParser.RULE_moduleItems)
 		var _la: Int = 0
 		defer {
@@ -1120,24 +1128,13 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(227)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	if (//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = {  () -> Bool in
-		 	   let testArray: [Int] = [_la, JavaScriptParser.Tokens.NullLiteral.rawValue,JavaScriptParser.Tokens.BooleanLiteral.rawValue,JavaScriptParser.Tokens.Break.rawValue,JavaScriptParser.Tokens.Do.rawValue,JavaScriptParser.Tokens.Instanceof.rawValue,JavaScriptParser.Tokens.Typeof.rawValue,JavaScriptParser.Tokens.Case.rawValue,JavaScriptParser.Tokens.Else.rawValue,JavaScriptParser.Tokens.New.rawValue,JavaScriptParser.Tokens.Var.rawValue,JavaScriptParser.Tokens.Catch.rawValue,JavaScriptParser.Tokens.Finally.rawValue,JavaScriptParser.Tokens.Return.rawValue,JavaScriptParser.Tokens.Void.rawValue,JavaScriptParser.Tokens.Continue.rawValue,JavaScriptParser.Tokens.For.rawValue,JavaScriptParser.Tokens.Switch.rawValue,JavaScriptParser.Tokens.While.rawValue,JavaScriptParser.Tokens.Debugger.rawValue,JavaScriptParser.Tokens.Function_.rawValue,JavaScriptParser.Tokens.This.rawValue,JavaScriptParser.Tokens.With.rawValue,JavaScriptParser.Tokens.Default.rawValue,JavaScriptParser.Tokens.If.rawValue,JavaScriptParser.Tokens.Throw.rawValue,JavaScriptParser.Tokens.Delete.rawValue,JavaScriptParser.Tokens.In.rawValue,JavaScriptParser.Tokens.Try.rawValue,JavaScriptParser.Tokens.As.rawValue,JavaScriptParser.Tokens.From.rawValue,JavaScriptParser.Tokens.Class.rawValue,JavaScriptParser.Tokens.Enum.rawValue,JavaScriptParser.Tokens.Extends.rawValue,JavaScriptParser.Tokens.Super.rawValue,JavaScriptParser.Tokens.Const.rawValue,JavaScriptParser.Tokens.Export.rawValue,JavaScriptParser.Tokens.Import.rawValue,JavaScriptParser.Tokens.Async.rawValue,JavaScriptParser.Tokens.Await.rawValue,JavaScriptParser.Tokens.Implements.rawValue,JavaScriptParser.Tokens.StrictLet.rawValue,JavaScriptParser.Tokens.NonStrictLet.rawValue,JavaScriptParser.Tokens.Private.rawValue,JavaScriptParser.Tokens.Public.rawValue,JavaScriptParser.Tokens.Interface.rawValue,JavaScriptParser.Tokens.Package.rawValue,JavaScriptParser.Tokens.Protected.rawValue,JavaScriptParser.Tokens.Static.rawValue,JavaScriptParser.Tokens.Yield.rawValue,JavaScriptParser.Tokens.Identifier.rawValue]
-		 	    return  Utils.testBitLeftShiftArray(testArray, 60)
-		 	}()
-		 	      return testSet
-		 	 }()) {
+		 	if ((Int64((_la - 60)) & ~0x3f) == 0 && ((Int64(1) << (_la - 60)) & 576460752303421443) != 0) {
 		 		setState(223)
 		 		try aliasName()
 		 		setState(225)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      let testSet: Bool = _la == JavaScriptParser.Tokens.Comma.rawValue
-		 		      return testSet
-		 		 }()) {
+		 		if (_la == JavaScriptParser.Tokens.Comma.rawValue) {
 		 			setState(224)
 		 			try match(JavaScriptParser.Tokens.Comma.rawValue)
 
@@ -1199,7 +1196,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func importDefault() throws -> ImportDefaultContext {
-		let _localctx: ImportDefaultContext = ImportDefaultContext(_ctx, getState())
+		var _localctx: ImportDefaultContext
+		_localctx = ImportDefaultContext(_ctx, getState())
 		try enterRule(_localctx, 16, JavaScriptParser.RULE_importDefault)
 		defer {
 	    		try! exitRule()
@@ -1269,7 +1267,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func importNamespace() throws -> ImportNamespaceContext {
-		let _localctx: ImportNamespaceContext = ImportNamespaceContext(_ctx, getState())
+		var _localctx: ImportNamespaceContext
+		_localctx = ImportNamespaceContext(_ctx, getState())
 		try enterRule(_localctx, 18, JavaScriptParser.RULE_importNamespace)
 		var _la: Int = 0
 		defer {
@@ -1345,11 +1344,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(240)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	if (//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = _la == JavaScriptParser.Tokens.As.rawValue
-		 	      return testSet
-		 	 }()) {
+		 	if (_la == JavaScriptParser.Tokens.As.rawValue) {
 		 		setState(238)
 		 		try match(JavaScriptParser.Tokens.As.rawValue)
 		 		setState(239)
@@ -1408,7 +1403,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func importFrom() throws -> ImportFromContext {
-		let _localctx: ImportFromContext = ImportFromContext(_ctx, getState())
+		var _localctx: ImportFromContext
+		_localctx = ImportFromContext(_ctx, getState())
 		try enterRule(_localctx, 20, JavaScriptParser.RULE_importFrom)
 		defer {
 	    		try! exitRule()
@@ -1474,7 +1470,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func aliasName() throws -> AliasNameContext {
-		let _localctx: AliasNameContext = AliasNameContext(_ctx, getState())
+		var _localctx: AliasNameContext
+		_localctx = AliasNameContext(_ctx, getState())
 		try enterRule(_localctx, 22, JavaScriptParser.RULE_aliasName)
 		var _la: Int = 0
 		defer {
@@ -1487,11 +1484,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(248)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	if (//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = _la == JavaScriptParser.Tokens.As.rawValue
-		 	      return testSet
-		 	 }()) {
+		 	if (_la == JavaScriptParser.Tokens.As.rawValue) {
 		 		setState(246)
 		 		try match(JavaScriptParser.Tokens.As.rawValue)
 		 		setState(247)
@@ -1614,7 +1607,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func exportStatement() throws -> ExportStatementContext {
-		var _localctx: ExportStatementContext = ExportStatementContext(_ctx, getState())
+		var _localctx: ExportStatementContext
+		_localctx = ExportStatementContext(_ctx, getState())
 		try enterRule(_localctx, 24, JavaScriptParser.RULE_exportStatement)
 		defer {
 	    		try! exitRule()
@@ -1720,7 +1714,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func exportFromBlock() throws -> ExportFromBlockContext {
-		let _localctx: ExportFromBlockContext = ExportFromBlockContext(_ctx, getState())
+		var _localctx: ExportFromBlockContext
+		_localctx = ExportFromBlockContext(_ctx, getState())
 		try enterRule(_localctx, 26, JavaScriptParser.RULE_exportFromBlock)
 		defer {
 	    		try! exitRule()
@@ -1865,7 +1860,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func declaration() throws -> DeclarationContext {
-		let _localctx: DeclarationContext = DeclarationContext(_ctx, getState())
+		var _localctx: DeclarationContext
+		_localctx = DeclarationContext(_ctx, getState())
 		try enterRule(_localctx, 28, JavaScriptParser.RULE_declaration)
 		defer {
 	    		try! exitRule()
@@ -1950,7 +1946,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func variableStatement() throws -> VariableStatementContext {
-		let _localctx: VariableStatementContext = VariableStatementContext(_ctx, getState())
+		var _localctx: VariableStatementContext
+		_localctx = VariableStatementContext(_ctx, getState())
 		try enterRule(_localctx, 30, JavaScriptParser.RULE_variableStatement)
 		defer {
 	    		try! exitRule()
@@ -2024,7 +2021,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func variableDeclarationList() throws -> VariableDeclarationListContext {
-		let _localctx: VariableDeclarationListContext = VariableDeclarationListContext(_ctx, getState())
+		var _localctx: VariableDeclarationListContext
+		_localctx = VariableDeclarationListContext(_ctx, getState())
 		try enterRule(_localctx, 32, JavaScriptParser.RULE_variableDeclarationList)
 		defer {
 	    		try! exitRule()
@@ -2107,7 +2105,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func variableDeclaration() throws -> VariableDeclarationContext {
-		let _localctx: VariableDeclarationContext = VariableDeclarationContext(_ctx, getState())
+		var _localctx: VariableDeclarationContext
+		_localctx = VariableDeclarationContext(_ctx, getState())
 		try enterRule(_localctx, 34, JavaScriptParser.RULE_variableDeclaration)
 		defer {
 	    		try! exitRule()
@@ -2175,7 +2174,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func emptyStatement_() throws -> EmptyStatement_Context {
-		let _localctx: EmptyStatement_Context = EmptyStatement_Context(_ctx, getState())
+		var _localctx: EmptyStatement_Context
+		_localctx = EmptyStatement_Context(_ctx, getState())
 		try enterRule(_localctx, 36, JavaScriptParser.RULE_emptyStatement_)
 		defer {
 	    		try! exitRule()
@@ -2235,7 +2235,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func expressionStatement() throws -> ExpressionStatementContext {
-		let _localctx: ExpressionStatementContext = ExpressionStatementContext(_ctx, getState())
+		var _localctx: ExpressionStatementContext
+		_localctx = ExpressionStatementContext(_ctx, getState())
 		try enterRule(_localctx, 38, JavaScriptParser.RULE_expressionStatement)
 		defer {
 	    		try! exitRule()
@@ -2321,7 +2322,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func ifStatement() throws -> IfStatementContext {
-		let _localctx: IfStatementContext = IfStatementContext(_ctx, getState())
+		var _localctx: IfStatementContext
+		_localctx = IfStatementContext(_ctx, getState())
 		try enterRule(_localctx, 40, JavaScriptParser.RULE_ifStatement)
 		defer {
 	    		try! exitRule()
@@ -2681,7 +2683,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func iterationStatement() throws -> IterationStatementContext {
-		var _localctx: IterationStatementContext = IterationStatementContext(_ctx, getState())
+		var _localctx: IterationStatementContext
+		_localctx = IterationStatementContext(_ctx, getState())
 		try enterRule(_localctx, 42, JavaScriptParser.RULE_iterationStatement)
 		var _la: Int = 0
 		defer {
@@ -2752,18 +2755,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(335)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      var testSet: Bool = {  () -> Bool in
-		 		   let testArray: [Int] = [_la, JavaScriptParser.Tokens.RegularExpressionLiteral.rawValue,JavaScriptParser.Tokens.OpenBracket.rawValue,JavaScriptParser.Tokens.OpenParen.rawValue,JavaScriptParser.Tokens.OpenBrace.rawValue,JavaScriptParser.Tokens.PlusPlus.rawValue,JavaScriptParser.Tokens.MinusMinus.rawValue,JavaScriptParser.Tokens.Plus.rawValue,JavaScriptParser.Tokens.Minus.rawValue,JavaScriptParser.Tokens.BitNot.rawValue,JavaScriptParser.Tokens.Not.rawValue,JavaScriptParser.Tokens.NullLiteral.rawValue,JavaScriptParser.Tokens.BooleanLiteral.rawValue,JavaScriptParser.Tokens.DecimalLiteral.rawValue,JavaScriptParser.Tokens.HexIntegerLiteral.rawValue]
-		 		    return  Utils.testBitLeftShiftArray(testArray, 0)
-		 		}()
-		 		          testSet = testSet || {  () -> Bool in
-		 		             let testArray: [Int] = [_la, JavaScriptParser.Tokens.OctalIntegerLiteral.rawValue,JavaScriptParser.Tokens.OctalIntegerLiteral2.rawValue,JavaScriptParser.Tokens.BinaryIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigHexIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigOctalIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigBinaryIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigDecimalIntegerLiteral.rawValue,JavaScriptParser.Tokens.Typeof.rawValue,JavaScriptParser.Tokens.New.rawValue,JavaScriptParser.Tokens.Void.rawValue,JavaScriptParser.Tokens.Function_.rawValue,JavaScriptParser.Tokens.This.rawValue,JavaScriptParser.Tokens.Delete.rawValue,JavaScriptParser.Tokens.Class.rawValue,JavaScriptParser.Tokens.Super.rawValue,JavaScriptParser.Tokens.Import.rawValue,JavaScriptParser.Tokens.Async.rawValue,JavaScriptParser.Tokens.Await.rawValue,JavaScriptParser.Tokens.NonStrictLet.rawValue,JavaScriptParser.Tokens.Yield.rawValue,JavaScriptParser.Tokens.Identifier.rawValue,JavaScriptParser.Tokens.StringLiteral.rawValue,JavaScriptParser.Tokens.BackTick.rawValue]
-		 		              return  Utils.testBitLeftShiftArray(testArray, 64)
-		 		          }()
-		 		      return testSet
-		 		 }()) {
+		 		if ((Int64(_la) & ~0x3f) == 0 && ((Int64(1) << _la) & -1152921504573816144) != 0 || (Int64((_la - 64)) & ~0x3f) == 0 && ((Int64(1) << (_la - 64)) & 135194061090071679) != 0) {
 		 			setState(334)
 		 			try expressionSequence()
 
@@ -2774,18 +2766,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(339)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      var testSet: Bool = {  () -> Bool in
-		 		   let testArray: [Int] = [_la, JavaScriptParser.Tokens.RegularExpressionLiteral.rawValue,JavaScriptParser.Tokens.OpenBracket.rawValue,JavaScriptParser.Tokens.OpenParen.rawValue,JavaScriptParser.Tokens.OpenBrace.rawValue,JavaScriptParser.Tokens.PlusPlus.rawValue,JavaScriptParser.Tokens.MinusMinus.rawValue,JavaScriptParser.Tokens.Plus.rawValue,JavaScriptParser.Tokens.Minus.rawValue,JavaScriptParser.Tokens.BitNot.rawValue,JavaScriptParser.Tokens.Not.rawValue,JavaScriptParser.Tokens.NullLiteral.rawValue,JavaScriptParser.Tokens.BooleanLiteral.rawValue,JavaScriptParser.Tokens.DecimalLiteral.rawValue,JavaScriptParser.Tokens.HexIntegerLiteral.rawValue]
-		 		    return  Utils.testBitLeftShiftArray(testArray, 0)
-		 		}()
-		 		          testSet = testSet || {  () -> Bool in
-		 		             let testArray: [Int] = [_la, JavaScriptParser.Tokens.OctalIntegerLiteral.rawValue,JavaScriptParser.Tokens.OctalIntegerLiteral2.rawValue,JavaScriptParser.Tokens.BinaryIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigHexIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigOctalIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigBinaryIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigDecimalIntegerLiteral.rawValue,JavaScriptParser.Tokens.Typeof.rawValue,JavaScriptParser.Tokens.New.rawValue,JavaScriptParser.Tokens.Void.rawValue,JavaScriptParser.Tokens.Function_.rawValue,JavaScriptParser.Tokens.This.rawValue,JavaScriptParser.Tokens.Delete.rawValue,JavaScriptParser.Tokens.Class.rawValue,JavaScriptParser.Tokens.Super.rawValue,JavaScriptParser.Tokens.Import.rawValue,JavaScriptParser.Tokens.Async.rawValue,JavaScriptParser.Tokens.Await.rawValue,JavaScriptParser.Tokens.NonStrictLet.rawValue,JavaScriptParser.Tokens.Yield.rawValue,JavaScriptParser.Tokens.Identifier.rawValue,JavaScriptParser.Tokens.StringLiteral.rawValue,JavaScriptParser.Tokens.BackTick.rawValue]
-		 		              return  Utils.testBitLeftShiftArray(testArray, 64)
-		 		          }()
-		 		      return testSet
-		 		 }()) {
+		 		if ((Int64(_la) & ~0x3f) == 0 && ((Int64(1) << _la) & -1152921504573816144) != 0 || (Int64((_la - 64)) & ~0x3f) == 0 && ((Int64(1) << (_la - 64)) & 135194061090071679) != 0) {
 		 			setState(338)
 		 			try expressionSequence()
 
@@ -2837,11 +2818,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(356)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      let testSet: Bool = _la == JavaScriptParser.Tokens.Await.rawValue
-		 		      return testSet
-		 		 }()) {
+		 		if (_la == JavaScriptParser.Tokens.Await.rawValue) {
 		 			setState(355)
 		 			try match(JavaScriptParser.Tokens.Await.rawValue)
 
@@ -2934,7 +2911,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func varModifier() throws -> VarModifierContext {
-		let _localctx: VarModifierContext = VarModifierContext(_ctx, getState())
+		var _localctx: VarModifierContext
+		_localctx = VarModifierContext(_ctx, getState())
 		try enterRule(_localctx, 44, JavaScriptParser.RULE_varModifier)
 		defer {
 	    		try! exitRule()
@@ -3020,7 +2998,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func continueStatement() throws -> ContinueStatementContext {
-		let _localctx: ContinueStatementContext = ContinueStatementContext(_ctx, getState())
+		var _localctx: ContinueStatementContext
+		_localctx = ContinueStatementContext(_ctx, getState())
 		try enterRule(_localctx, 46, JavaScriptParser.RULE_continueStatement)
 		defer {
 	    		try! exitRule()
@@ -3100,7 +3079,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func breakStatement() throws -> BreakStatementContext {
-		let _localctx: BreakStatementContext = BreakStatementContext(_ctx, getState())
+		var _localctx: BreakStatementContext
+		_localctx = BreakStatementContext(_ctx, getState())
 		try enterRule(_localctx, 48, JavaScriptParser.RULE_breakStatement)
 		defer {
 	    		try! exitRule()
@@ -3180,7 +3160,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func returnStatement() throws -> ReturnStatementContext {
-		let _localctx: ReturnStatementContext = ReturnStatementContext(_ctx, getState())
+		var _localctx: ReturnStatementContext
+		_localctx = ReturnStatementContext(_ctx, getState())
 		try enterRule(_localctx, 50, JavaScriptParser.RULE_returnStatement)
 		defer {
 	    		try! exitRule()
@@ -3260,7 +3241,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func yieldStatement() throws -> YieldStatementContext {
-		let _localctx: YieldStatementContext = YieldStatementContext(_ctx, getState())
+		var _localctx: YieldStatementContext
+		_localctx = YieldStatementContext(_ctx, getState())
 		try enterRule(_localctx, 52, JavaScriptParser.RULE_yieldStatement)
 		defer {
 	    		try! exitRule()
@@ -3348,7 +3330,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func withStatement() throws -> WithStatementContext {
-		let _localctx: WithStatementContext = WithStatementContext(_ctx, getState())
+		var _localctx: WithStatementContext
+		_localctx = WithStatementContext(_ctx, getState())
 		try enterRule(_localctx, 54, JavaScriptParser.RULE_withStatement)
 		defer {
 	    		try! exitRule()
@@ -3428,7 +3411,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func switchStatement() throws -> SwitchStatementContext {
-		let _localctx: SwitchStatementContext = SwitchStatementContext(_ctx, getState())
+		var _localctx: SwitchStatementContext
+		_localctx = SwitchStatementContext(_ctx, getState())
 		try enterRule(_localctx, 56, JavaScriptParser.RULE_switchStatement)
 		defer {
 	    		try! exitRule()
@@ -3508,7 +3492,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func caseBlock() throws -> CaseBlockContext {
-		let _localctx: CaseBlockContext = CaseBlockContext(_ctx, getState())
+		var _localctx: CaseBlockContext
+		_localctx = CaseBlockContext(_ctx, getState())
 		try enterRule(_localctx, 58, JavaScriptParser.RULE_caseBlock)
 		var _la: Int = 0
 		defer {
@@ -3521,11 +3506,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(418)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	if (//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = _la == JavaScriptParser.Tokens.Case.rawValue
-		 	      return testSet
-		 	 }()) {
+		 	if (_la == JavaScriptParser.Tokens.Case.rawValue) {
 		 		setState(417)
 		 		try caseClauses()
 
@@ -3534,21 +3515,13 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(424)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	if (//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = _la == JavaScriptParser.Tokens.Default.rawValue
-		 	      return testSet
-		 	 }()) {
+		 	if (_la == JavaScriptParser.Tokens.Default.rawValue) {
 		 		setState(420)
 		 		try defaultClause()
 		 		setState(422)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      let testSet: Bool = _la == JavaScriptParser.Tokens.Case.rawValue
-		 		      return testSet
-		 		 }()) {
+		 		if (_la == JavaScriptParser.Tokens.Case.rawValue) {
 		 			setState(421)
 		 			try caseClauses()
 
@@ -3610,7 +3583,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func caseClauses() throws -> CaseClausesContext {
-		let _localctx: CaseClausesContext = CaseClausesContext(_ctx, getState())
+		var _localctx: CaseClausesContext
+		_localctx = CaseClausesContext(_ctx, getState())
 		try enterRule(_localctx, 60, JavaScriptParser.RULE_caseClauses)
 		var _la: Int = 0
 		defer {
@@ -3629,11 +3603,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(431); 
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 	} while (//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = _la == JavaScriptParser.Tokens.Case.rawValue
-		 	      return testSet
-		 	 }())
+		 	} while (_la == JavaScriptParser.Tokens.Case.rawValue)
 
 		}
 		catch ANTLRException.recognition(let re) {
@@ -3693,7 +3663,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func caseClause() throws -> CaseClauseContext {
-		let _localctx: CaseClauseContext = CaseClauseContext(_ctx, getState())
+		var _localctx: CaseClauseContext
+		_localctx = CaseClauseContext(_ctx, getState())
 		try enterRule(_localctx, 62, JavaScriptParser.RULE_caseClause)
 		defer {
 	    		try! exitRule()
@@ -3771,7 +3742,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func defaultClause() throws -> DefaultClauseContext {
-		let _localctx: DefaultClauseContext = DefaultClauseContext(_ctx, getState())
+		var _localctx: DefaultClauseContext
+		_localctx = DefaultClauseContext(_ctx, getState())
 		try enterRule(_localctx, 64, JavaScriptParser.RULE_defaultClause)
 		defer {
 	    		try! exitRule()
@@ -3847,7 +3819,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func labelledStatement() throws -> LabelledStatementContext {
-		let _localctx: LabelledStatementContext = LabelledStatementContext(_ctx, getState())
+		var _localctx: LabelledStatementContext
+		_localctx = LabelledStatementContext(_ctx, getState())
 		try enterRule(_localctx, 66, JavaScriptParser.RULE_labelledStatement)
 		defer {
 	    		try! exitRule()
@@ -3915,7 +3888,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func throwStatement() throws -> ThrowStatementContext {
-		let _localctx: ThrowStatementContext = ThrowStatementContext(_ctx, getState())
+		var _localctx: ThrowStatementContext
+		_localctx = ThrowStatementContext(_ctx, getState())
 		try enterRule(_localctx, 68, JavaScriptParser.RULE_throwStatement)
 		defer {
 	    		try! exitRule()
@@ -3991,7 +3965,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func tryStatement() throws -> TryStatementContext {
-		let _localctx: TryStatementContext = TryStatementContext(_ctx, getState())
+		var _localctx: TryStatementContext
+		_localctx = TryStatementContext(_ctx, getState())
 		try enterRule(_localctx, 70, JavaScriptParser.RULE_tryStatement)
 		defer {
 	    		try! exitRule()
@@ -4092,7 +4067,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func catchProduction() throws -> CatchProductionContext {
-		let _localctx: CatchProductionContext = CatchProductionContext(_ctx, getState())
+		var _localctx: CatchProductionContext
+		_localctx = CatchProductionContext(_ctx, getState())
 		try enterRule(_localctx, 72, JavaScriptParser.RULE_catchProduction)
 		var _la: Int = 0
 		defer {
@@ -4105,25 +4081,13 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(468)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	if (//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = _la == JavaScriptParser.Tokens.OpenParen.rawValue
-		 	      return testSet
-		 	 }()) {
+		 	if (_la == JavaScriptParser.Tokens.OpenParen.rawValue) {
 		 		setState(463)
 		 		try match(JavaScriptParser.Tokens.OpenParen.rawValue)
 		 		setState(465)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      var testSet: Bool = _la == JavaScriptParser.Tokens.OpenBracket.rawValue || _la == JavaScriptParser.Tokens.OpenBrace.rawValue
-		 		          testSet = testSet || {  () -> Bool in
-		 		             let testArray: [Int] = [_la, JavaScriptParser.Tokens.Async.rawValue,JavaScriptParser.Tokens.NonStrictLet.rawValue,JavaScriptParser.Tokens.Identifier.rawValue]
-		 		              return  Utils.testBitLeftShiftArray(testArray, 106)
-		 		          }()
-		 		      return testSet
-		 		 }()) {
+		 		if (_la == JavaScriptParser.Tokens.OpenBracket.rawValue || _la == JavaScriptParser.Tokens.OpenBrace.rawValue || (Int64((_la - 106)) & ~0x3f) == 0 && ((Int64(1) << (_la - 106)) & 4113) != 0) {
 		 			setState(464)
 		 			try assignable()
 
@@ -4187,7 +4151,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func finallyProduction() throws -> FinallyProductionContext {
-		let _localctx: FinallyProductionContext = FinallyProductionContext(_ctx, getState())
+		var _localctx: FinallyProductionContext
+		_localctx = FinallyProductionContext(_ctx, getState())
 		try enterRule(_localctx, 74, JavaScriptParser.RULE_finallyProduction)
 		defer {
 	    		try! exitRule()
@@ -4249,7 +4214,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func debuggerStatement() throws -> DebuggerStatementContext {
-		let _localctx: DebuggerStatementContext = DebuggerStatementContext(_ctx, getState())
+		var _localctx: DebuggerStatementContext
+		_localctx = DebuggerStatementContext(_ctx, getState())
 		try enterRule(_localctx, 76, JavaScriptParser.RULE_debuggerStatement)
 		defer {
 	    		try! exitRule()
@@ -4335,7 +4301,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func functionDeclaration() throws -> FunctionDeclarationContext {
-		let _localctx: FunctionDeclarationContext = FunctionDeclarationContext(_ctx, getState())
+		var _localctx: FunctionDeclarationContext
+		_localctx = FunctionDeclarationContext(_ctx, getState())
 		try enterRule(_localctx, 78, JavaScriptParser.RULE_functionDeclaration)
 		var _la: Int = 0
 		defer {
@@ -4346,11 +4313,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(479)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	if (//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = _la == JavaScriptParser.Tokens.Async.rawValue
-		 	      return testSet
-		 	 }()) {
+		 	if (_la == JavaScriptParser.Tokens.Async.rawValue) {
 		 		setState(478)
 		 		try match(JavaScriptParser.Tokens.Async.rawValue)
 
@@ -4361,11 +4324,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(483)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	if (//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = _la == JavaScriptParser.Tokens.Multiply.rawValue
-		 	      return testSet
-		 	 }()) {
+		 	if (_la == JavaScriptParser.Tokens.Multiply.rawValue) {
 		 		setState(482)
 		 		try match(JavaScriptParser.Tokens.Multiply.rawValue)
 
@@ -4378,18 +4337,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(488)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	if (//closure
-		 	 { () -> Bool in
-		 	      var testSet: Bool = {  () -> Bool in
-		 	   let testArray: [Int] = [_la, JavaScriptParser.Tokens.OpenBracket.rawValue,JavaScriptParser.Tokens.OpenBrace.rawValue,JavaScriptParser.Tokens.Ellipsis.rawValue]
-		 	    return  Utils.testBitLeftShiftArray(testArray, 0)
-		 	}()
-		 	          testSet = testSet || {  () -> Bool in
-		 	             let testArray: [Int] = [_la, JavaScriptParser.Tokens.Async.rawValue,JavaScriptParser.Tokens.NonStrictLet.rawValue,JavaScriptParser.Tokens.Identifier.rawValue]
-		 	              return  Utils.testBitLeftShiftArray(testArray, 106)
-		 	          }()
-		 	      return testSet
-		 	 }()) {
+		 	if ((Int64(_la) & ~0x3f) == 0 && ((Int64(1) << _la) & 131616) != 0 || (Int64((_la - 106)) & ~0x3f) == 0 && ((Int64(1) << (_la - 106)) & 4113) != 0) {
 		 		setState(487)
 		 		try formalParameterList()
 
@@ -4454,7 +4402,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func classDeclaration() throws -> ClassDeclarationContext {
-		let _localctx: ClassDeclarationContext = ClassDeclarationContext(_ctx, getState())
+		var _localctx: ClassDeclarationContext
+		_localctx = ClassDeclarationContext(_ctx, getState())
 		try enterRule(_localctx, 80, JavaScriptParser.RULE_classDeclaration)
 		defer {
 	    		try! exitRule()
@@ -4534,7 +4483,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func classTail() throws -> ClassTailContext {
-		let _localctx: ClassTailContext = ClassTailContext(_ctx, getState())
+		var _localctx: ClassTailContext
+		_localctx = ClassTailContext(_ctx, getState())
 		try enterRule(_localctx, 82, JavaScriptParser.RULE_classTail)
 		var _la: Int = 0
 		defer {
@@ -4546,11 +4496,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(499)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	if (//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = _la == JavaScriptParser.Tokens.Extends.rawValue
-		 	      return testSet
-		 	 }()) {
+		 	if (_la == JavaScriptParser.Tokens.Extends.rawValue) {
 		 		setState(497)
 		 		try match(JavaScriptParser.Tokens.Extends.rawValue)
 		 		setState(498)
@@ -4679,7 +4625,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func classElement() throws -> ClassElementContext {
-		let _localctx: ClassElementContext = ClassElementContext(_ctx, getState())
+		var _localctx: ClassElementContext
+		_localctx = ClassElementContext(_ctx, getState())
 		try enterRule(_localctx, 84, JavaScriptParser.RULE_classElement)
 		var _la: Int = 0
 		defer {
@@ -4761,11 +4708,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(529)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      let testSet: Bool = _la == JavaScriptParser.Tokens.Hashtag.rawValue
-		 		      return testSet
-		 		 }()) {
+		 		if (_la == JavaScriptParser.Tokens.Hashtag.rawValue) {
 		 			setState(528)
 		 			try match(JavaScriptParser.Tokens.Hashtag.rawValue)
 
@@ -4859,7 +4802,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func methodDefinition() throws -> MethodDefinitionContext {
-		let _localctx: MethodDefinitionContext = MethodDefinitionContext(_ctx, getState())
+		var _localctx: MethodDefinitionContext
+		_localctx = MethodDefinitionContext(_ctx, getState())
 		try enterRule(_localctx, 86, JavaScriptParser.RULE_methodDefinition)
 		var _la: Int = 0
 		defer {
@@ -4874,11 +4818,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(538)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      let testSet: Bool = _la == JavaScriptParser.Tokens.Multiply.rawValue
-		 		      return testSet
-		 		 }()) {
+		 		if (_la == JavaScriptParser.Tokens.Multiply.rawValue) {
 		 			setState(537)
 		 			try match(JavaScriptParser.Tokens.Multiply.rawValue)
 
@@ -4887,11 +4827,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(541)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      let testSet: Bool = _la == JavaScriptParser.Tokens.Hashtag.rawValue
-		 		      return testSet
-		 		 }()) {
+		 		if (_la == JavaScriptParser.Tokens.Hashtag.rawValue) {
 		 			setState(540)
 		 			try match(JavaScriptParser.Tokens.Hashtag.rawValue)
 
@@ -4904,18 +4840,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(546)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      var testSet: Bool = {  () -> Bool in
-		 		   let testArray: [Int] = [_la, JavaScriptParser.Tokens.OpenBracket.rawValue,JavaScriptParser.Tokens.OpenBrace.rawValue,JavaScriptParser.Tokens.Ellipsis.rawValue]
-		 		    return  Utils.testBitLeftShiftArray(testArray, 0)
-		 		}()
-		 		          testSet = testSet || {  () -> Bool in
-		 		             let testArray: [Int] = [_la, JavaScriptParser.Tokens.Async.rawValue,JavaScriptParser.Tokens.NonStrictLet.rawValue,JavaScriptParser.Tokens.Identifier.rawValue]
-		 		              return  Utils.testBitLeftShiftArray(testArray, 106)
-		 		          }()
-		 		      return testSet
-		 		 }()) {
+		 		if ((Int64(_la) & ~0x3f) == 0 && ((Int64(1) << _la) & 131616) != 0 || (Int64((_la - 106)) & ~0x3f) == 0 && ((Int64(1) << (_la - 106)) & 4113) != 0) {
 		 			setState(545)
 		 			try formalParameterList()
 
@@ -4988,18 +4913,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(571)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      var testSet: Bool = {  () -> Bool in
-		 		   let testArray: [Int] = [_la, JavaScriptParser.Tokens.OpenBracket.rawValue,JavaScriptParser.Tokens.OpenBrace.rawValue,JavaScriptParser.Tokens.Ellipsis.rawValue]
-		 		    return  Utils.testBitLeftShiftArray(testArray, 0)
-		 		}()
-		 		          testSet = testSet || {  () -> Bool in
-		 		             let testArray: [Int] = [_la, JavaScriptParser.Tokens.Async.rawValue,JavaScriptParser.Tokens.NonStrictLet.rawValue,JavaScriptParser.Tokens.Identifier.rawValue]
-		 		              return  Utils.testBitLeftShiftArray(testArray, 106)
-		 		          }()
-		 		      return testSet
-		 		 }()) {
+		 		if ((Int64(_la) & ~0x3f) == 0 && ((Int64(1) << _la) & 131616) != 0 || (Int64((_la - 106)) & ~0x3f) == 0 && ((Int64(1) << (_la - 106)) & 4113) != 0) {
 		 			setState(570)
 		 			try formalParameterList()
 
@@ -5075,7 +4989,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func formalParameterList() throws -> FormalParameterListContext {
-		let _localctx: FormalParameterListContext = FormalParameterListContext(_ctx, getState())
+		var _localctx: FormalParameterListContext
+		_localctx = FormalParameterListContext(_ctx, getState())
 		try enterRule(_localctx, 88, JavaScriptParser.RULE_formalParameterList)
 		var _la: Int = 0
 		defer {
@@ -5113,11 +5028,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(588)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      let testSet: Bool = _la == JavaScriptParser.Tokens.Comma.rawValue
-		 		      return testSet
-		 		 }()) {
+		 		if (_la == JavaScriptParser.Tokens.Comma.rawValue) {
 		 			setState(586)
 		 			try match(JavaScriptParser.Tokens.Comma.rawValue)
 		 			setState(587)
@@ -5191,7 +5102,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func formalParameterArg() throws -> FormalParameterArgContext {
-		let _localctx: FormalParameterArgContext = FormalParameterArgContext(_ctx, getState())
+		var _localctx: FormalParameterArgContext
+		_localctx = FormalParameterArgContext(_ctx, getState())
 		try enterRule(_localctx, 90, JavaScriptParser.RULE_formalParameterArg)
 		var _la: Int = 0
 		defer {
@@ -5204,11 +5116,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(596)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	if (//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = _la == JavaScriptParser.Tokens.Assign.rawValue
-		 	      return testSet
-		 	 }()) {
+		 	if (_la == JavaScriptParser.Tokens.Assign.rawValue) {
 		 		setState(594)
 		 		try match(JavaScriptParser.Tokens.Assign.rawValue)
 		 		setState(595)
@@ -5267,7 +5175,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func lastFormalParameterArg() throws -> LastFormalParameterArgContext {
-		let _localctx: LastFormalParameterArgContext = LastFormalParameterArgContext(_ctx, getState())
+		var _localctx: LastFormalParameterArgContext
+		_localctx = LastFormalParameterArgContext(_ctx, getState())
 		try enterRule(_localctx, 92, JavaScriptParser.RULE_lastFormalParameterArg)
 		defer {
 	    		try! exitRule()
@@ -5333,7 +5242,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func functionBody() throws -> FunctionBodyContext {
-		let _localctx: FunctionBodyContext = FunctionBodyContext(_ctx, getState())
+		var _localctx: FunctionBodyContext
+		_localctx = FunctionBodyContext(_ctx, getState())
 		try enterRule(_localctx, 94, JavaScriptParser.RULE_functionBody)
 		defer {
 	    		try! exitRule()
@@ -5405,7 +5315,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func sourceElements() throws -> SourceElementsContext {
-		let _localctx: SourceElementsContext = SourceElementsContext(_ctx, getState())
+		var _localctx: SourceElementsContext
+		_localctx = SourceElementsContext(_ctx, getState())
 		try enterRule(_localctx, 96, JavaScriptParser.RULE_sourceElements)
 		defer {
 	    		try! exitRule()
@@ -5486,7 +5397,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func arrayLiteral() throws -> ArrayLiteralContext {
-		let _localctx: ArrayLiteralContext = ArrayLiteralContext(_ctx, getState())
+		var _localctx: ArrayLiteralContext
+		_localctx = ArrayLiteralContext(_ctx, getState())
 		try enterRule(_localctx, 98, JavaScriptParser.RULE_arrayLiteral)
 		defer {
 	    		try! exitRule()
@@ -5559,7 +5471,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func elementList() throws -> ElementListContext {
-		let _localctx: ElementListContext = ElementListContext(_ctx, getState())
+		var _localctx: ElementListContext
+		_localctx = ElementListContext(_ctx, getState())
 		try enterRule(_localctx, 100, JavaScriptParser.RULE_elementList)
 		var _la: Int = 0
 		defer {
@@ -5585,18 +5498,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(623)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	if (//closure
-		 	 { () -> Bool in
-		 	      var testSet: Bool = {  () -> Bool in
-		 	   let testArray: [Int] = [_la, JavaScriptParser.Tokens.RegularExpressionLiteral.rawValue,JavaScriptParser.Tokens.OpenBracket.rawValue,JavaScriptParser.Tokens.OpenParen.rawValue,JavaScriptParser.Tokens.OpenBrace.rawValue,JavaScriptParser.Tokens.Ellipsis.rawValue,JavaScriptParser.Tokens.PlusPlus.rawValue,JavaScriptParser.Tokens.MinusMinus.rawValue,JavaScriptParser.Tokens.Plus.rawValue,JavaScriptParser.Tokens.Minus.rawValue,JavaScriptParser.Tokens.BitNot.rawValue,JavaScriptParser.Tokens.Not.rawValue,JavaScriptParser.Tokens.NullLiteral.rawValue,JavaScriptParser.Tokens.BooleanLiteral.rawValue,JavaScriptParser.Tokens.DecimalLiteral.rawValue,JavaScriptParser.Tokens.HexIntegerLiteral.rawValue]
-		 	    return  Utils.testBitLeftShiftArray(testArray, 0)
-		 	}()
-		 	          testSet = testSet || {  () -> Bool in
-		 	             let testArray: [Int] = [_la, JavaScriptParser.Tokens.OctalIntegerLiteral.rawValue,JavaScriptParser.Tokens.OctalIntegerLiteral2.rawValue,JavaScriptParser.Tokens.BinaryIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigHexIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigOctalIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigBinaryIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigDecimalIntegerLiteral.rawValue,JavaScriptParser.Tokens.Typeof.rawValue,JavaScriptParser.Tokens.New.rawValue,JavaScriptParser.Tokens.Void.rawValue,JavaScriptParser.Tokens.Function_.rawValue,JavaScriptParser.Tokens.This.rawValue,JavaScriptParser.Tokens.Delete.rawValue,JavaScriptParser.Tokens.Class.rawValue,JavaScriptParser.Tokens.Super.rawValue,JavaScriptParser.Tokens.Import.rawValue,JavaScriptParser.Tokens.Async.rawValue,JavaScriptParser.Tokens.Await.rawValue,JavaScriptParser.Tokens.NonStrictLet.rawValue,JavaScriptParser.Tokens.Yield.rawValue,JavaScriptParser.Tokens.Identifier.rawValue,JavaScriptParser.Tokens.StringLiteral.rawValue,JavaScriptParser.Tokens.BackTick.rawValue]
-		 	              return  Utils.testBitLeftShiftArray(testArray, 64)
-		 	          }()
-		 	      return testSet
-		 	 }()) {
+		 	if ((Int64(_la) & ~0x3f) == 0 && ((Int64(1) << _la) & -1152921504573685072) != 0 || (Int64((_la - 64)) & ~0x3f) == 0 && ((Int64(1) << (_la - 64)) & 135194061090071679) != 0) {
 		 		setState(622)
 		 		try arrayElement()
 
@@ -5618,11 +5520,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 				setState(628); 
 		 				try _errHandler.sync(self)
 		 				_la = try _input.LA(1)
-		 			} while (//closure
-		 			 { () -> Bool in
-		 			      let testSet: Bool = _la == JavaScriptParser.Tokens.Comma.rawValue
-		 			      return testSet
-		 			 }())
+		 			} while (_la == JavaScriptParser.Tokens.Comma.rawValue)
 		 			setState(630)
 		 			try arrayElement()
 
@@ -5635,11 +5533,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(639)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	while (//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = _la == JavaScriptParser.Tokens.Comma.rawValue
-		 	      return testSet
-		 	 }()) {
+		 	while (_la == JavaScriptParser.Tokens.Comma.rawValue) {
 		 		setState(636)
 		 		try match(JavaScriptParser.Tokens.Comma.rawValue)
 
@@ -5699,7 +5593,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func arrayElement() throws -> ArrayElementContext {
-		let _localctx: ArrayElementContext = ArrayElementContext(_ctx, getState())
+		var _localctx: ArrayElementContext
+		_localctx = ArrayElementContext(_ctx, getState())
 		try enterRule(_localctx, 102, JavaScriptParser.RULE_arrayElement)
 		var _la: Int = 0
 		defer {
@@ -5710,11 +5605,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(643)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	if (//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = _la == JavaScriptParser.Tokens.Ellipsis.rawValue
-		 	      return testSet
-		 	 }()) {
+		 	if (_la == JavaScriptParser.Tokens.Ellipsis.rawValue) {
 		 		setState(642)
 		 		try match(JavaScriptParser.Tokens.Ellipsis.rawValue)
 
@@ -6037,7 +5928,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func propertyAssignment() throws -> PropertyAssignmentContext {
-		var _localctx: PropertyAssignmentContext = PropertyAssignmentContext(_ctx, getState())
+		var _localctx: PropertyAssignmentContext
+		_localctx = PropertyAssignmentContext(_ctx, getState())
 		try enterRule(_localctx, 104, JavaScriptParser.RULE_propertyAssignment)
 		var _la: Int = 0
 		defer {
@@ -6089,11 +5981,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(661)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      let testSet: Bool = _la == JavaScriptParser.Tokens.Multiply.rawValue
-		 		      return testSet
-		 		 }()) {
+		 		if (_la == JavaScriptParser.Tokens.Multiply.rawValue) {
 		 			setState(660)
 		 			try match(JavaScriptParser.Tokens.Multiply.rawValue)
 
@@ -6106,18 +5994,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(666)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      var testSet: Bool = {  () -> Bool in
-		 		   let testArray: [Int] = [_la, JavaScriptParser.Tokens.OpenBracket.rawValue,JavaScriptParser.Tokens.OpenBrace.rawValue,JavaScriptParser.Tokens.Ellipsis.rawValue]
-		 		    return  Utils.testBitLeftShiftArray(testArray, 0)
-		 		}()
-		 		          testSet = testSet || {  () -> Bool in
-		 		             let testArray: [Int] = [_la, JavaScriptParser.Tokens.Async.rawValue,JavaScriptParser.Tokens.NonStrictLet.rawValue,JavaScriptParser.Tokens.Identifier.rawValue]
-		 		              return  Utils.testBitLeftShiftArray(testArray, 106)
-		 		          }()
-		 		      return testSet
-		 		 }()) {
+		 		if ((Int64(_la) & ~0x3f) == 0 && ((Int64(1) << _la) & 131616) != 0 || (Int64((_la - 106)) & ~0x3f) == 0 && ((Int64(1) << (_la - 106)) & 4113) != 0) {
 		 			setState(665)
 		 			try formalParameterList()
 
@@ -6163,11 +6040,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(683)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      let testSet: Bool = _la == JavaScriptParser.Tokens.Ellipsis.rawValue
-		 		      return testSet
-		 		 }()) {
+		 		if (_la == JavaScriptParser.Tokens.Ellipsis.rawValue) {
 		 			setState(682)
 		 			try match(JavaScriptParser.Tokens.Ellipsis.rawValue)
 
@@ -6245,7 +6118,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func propertyName() throws -> PropertyNameContext {
-		let _localctx: PropertyNameContext = PropertyNameContext(_ctx, getState())
+		var _localctx: PropertyNameContext
+		_localctx = PropertyNameContext(_ctx, getState())
 		try enterRule(_localctx, 106, JavaScriptParser.RULE_propertyName)
 		defer {
 	    		try! exitRule()
@@ -6406,7 +6280,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func arguments() throws -> ArgumentsContext {
-		let _localctx: ArgumentsContext = ArgumentsContext(_ctx, getState())
+		var _localctx: ArgumentsContext
+		_localctx = ArgumentsContext(_ctx, getState())
 		try enterRule(_localctx, 108, JavaScriptParser.RULE_arguments)
 		var _la: Int = 0
 		defer {
@@ -6420,18 +6295,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(709)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	if (//closure
-		 	 { () -> Bool in
-		 	      var testSet: Bool = {  () -> Bool in
-		 	   let testArray: [Int] = [_la, JavaScriptParser.Tokens.RegularExpressionLiteral.rawValue,JavaScriptParser.Tokens.OpenBracket.rawValue,JavaScriptParser.Tokens.OpenParen.rawValue,JavaScriptParser.Tokens.OpenBrace.rawValue,JavaScriptParser.Tokens.Ellipsis.rawValue,JavaScriptParser.Tokens.PlusPlus.rawValue,JavaScriptParser.Tokens.MinusMinus.rawValue,JavaScriptParser.Tokens.Plus.rawValue,JavaScriptParser.Tokens.Minus.rawValue,JavaScriptParser.Tokens.BitNot.rawValue,JavaScriptParser.Tokens.Not.rawValue,JavaScriptParser.Tokens.NullLiteral.rawValue,JavaScriptParser.Tokens.BooleanLiteral.rawValue,JavaScriptParser.Tokens.DecimalLiteral.rawValue,JavaScriptParser.Tokens.HexIntegerLiteral.rawValue]
-		 	    return  Utils.testBitLeftShiftArray(testArray, 0)
-		 	}()
-		 	          testSet = testSet || {  () -> Bool in
-		 	             let testArray: [Int] = [_la, JavaScriptParser.Tokens.OctalIntegerLiteral.rawValue,JavaScriptParser.Tokens.OctalIntegerLiteral2.rawValue,JavaScriptParser.Tokens.BinaryIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigHexIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigOctalIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigBinaryIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigDecimalIntegerLiteral.rawValue,JavaScriptParser.Tokens.Typeof.rawValue,JavaScriptParser.Tokens.New.rawValue,JavaScriptParser.Tokens.Void.rawValue,JavaScriptParser.Tokens.Function_.rawValue,JavaScriptParser.Tokens.This.rawValue,JavaScriptParser.Tokens.Delete.rawValue,JavaScriptParser.Tokens.Class.rawValue,JavaScriptParser.Tokens.Super.rawValue,JavaScriptParser.Tokens.Import.rawValue,JavaScriptParser.Tokens.Async.rawValue,JavaScriptParser.Tokens.Await.rawValue,JavaScriptParser.Tokens.NonStrictLet.rawValue,JavaScriptParser.Tokens.Yield.rawValue,JavaScriptParser.Tokens.Identifier.rawValue,JavaScriptParser.Tokens.StringLiteral.rawValue,JavaScriptParser.Tokens.BackTick.rawValue]
-		 	              return  Utils.testBitLeftShiftArray(testArray, 64)
-		 	          }()
-		 	      return testSet
-		 	 }()) {
+		 	if ((Int64(_la) & ~0x3f) == 0 && ((Int64(1) << _la) & -1152921504573685072) != 0 || (Int64((_la - 64)) & ~0x3f) == 0 && ((Int64(1) << (_la - 64)) & 135194061090071679) != 0) {
 		 		setState(698)
 		 		try argument()
 		 		setState(703)
@@ -6453,11 +6317,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(707)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      let testSet: Bool = _la == JavaScriptParser.Tokens.Comma.rawValue
-		 		      return testSet
-		 		 }()) {
+		 		if (_la == JavaScriptParser.Tokens.Comma.rawValue) {
 		 			setState(706)
 		 			try match(JavaScriptParser.Tokens.Comma.rawValue)
 
@@ -6523,7 +6383,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func argument() throws -> ArgumentContext {
-		let _localctx: ArgumentContext = ArgumentContext(_ctx, getState())
+		var _localctx: ArgumentContext
+		_localctx = ArgumentContext(_ctx, getState())
 		try enterRule(_localctx, 110, JavaScriptParser.RULE_argument)
 		var _la: Int = 0
 		defer {
@@ -6534,11 +6395,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(714)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	if (//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = _la == JavaScriptParser.Tokens.Ellipsis.rawValue
-		 	      return testSet
-		 	 }()) {
+		 	if (_la == JavaScriptParser.Tokens.Ellipsis.rawValue) {
 		 		setState(713)
 		 		try match(JavaScriptParser.Tokens.Ellipsis.rawValue)
 
@@ -6618,7 +6475,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func expressionSequence() throws -> ExpressionSequenceContext {
-		let _localctx: ExpressionSequenceContext = ExpressionSequenceContext(_ctx, getState())
+		var _localctx: ExpressionSequenceContext
+		_localctx = ExpressionSequenceContext(_ctx, getState())
 		try enterRule(_localctx, 112, JavaScriptParser.RULE_expressionSequence)
 		defer {
 	    		try! exitRule()
@@ -8638,7 +8496,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	private func singleExpression(_ _p: Int) throws -> SingleExpressionContext   {
 		let _parentctx: ParserRuleContext? = _ctx
 		let _parentState: Int = getState()
-		var _localctx: SingleExpressionContext = SingleExpressionContext(_ctx, _parentState)
+		var _localctx: SingleExpressionContext
+		_localctx = SingleExpressionContext(_ctx, _parentState)
 		let _startState: Int = 114
 		try enterRecursionRule(_localctx, 114, JavaScriptParser.RULE_singleExpression, _p)
 		var _la: Int = 0
@@ -8667,14 +8526,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 				setState(732)
 				try _errHandler.sync(self)
 				_la = try _input.LA(1)
-				if (//closure
-				 { () -> Bool in
-				      let testSet: Bool = {  () -> Bool in
-				   let testArray: [Int] = [_la, JavaScriptParser.Tokens.Async.rawValue,JavaScriptParser.Tokens.NonStrictLet.rawValue,JavaScriptParser.Tokens.Identifier.rawValue]
-				    return  Utils.testBitLeftShiftArray(testArray, 106)
-				}()
-				      return testSet
-				 }()) {
+				if ((Int64((_la - 106)) & ~0x3f) == 0 && ((Int64(1) << (_la - 106)) & 4113) != 0) {
 					setState(731)
 					try identifier()
 
@@ -8914,14 +8766,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 						}
 						setState(786)
 						_la = try _input.LA(1)
-						if (!(//closure
-						 { () -> Bool in
-						      let testSet: Bool = {  () -> Bool in
-						   let testArray: [Int] = [_la, JavaScriptParser.Tokens.Multiply.rawValue,JavaScriptParser.Tokens.Divide.rawValue,JavaScriptParser.Tokens.Modulus.rawValue]
-						    return  Utils.testBitLeftShiftArray(testArray, 0)
-						}()
-						      return testSet
-						 }())) {
+						if (!((Int64(_la) & ~0x3f) == 0 && ((Int64(1) << _la) & 234881024) != 0)) {
 						try _errHandler.recoverInline(self)
 						}
 						else {
@@ -8941,11 +8786,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 						}
 						setState(789)
 						_la = try _input.LA(1)
-						if (!(//closure
-						 { () -> Bool in
-						      let testSet: Bool = _la == JavaScriptParser.Tokens.Plus.rawValue || _la == JavaScriptParser.Tokens.Minus.rawValue
-						      return testSet
-						 }())) {
+						if (!(_la == JavaScriptParser.Tokens.Plus.rawValue || _la == JavaScriptParser.Tokens.Minus.rawValue)) {
 						try _errHandler.recoverInline(self)
 						}
 						else {
@@ -8978,14 +8819,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 						}
 						setState(795)
 						_la = try _input.LA(1)
-						if (!(//closure
-						 { () -> Bool in
-						      let testSet: Bool = {  () -> Bool in
-						   let testArray: [Int] = [_la, JavaScriptParser.Tokens.RightShiftArithmetic.rawValue,JavaScriptParser.Tokens.LeftShiftArithmetic.rawValue,JavaScriptParser.Tokens.RightShiftLogical.rawValue]
-						    return  Utils.testBitLeftShiftArray(testArray, 0)
-						}()
-						      return testSet
-						 }())) {
+						if (!((Int64(_la) & ~0x3f) == 0 && ((Int64(1) << _la) & 15032385536) != 0)) {
 						try _errHandler.recoverInline(self)
 						}
 						else {
@@ -9005,14 +8839,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 						}
 						setState(798)
 						_la = try _input.LA(1)
-						if (!(//closure
-						 { () -> Bool in
-						      let testSet: Bool = {  () -> Bool in
-						   let testArray: [Int] = [_la, JavaScriptParser.Tokens.LessThan.rawValue,JavaScriptParser.Tokens.MoreThan.rawValue,JavaScriptParser.Tokens.LessThanEquals.rawValue,JavaScriptParser.Tokens.GreaterThanEquals.rawValue]
-						    return  Utils.testBitLeftShiftArray(testArray, 0)
-						}()
-						      return testSet
-						 }())) {
+						if (!((Int64(_la) & ~0x3f) == 0 && ((Int64(1) << _la) & 257698037760) != 0)) {
 						try _errHandler.recoverInline(self)
 						}
 						else {
@@ -9058,14 +8885,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 						}
 						setState(807)
 						_la = try _input.LA(1)
-						if (!(//closure
-						 { () -> Bool in
-						      let testSet: Bool = {  () -> Bool in
-						   let testArray: [Int] = [_la, JavaScriptParser.Tokens.Equals_.rawValue,JavaScriptParser.Tokens.NotEquals.rawValue,JavaScriptParser.Tokens.IdentityEquals.rawValue,JavaScriptParser.Tokens.IdentityNotEquals.rawValue]
-						    return  Utils.testBitLeftShiftArray(testArray, 0)
-						}()
-						      return testSet
-						 }())) {
+						if (!((Int64(_la) & ~0x3f) == 0 && ((Int64(1) << _la) & 4123168604160) != 0)) {
 						try _errHandler.recoverInline(self)
 						}
 						else {
@@ -9209,11 +9029,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 						setState(844)
 						try _errHandler.sync(self)
 						_la = try _input.LA(1)
-						if (//closure
-						 { () -> Bool in
-						      let testSet: Bool = _la == JavaScriptParser.Tokens.QuestionMark.rawValue
-						      return testSet
-						 }()) {
+						if (_la == JavaScriptParser.Tokens.QuestionMark.rawValue) {
 							setState(843)
 							try match(JavaScriptParser.Tokens.QuestionMark.rawValue)
 
@@ -9224,11 +9040,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 						setState(848)
 						try _errHandler.sync(self)
 						_la = try _input.LA(1)
-						if (//closure
-						 { () -> Bool in
-						      let testSet: Bool = _la == JavaScriptParser.Tokens.Hashtag.rawValue
-						      return testSet
-						 }()) {
+						if (_la == JavaScriptParser.Tokens.Hashtag.rawValue) {
 							setState(847)
 							try match(JavaScriptParser.Tokens.Hashtag.rawValue)
 
@@ -9353,7 +9165,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func assignable() throws -> AssignableContext {
-		let _localctx: AssignableContext = AssignableContext(_ctx, getState())
+		var _localctx: AssignableContext
+		_localctx = AssignableContext(_ctx, getState())
 		try enterRule(_localctx, 116, JavaScriptParser.RULE_assignable)
 		defer {
 	    		try! exitRule()
@@ -9453,7 +9266,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func objectLiteral() throws -> ObjectLiteralContext {
-		let _localctx: ObjectLiteralContext = ObjectLiteralContext(_ctx, getState())
+		var _localctx: ObjectLiteralContext
+		_localctx = ObjectLiteralContext(_ctx, getState())
 		try enterRule(_localctx, 118, JavaScriptParser.RULE_objectLiteral)
 		var _la: Int = 0
 		defer {
@@ -9489,11 +9303,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(881)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      let testSet: Bool = _la == JavaScriptParser.Tokens.Comma.rawValue
-		 		      return testSet
-		 		 }()) {
+		 		if (_la == JavaScriptParser.Tokens.Comma.rawValue) {
 		 			setState(880)
 		 			try match(JavaScriptParser.Tokens.Comma.rawValue)
 
@@ -9668,7 +9478,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func anonymousFunction() throws -> AnonymousFunctionContext {
-		var _localctx: AnonymousFunctionContext = AnonymousFunctionContext(_ctx, getState())
+		var _localctx: AnonymousFunctionContext
+		_localctx = AnonymousFunctionContext(_ctx, getState())
 		try enterRule(_localctx, 120, JavaScriptParser.RULE_anonymousFunction)
 		var _la: Int = 0
 		defer {
@@ -9691,11 +9502,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(889)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      let testSet: Bool = _la == JavaScriptParser.Tokens.Async.rawValue
-		 		      return testSet
-		 		 }()) {
+		 		if (_la == JavaScriptParser.Tokens.Async.rawValue) {
 		 			setState(888)
 		 			try match(JavaScriptParser.Tokens.Async.rawValue)
 
@@ -9706,11 +9513,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(893)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      let testSet: Bool = _la == JavaScriptParser.Tokens.Multiply.rawValue
-		 		      return testSet
-		 		 }()) {
+		 		if (_la == JavaScriptParser.Tokens.Multiply.rawValue) {
 		 			setState(892)
 		 			try match(JavaScriptParser.Tokens.Multiply.rawValue)
 
@@ -9721,18 +9524,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(897)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      var testSet: Bool = {  () -> Bool in
-		 		   let testArray: [Int] = [_la, JavaScriptParser.Tokens.OpenBracket.rawValue,JavaScriptParser.Tokens.OpenBrace.rawValue,JavaScriptParser.Tokens.Ellipsis.rawValue]
-		 		    return  Utils.testBitLeftShiftArray(testArray, 0)
-		 		}()
-		 		          testSet = testSet || {  () -> Bool in
-		 		             let testArray: [Int] = [_la, JavaScriptParser.Tokens.Async.rawValue,JavaScriptParser.Tokens.NonStrictLet.rawValue,JavaScriptParser.Tokens.Identifier.rawValue]
-		 		              return  Utils.testBitLeftShiftArray(testArray, 106)
-		 		          }()
-		 		      return testSet
-		 		 }()) {
+		 		if ((Int64(_la) & ~0x3f) == 0 && ((Int64(1) << _la) & 131616) != 0 || (Int64((_la - 106)) & ~0x3f) == 0 && ((Int64(1) << (_la - 106)) & 4113) != 0) {
 		 			setState(896)
 		 			try formalParameterList()
 
@@ -9825,7 +9617,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func arrowFunctionParameters() throws -> ArrowFunctionParametersContext {
-		let _localctx: ArrowFunctionParametersContext = ArrowFunctionParametersContext(_ctx, getState())
+		var _localctx: ArrowFunctionParametersContext
+		_localctx = ArrowFunctionParametersContext(_ctx, getState())
 		try enterRule(_localctx, 122, JavaScriptParser.RULE_arrowFunctionParameters)
 		var _la: Int = 0
 		defer {
@@ -9851,18 +9644,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 		setState(913)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
-		 		if (//closure
-		 		 { () -> Bool in
-		 		      var testSet: Bool = {  () -> Bool in
-		 		   let testArray: [Int] = [_la, JavaScriptParser.Tokens.OpenBracket.rawValue,JavaScriptParser.Tokens.OpenBrace.rawValue,JavaScriptParser.Tokens.Ellipsis.rawValue]
-		 		    return  Utils.testBitLeftShiftArray(testArray, 0)
-		 		}()
-		 		          testSet = testSet || {  () -> Bool in
-		 		             let testArray: [Int] = [_la, JavaScriptParser.Tokens.Async.rawValue,JavaScriptParser.Tokens.NonStrictLet.rawValue,JavaScriptParser.Tokens.Identifier.rawValue]
-		 		              return  Utils.testBitLeftShiftArray(testArray, 106)
-		 		          }()
-		 		      return testSet
-		 		 }()) {
+		 		if ((Int64(_la) & ~0x3f) == 0 && ((Int64(1) << _la) & 131616) != 0 || (Int64((_la - 106)) & ~0x3f) == 0 && ((Int64(1) << (_la - 106)) & 4113) != 0) {
 		 			setState(912)
 		 			try formalParameterList()
 
@@ -9925,7 +9707,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func arrowFunctionBody() throws -> ArrowFunctionBodyContext {
-		let _localctx: ArrowFunctionBodyContext = ArrowFunctionBodyContext(_ctx, getState())
+		var _localctx: ArrowFunctionBodyContext
+		_localctx = ArrowFunctionBodyContext(_ctx, getState())
 		try enterRule(_localctx, 124, JavaScriptParser.RULE_arrowFunctionBody)
 		defer {
 	    		try! exitRule()
@@ -10038,7 +9821,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func assignmentOperator() throws -> AssignmentOperatorContext {
-		let _localctx: AssignmentOperatorContext = AssignmentOperatorContext(_ctx, getState())
+		var _localctx: AssignmentOperatorContext
+		_localctx = AssignmentOperatorContext(_ctx, getState())
 		try enterRule(_localctx, 126, JavaScriptParser.RULE_assignmentOperator)
 		var _la: Int = 0
 		defer {
@@ -10048,14 +9832,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	try enterOuterAlt(_localctx, 1)
 		 	setState(922)
 		 	_la = try _input.LA(1)
-		 	if (!(//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = {  () -> Bool in
-		 	   let testArray: [Int] = [_la, JavaScriptParser.Tokens.MultiplyAssign.rawValue,JavaScriptParser.Tokens.DivideAssign.rawValue,JavaScriptParser.Tokens.ModulusAssign.rawValue,JavaScriptParser.Tokens.PlusAssign.rawValue,JavaScriptParser.Tokens.MinusAssign.rawValue,JavaScriptParser.Tokens.LeftShiftArithmeticAssign.rawValue,JavaScriptParser.Tokens.RightShiftArithmeticAssign.rawValue,JavaScriptParser.Tokens.RightShiftLogicalAssign.rawValue,JavaScriptParser.Tokens.BitAndAssign.rawValue,JavaScriptParser.Tokens.BitXorAssign.rawValue,JavaScriptParser.Tokens.BitOrAssign.rawValue,JavaScriptParser.Tokens.PowerAssign.rawValue]
-		 	    return  Utils.testBitLeftShiftArray(testArray, 0)
-		 	}()
-		 	      return testSet
-		 	 }())) {
+		 	if (!((Int64(_la) & ~0x3f) == 0 && ((Int64(1) << _la) & 576320014815068160) != 0)) {
 		 	try _errHandler.recoverInline(self)
 		 	}
 		 	else {
@@ -10133,7 +9910,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func literal() throws -> LiteralContext {
-		let _localctx: LiteralContext = LiteralContext(_ctx, getState())
+		var _localctx: LiteralContext
+		_localctx = LiteralContext(_ctx, getState())
 		try enterRule(_localctx, 128, JavaScriptParser.RULE_literal)
 		defer {
 	    		try! exitRule()
@@ -10256,7 +10034,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func templateStringLiteral() throws -> TemplateStringLiteralContext {
-		let _localctx: TemplateStringLiteralContext = TemplateStringLiteralContext(_ctx, getState())
+		var _localctx: TemplateStringLiteralContext
+		_localctx = TemplateStringLiteralContext(_ctx, getState())
 		try enterRule(_localctx, 130, JavaScriptParser.RULE_templateStringLiteral)
 		var _la: Int = 0
 		defer {
@@ -10269,11 +10048,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	setState(937)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
-		 	while (//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = _la == JavaScriptParser.Tokens.TemplateStringStartExpression.rawValue || _la == JavaScriptParser.Tokens.TemplateStringAtom.rawValue
-		 	      return testSet
-		 	 }()) {
+		 	while (_la == JavaScriptParser.Tokens.TemplateStringStartExpression.rawValue || _la == JavaScriptParser.Tokens.TemplateStringAtom.rawValue) {
 		 		setState(934)
 		 		try templateStringAtom()
 
@@ -10343,7 +10118,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func templateStringAtom() throws -> TemplateStringAtomContext {
-		let _localctx: TemplateStringAtomContext = TemplateStringAtomContext(_ctx, getState())
+		var _localctx: TemplateStringAtomContext
+		_localctx = TemplateStringAtomContext(_ctx, getState())
 		try enterRule(_localctx, 132, JavaScriptParser.RULE_templateStringAtom)
 		defer {
 	    		try! exitRule()
@@ -10434,7 +10210,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func numericLiteral() throws -> NumericLiteralContext {
-		let _localctx: NumericLiteralContext = NumericLiteralContext(_ctx, getState())
+		var _localctx: NumericLiteralContext
+		_localctx = NumericLiteralContext(_ctx, getState())
 		try enterRule(_localctx, 134, JavaScriptParser.RULE_numericLiteral)
 		var _la: Int = 0
 		defer {
@@ -10444,14 +10221,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	try enterOuterAlt(_localctx, 1)
 		 	setState(949)
 		 	_la = try _input.LA(1)
-		 	if (!(//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = {  () -> Bool in
-		 	   let testArray: [Int] = [_la, JavaScriptParser.Tokens.DecimalLiteral.rawValue,JavaScriptParser.Tokens.HexIntegerLiteral.rawValue,JavaScriptParser.Tokens.OctalIntegerLiteral.rawValue,JavaScriptParser.Tokens.OctalIntegerLiteral2.rawValue,JavaScriptParser.Tokens.BinaryIntegerLiteral.rawValue]
-		 	    return  Utils.testBitLeftShiftArray(testArray, 62)
-		 	}()
-		 	      return testSet
-		 	 }())) {
+		 	if (!((Int64((_la - 62)) & ~0x3f) == 0 && ((Int64(1) << (_la - 62)) & 31) != 0)) {
 		 	try _errHandler.recoverInline(self)
 		 	}
 		 	else {
@@ -10517,7 +10287,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func bigintLiteral() throws -> BigintLiteralContext {
-		let _localctx: BigintLiteralContext = BigintLiteralContext(_ctx, getState())
+		var _localctx: BigintLiteralContext
+		_localctx = BigintLiteralContext(_ctx, getState())
 		try enterRule(_localctx, 136, JavaScriptParser.RULE_bigintLiteral)
 		var _la: Int = 0
 		defer {
@@ -10527,14 +10298,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	try enterOuterAlt(_localctx, 1)
 		 	setState(951)
 		 	_la = try _input.LA(1)
-		 	if (!(//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = {  () -> Bool in
-		 	   let testArray: [Int] = [_la, JavaScriptParser.Tokens.BigHexIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigOctalIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigBinaryIntegerLiteral.rawValue,JavaScriptParser.Tokens.BigDecimalIntegerLiteral.rawValue]
-		 	    return  Utils.testBitLeftShiftArray(testArray, 67)
-		 	}()
-		 	      return testSet
-		 	 }())) {
+		 	if (!((Int64((_la - 67)) & ~0x3f) == 0 && ((Int64(1) << (_la - 67)) & 15) != 0)) {
 		 	try _errHandler.recoverInline(self)
 		 	}
 		 	else {
@@ -10592,7 +10356,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func getter() throws -> GetterContext {
-		let _localctx: GetterContext = GetterContext(_ctx, getState())
+		var _localctx: GetterContext
+		_localctx = GetterContext(_ctx, getState())
 		try enterRule(_localctx, 138, JavaScriptParser.RULE_getter)
 		defer {
 	    		try! exitRule()
@@ -10658,7 +10423,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func setter() throws -> SetterContext {
-		let _localctx: SetterContext = SetterContext(_ctx, getState())
+		var _localctx: SetterContext
+		_localctx = SetterContext(_ctx, getState())
 		try enterRule(_localctx, 140, JavaScriptParser.RULE_setter)
 		defer {
 	    		try! exitRule()
@@ -10724,7 +10490,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func identifierName() throws -> IdentifierNameContext {
-		let _localctx: IdentifierNameContext = IdentifierNameContext(_ctx, getState())
+		var _localctx: IdentifierNameContext
+		_localctx = IdentifierNameContext(_ctx, getState())
 		try enterRule(_localctx, 142, JavaScriptParser.RULE_identifierName)
 		defer {
 	    		try! exitRule()
@@ -10801,7 +10568,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func identifier() throws -> IdentifierContext {
-		let _localctx: IdentifierContext = IdentifierContext(_ctx, getState())
+		var _localctx: IdentifierContext
+		_localctx = IdentifierContext(_ctx, getState())
 		try enterRule(_localctx, 144, JavaScriptParser.RULE_identifier)
 		var _la: Int = 0
 		defer {
@@ -10811,14 +10579,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	try enterOuterAlt(_localctx, 1)
 		 	setState(965)
 		 	_la = try _input.LA(1)
-		 	if (!(//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = {  () -> Bool in
-		 	   let testArray: [Int] = [_la, JavaScriptParser.Tokens.Async.rawValue,JavaScriptParser.Tokens.NonStrictLet.rawValue,JavaScriptParser.Tokens.Identifier.rawValue]
-		 	    return  Utils.testBitLeftShiftArray(testArray, 106)
-		 	}()
-		 	      return testSet
-		 	 }())) {
+		 	if (!((Int64((_la - 106)) & ~0x3f) == 0 && ((Int64(1) << (_la - 106)) & 4113) != 0)) {
 		 	try _errHandler.recoverInline(self)
 		 	}
 		 	else {
@@ -10880,7 +10641,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func reservedWord() throws -> ReservedWordContext {
-		let _localctx: ReservedWordContext = ReservedWordContext(_ctx, getState())
+		var _localctx: ReservedWordContext
+		_localctx = ReservedWordContext(_ctx, getState())
 		try enterRule(_localctx, 146, JavaScriptParser.RULE_reservedWord)
 		defer {
 	    		try! exitRule()
@@ -11184,7 +10946,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func keyword() throws -> KeywordContext {
-		let _localctx: KeywordContext = KeywordContext(_ctx, getState())
+		var _localctx: KeywordContext
+		_localctx = KeywordContext(_ctx, getState())
 		try enterRule(_localctx, 148, JavaScriptParser.RULE_keyword)
 		defer {
 	    		try! exitRule()
@@ -11567,7 +11330,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func let_() throws -> Let_Context {
-		let _localctx: Let_Context = Let_Context(_ctx, getState())
+		var _localctx: Let_Context
+		_localctx = Let_Context(_ctx, getState())
 		try enterRule(_localctx, 150, JavaScriptParser.RULE_let_)
 		var _la: Int = 0
 		defer {
@@ -11577,11 +11341,7 @@ open class JavaScriptParser: JavaScriptParserBase {
 		 	try enterOuterAlt(_localctx, 1)
 		 	setState(1020)
 		 	_la = try _input.LA(1)
-		 	if (!(//closure
-		 	 { () -> Bool in
-		 	      let testSet: Bool = _la == JavaScriptParser.Tokens.StrictLet.rawValue || _la == JavaScriptParser.Tokens.NonStrictLet.rawValue
-		 	      return testSet
-		 	 }())) {
+		 	if (!(_la == JavaScriptParser.Tokens.StrictLet.rawValue || _la == JavaScriptParser.Tokens.NonStrictLet.rawValue)) {
 		 	try _errHandler.recoverInline(self)
 		 	}
 		 	else {
@@ -11639,7 +11399,8 @@ open class JavaScriptParser: JavaScriptParserBase {
 	}
 	@discardableResult
 	 open func eos() throws -> EosContext {
-		let _localctx: EosContext = EosContext(_ctx, getState())
+		var _localctx: EosContext
+		_localctx = EosContext(_ctx, getState())
 		try enterRule(_localctx, 152, JavaScriptParser.RULE_eos)
 		defer {
 	    		try! exitRule()
@@ -11816,7 +11577,379 @@ open class JavaScriptParser: JavaScriptParserBase {
 		}
 	}
 
-
-	public
-	static let _serializedATN = JavaScriptParserATN().jsonString
+	static let _serializedATN:[Int] = [
+		4,1,127,1029,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
+		7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,
+		2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,
+		2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,28,
+		2,29,7,29,2,30,7,30,2,31,7,31,2,32,7,32,2,33,7,33,2,34,7,34,2,35,7,35,
+		2,36,7,36,2,37,7,37,2,38,7,38,2,39,7,39,2,40,7,40,2,41,7,41,2,42,7,42,
+		2,43,7,43,2,44,7,44,2,45,7,45,2,46,7,46,2,47,7,47,2,48,7,48,2,49,7,49,
+		2,50,7,50,2,51,7,51,2,52,7,52,2,53,7,53,2,54,7,54,2,55,7,55,2,56,7,56,
+		2,57,7,57,2,58,7,58,2,59,7,59,2,60,7,60,2,61,7,61,2,62,7,62,2,63,7,63,
+		2,64,7,64,2,65,7,65,2,66,7,66,2,67,7,67,2,68,7,68,2,69,7,69,2,70,7,70,
+		2,71,7,71,2,72,7,72,2,73,7,73,2,74,7,74,2,75,7,75,2,76,7,76,1,0,3,0,156,
+		8,0,1,0,3,0,159,8,0,1,0,1,0,1,1,1,1,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,
+		2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,3,2,185,8,2,1,3,1,3,3,3,
+		189,8,3,1,3,1,3,1,4,4,4,194,8,4,11,4,12,4,195,1,5,1,5,1,5,1,6,3,6,202,
+		8,6,1,6,1,6,3,6,206,8,6,1,6,1,6,1,6,1,6,1,6,3,6,213,8,6,1,7,1,7,1,7,1,
+		7,5,7,219,8,7,10,7,12,7,222,9,7,1,7,1,7,3,7,226,8,7,3,7,228,8,7,1,7,1,
+		7,1,8,1,8,1,8,1,9,1,9,3,9,237,8,9,1,9,1,9,3,9,241,8,9,1,10,1,10,1,10,1,
+		11,1,11,1,11,3,11,249,8,11,1,12,1,12,1,12,3,12,254,8,12,1,12,1,12,1,12,
+		1,12,1,12,1,12,1,12,3,12,263,8,12,1,13,1,13,1,13,1,13,1,13,1,13,3,13,271,
+		8,13,1,13,1,13,3,13,275,8,13,1,14,1,14,1,14,3,14,280,8,14,1,15,1,15,1,
+		15,1,16,1,16,1,16,1,16,5,16,289,8,16,10,16,12,16,292,9,16,1,17,1,17,1,
+		17,3,17,297,8,17,1,18,1,18,1,19,1,19,1,19,1,19,1,20,1,20,1,20,1,20,1,20,
+		1,20,1,20,3,20,312,8,20,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,
+		21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,3,21,332,8,21,1,21,1,21,3,21,
+		336,8,21,1,21,1,21,3,21,340,8,21,1,21,1,21,1,21,1,21,1,21,1,21,3,21,348,
+		8,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,3,21,357,8,21,1,21,1,21,1,21,3,
+		21,362,8,21,1,21,1,21,1,21,1,21,1,21,1,21,3,21,370,8,21,1,22,1,22,1,22,
+		3,22,375,8,22,1,23,1,23,1,23,3,23,380,8,23,1,23,1,23,1,24,1,24,1,24,3,
+		24,387,8,24,1,24,1,24,1,25,1,25,1,25,3,25,394,8,25,1,25,1,25,1,26,1,26,
+		1,26,3,26,401,8,26,1,26,1,26,1,27,1,27,1,27,1,27,1,27,1,27,1,28,1,28,1,
+		28,1,28,1,28,1,28,1,29,1,29,3,29,419,8,29,1,29,1,29,3,29,423,8,29,3,29,
+		425,8,29,1,29,1,29,1,30,4,30,430,8,30,11,30,12,30,431,1,31,1,31,1,31,1,
+		31,3,31,438,8,31,1,32,1,32,1,32,3,32,443,8,32,1,33,1,33,1,33,1,33,1,34,
+		1,34,1,34,1,34,1,34,1,35,1,35,1,35,1,35,3,35,458,8,35,1,35,3,35,461,8,
+		35,1,36,1,36,1,36,3,36,466,8,36,1,36,3,36,469,8,36,1,36,1,36,1,37,1,37,
+		1,37,1,38,1,38,1,38,1,39,3,39,480,8,39,1,39,1,39,3,39,484,8,39,1,39,1,
+		39,1,39,3,39,489,8,39,1,39,1,39,1,39,1,40,1,40,1,40,1,40,1,41,1,41,3,41,
+		500,8,41,1,41,1,41,5,41,504,8,41,10,41,12,41,507,9,41,1,41,1,41,1,42,1,
+		42,1,42,1,42,5,42,515,8,42,10,42,12,42,518,9,42,1,42,1,42,1,42,1,42,1,
+		42,1,42,3,42,526,8,42,1,42,1,42,3,42,530,8,42,1,42,1,42,1,42,1,42,3,42,
+		536,8,42,1,43,3,43,539,8,43,1,43,3,43,542,8,43,1,43,1,43,1,43,3,43,547,
+		8,43,1,43,1,43,1,43,1,43,3,43,553,8,43,1,43,3,43,556,8,43,1,43,1,43,1,
+		43,1,43,1,43,1,43,3,43,564,8,43,1,43,3,43,567,8,43,1,43,1,43,1,43,3,43,
+		572,8,43,1,43,1,43,1,43,3,43,577,8,43,1,44,1,44,1,44,5,44,582,8,44,10,
+		44,12,44,585,9,44,1,44,1,44,3,44,589,8,44,1,44,3,44,592,8,44,1,45,1,45,
+		1,45,3,45,597,8,45,1,46,1,46,1,46,1,47,1,47,3,47,604,8,47,1,47,1,47,1,
+		48,4,48,609,8,48,11,48,12,48,610,1,49,1,49,1,49,1,49,1,50,5,50,618,8,50,
+		10,50,12,50,621,9,50,1,50,3,50,624,8,50,1,50,4,50,627,8,50,11,50,12,50,
+		628,1,50,5,50,632,8,50,10,50,12,50,635,9,50,1,50,5,50,638,8,50,10,50,12,
+		50,641,9,50,1,51,3,51,644,8,51,1,51,1,51,1,52,1,52,1,52,1,52,1,52,1,52,
+		1,52,1,52,1,52,1,52,1,52,3,52,659,8,52,1,52,3,52,662,8,52,1,52,1,52,1,
+		52,3,52,667,8,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,1,52,
+		1,52,1,52,1,52,1,52,3,52,684,8,52,1,52,3,52,687,8,52,1,53,1,53,1,53,1,
+		53,1,53,1,53,1,53,3,53,696,8,53,1,54,1,54,1,54,1,54,5,54,702,8,54,10,54,
+		12,54,705,9,54,1,54,3,54,708,8,54,3,54,710,8,54,1,54,1,54,1,55,3,55,715,
+		8,55,1,55,1,55,3,55,719,8,55,1,56,1,56,1,56,5,56,724,8,56,10,56,12,56,
+		727,9,56,1,57,1,57,1,57,1,57,3,57,733,8,57,1,57,1,57,1,57,1,57,1,57,1,
+		57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,
+		57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,
+		57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,3,57,781,
+		8,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,
+		1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,
+		1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,
+		1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,
+		1,57,1,57,1,57,1,57,1,57,1,57,1,57,3,57,845,8,57,1,57,1,57,3,57,849,8,
+		57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,1,57,5,57,862,8,57,
+		10,57,12,57,865,9,57,1,58,1,58,1,58,3,58,870,8,58,1,59,1,59,1,59,1,59,
+		5,59,876,8,59,10,59,12,59,879,9,59,1,59,3,59,882,8,59,3,59,884,8,59,1,
+		59,1,59,1,60,1,60,3,60,890,8,60,1,60,1,60,3,60,894,8,60,1,60,1,60,3,60,
+		898,8,60,1,60,1,60,1,60,3,60,903,8,60,1,60,1,60,1,60,1,60,3,60,909,8,60,
+		1,61,1,61,1,61,3,61,914,8,61,1,61,3,61,917,8,61,1,62,1,62,3,62,921,8,62,
+		1,63,1,63,1,64,1,64,1,64,1,64,1,64,1,64,1,64,3,64,932,8,64,1,65,1,65,5,
+		65,936,8,65,10,65,12,65,939,9,65,1,65,1,65,1,66,1,66,1,66,1,66,1,66,3,
+		66,948,8,66,1,67,1,67,1,68,1,68,1,69,1,69,1,69,1,69,1,70,1,70,1,70,1,70,
+		1,71,1,71,3,71,964,8,71,1,72,1,72,1,73,1,73,1,73,3,73,971,8,73,1,74,1,
+		74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,
+		74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,
+		74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,74,1,
+		74,1,74,1,74,3,74,1019,8,74,1,75,1,75,1,76,1,76,1,76,1,76,3,76,1027,8,
+		76,1,76,0,1,114,77,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,
+		38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,
+		86,88,90,92,94,96,98,100,102,104,106,108,110,112,114,116,118,120,122,124,
+		126,128,130,132,134,136,138,140,142,144,146,148,150,152,0,10,1,0,25,27,
+		1,0,21,22,1,0,31,33,1,0,34,37,1,0,38,41,1,0,47,58,1,0,62,66,1,0,67,70,
+		3,0,106,106,110,110,118,118,1,0,109,110,1193,0,155,1,0,0,0,2,162,1,0,0,
+		0,4,184,1,0,0,0,6,186,1,0,0,0,8,193,1,0,0,0,10,197,1,0,0,0,12,212,1,0,
+		0,0,14,214,1,0,0,0,16,231,1,0,0,0,18,236,1,0,0,0,20,242,1,0,0,0,22,245,
+		1,0,0,0,24,262,1,0,0,0,26,274,1,0,0,0,28,279,1,0,0,0,30,281,1,0,0,0,32,
+		284,1,0,0,0,34,293,1,0,0,0,36,298,1,0,0,0,38,300,1,0,0,0,40,304,1,0,0,
+		0,42,369,1,0,0,0,44,374,1,0,0,0,46,376,1,0,0,0,48,383,1,0,0,0,50,390,1,
+		0,0,0,52,397,1,0,0,0,54,404,1,0,0,0,56,410,1,0,0,0,58,416,1,0,0,0,60,429,
+		1,0,0,0,62,433,1,0,0,0,64,439,1,0,0,0,66,444,1,0,0,0,68,448,1,0,0,0,70,
+		453,1,0,0,0,72,462,1,0,0,0,74,472,1,0,0,0,76,475,1,0,0,0,78,479,1,0,0,
+		0,80,493,1,0,0,0,82,499,1,0,0,0,84,535,1,0,0,0,86,576,1,0,0,0,88,591,1,
+		0,0,0,90,593,1,0,0,0,92,598,1,0,0,0,94,601,1,0,0,0,96,608,1,0,0,0,98,612,
+		1,0,0,0,100,619,1,0,0,0,102,643,1,0,0,0,104,686,1,0,0,0,106,695,1,0,0,
+		0,108,697,1,0,0,0,110,714,1,0,0,0,112,720,1,0,0,0,114,780,1,0,0,0,116,
+		869,1,0,0,0,118,871,1,0,0,0,120,908,1,0,0,0,122,916,1,0,0,0,124,920,1,
+		0,0,0,126,922,1,0,0,0,128,931,1,0,0,0,130,933,1,0,0,0,132,947,1,0,0,0,
+		134,949,1,0,0,0,136,951,1,0,0,0,138,953,1,0,0,0,140,957,1,0,0,0,142,963,
+		1,0,0,0,144,965,1,0,0,0,146,970,1,0,0,0,148,1018,1,0,0,0,150,1020,1,0,
+		0,0,152,1026,1,0,0,0,154,156,5,1,0,0,155,154,1,0,0,0,155,156,1,0,0,0,156,
+		158,1,0,0,0,157,159,3,96,48,0,158,157,1,0,0,0,158,159,1,0,0,0,159,160,
+		1,0,0,0,160,161,5,0,0,1,161,1,1,0,0,0,162,163,3,4,2,0,163,3,1,0,0,0,164,
+		185,3,6,3,0,165,185,3,30,15,0,166,185,3,10,5,0,167,185,3,24,12,0,168,185,
+		3,36,18,0,169,185,3,80,40,0,170,185,3,38,19,0,171,185,3,40,20,0,172,185,
+		3,42,21,0,173,185,3,46,23,0,174,185,3,48,24,0,175,185,3,50,25,0,176,185,
+		3,52,26,0,177,185,3,54,27,0,178,185,3,66,33,0,179,185,3,56,28,0,180,185,
+		3,68,34,0,181,185,3,70,35,0,182,185,3,76,38,0,183,185,3,78,39,0,184,164,
+		1,0,0,0,184,165,1,0,0,0,184,166,1,0,0,0,184,167,1,0,0,0,184,168,1,0,0,
+		0,184,169,1,0,0,0,184,170,1,0,0,0,184,171,1,0,0,0,184,172,1,0,0,0,184,
+		173,1,0,0,0,184,174,1,0,0,0,184,175,1,0,0,0,184,176,1,0,0,0,184,177,1,
+		0,0,0,184,178,1,0,0,0,184,179,1,0,0,0,184,180,1,0,0,0,184,181,1,0,0,0,
+		184,182,1,0,0,0,184,183,1,0,0,0,185,5,1,0,0,0,186,188,5,9,0,0,187,189,
+		3,8,4,0,188,187,1,0,0,0,188,189,1,0,0,0,189,190,1,0,0,0,190,191,5,11,0,
+		0,191,7,1,0,0,0,192,194,3,4,2,0,193,192,1,0,0,0,194,195,1,0,0,0,195,193,
+		1,0,0,0,195,196,1,0,0,0,196,9,1,0,0,0,197,198,5,105,0,0,198,199,3,12,6,
+		0,199,11,1,0,0,0,200,202,3,16,8,0,201,200,1,0,0,0,201,202,1,0,0,0,202,
+		205,1,0,0,0,203,206,3,18,9,0,204,206,3,14,7,0,205,203,1,0,0,0,205,204,
+		1,0,0,0,206,207,1,0,0,0,207,208,3,20,10,0,208,209,3,152,76,0,209,213,1,
+		0,0,0,210,211,5,119,0,0,211,213,3,152,76,0,212,201,1,0,0,0,212,210,1,0,
+		0,0,213,13,1,0,0,0,214,220,5,9,0,0,215,216,3,22,11,0,216,217,5,13,0,0,
+		217,219,1,0,0,0,218,215,1,0,0,0,219,222,1,0,0,0,220,218,1,0,0,0,220,221,
+		1,0,0,0,221,227,1,0,0,0,222,220,1,0,0,0,223,225,3,22,11,0,224,226,5,13,
+		0,0,225,224,1,0,0,0,225,226,1,0,0,0,226,228,1,0,0,0,227,223,1,0,0,0,227,
+		228,1,0,0,0,228,229,1,0,0,0,229,230,5,11,0,0,230,15,1,0,0,0,231,232,3,
+		22,11,0,232,233,5,13,0,0,233,17,1,0,0,0,234,237,5,25,0,0,235,237,3,142,
+		71,0,236,234,1,0,0,0,236,235,1,0,0,0,237,240,1,0,0,0,238,239,5,97,0,0,
+		239,241,3,142,71,0,240,238,1,0,0,0,240,241,1,0,0,0,241,19,1,0,0,0,242,
+		243,5,98,0,0,243,244,5,119,0,0,244,21,1,0,0,0,245,248,3,142,71,0,246,247,
+		5,97,0,0,247,249,3,142,71,0,248,246,1,0,0,0,248,249,1,0,0,0,249,23,1,0,
+		0,0,250,253,5,104,0,0,251,254,3,26,13,0,252,254,3,28,14,0,253,251,1,0,
+		0,0,253,252,1,0,0,0,254,255,1,0,0,0,255,256,3,152,76,0,256,263,1,0,0,0,
+		257,258,5,104,0,0,258,259,5,91,0,0,259,260,3,114,57,0,260,261,3,152,76,
+		0,261,263,1,0,0,0,262,250,1,0,0,0,262,257,1,0,0,0,263,25,1,0,0,0,264,265,
+		3,18,9,0,265,266,3,20,10,0,266,267,3,152,76,0,267,275,1,0,0,0,268,270,
+		3,14,7,0,269,271,3,20,10,0,270,269,1,0,0,0,270,271,1,0,0,0,271,272,1,0,
+		0,0,272,273,3,152,76,0,273,275,1,0,0,0,274,264,1,0,0,0,274,268,1,0,0,0,
+		275,27,1,0,0,0,276,280,3,30,15,0,277,280,3,80,40,0,278,280,3,78,39,0,279,
+		276,1,0,0,0,279,277,1,0,0,0,279,278,1,0,0,0,280,29,1,0,0,0,281,282,3,32,
+		16,0,282,283,3,152,76,0,283,31,1,0,0,0,284,285,3,44,22,0,285,290,3,34,
+		17,0,286,287,5,13,0,0,287,289,3,34,17,0,288,286,1,0,0,0,289,292,1,0,0,
+		0,290,288,1,0,0,0,290,291,1,0,0,0,291,33,1,0,0,0,292,290,1,0,0,0,293,296,
+		3,116,58,0,294,295,5,14,0,0,295,297,3,114,57,0,296,294,1,0,0,0,296,297,
+		1,0,0,0,297,35,1,0,0,0,298,299,5,12,0,0,299,37,1,0,0,0,300,301,4,19,0,
+		0,301,302,3,112,56,0,302,303,3,152,76,0,303,39,1,0,0,0,304,305,5,92,0,
+		0,305,306,5,7,0,0,306,307,3,112,56,0,307,308,5,8,0,0,308,311,3,4,2,0,309,
+		310,5,76,0,0,310,312,3,4,2,0,311,309,1,0,0,0,311,312,1,0,0,0,312,41,1,
+		0,0,0,313,314,5,72,0,0,314,315,3,4,2,0,315,316,5,86,0,0,316,317,5,7,0,
+		0,317,318,3,112,56,0,318,319,5,8,0,0,319,320,3,152,76,0,320,370,1,0,0,
+		0,321,322,5,86,0,0,322,323,5,7,0,0,323,324,3,112,56,0,324,325,5,8,0,0,
+		325,326,3,4,2,0,326,370,1,0,0,0,327,328,5,84,0,0,328,331,5,7,0,0,329,332,
+		3,112,56,0,330,332,3,32,16,0,331,329,1,0,0,0,331,330,1,0,0,0,331,332,1,
+		0,0,0,332,333,1,0,0,0,333,335,5,12,0,0,334,336,3,112,56,0,335,334,1,0,
+		0,0,335,336,1,0,0,0,336,337,1,0,0,0,337,339,5,12,0,0,338,340,3,112,56,
+		0,339,338,1,0,0,0,339,340,1,0,0,0,340,341,1,0,0,0,341,342,5,8,0,0,342,
+		370,3,4,2,0,343,344,5,84,0,0,344,347,5,7,0,0,345,348,3,114,57,0,346,348,
+		3,32,16,0,347,345,1,0,0,0,347,346,1,0,0,0,348,349,1,0,0,0,349,350,5,95,
+		0,0,350,351,3,112,56,0,351,352,5,8,0,0,352,353,3,4,2,0,353,370,1,0,0,0,
+		354,356,5,84,0,0,355,357,5,107,0,0,356,355,1,0,0,0,356,357,1,0,0,0,357,
+		358,1,0,0,0,358,361,5,7,0,0,359,362,3,114,57,0,360,362,3,32,16,0,361,359,
+		1,0,0,0,361,360,1,0,0,0,362,363,1,0,0,0,363,364,3,144,72,0,364,365,4,21,
+		1,0,365,366,3,112,56,0,366,367,5,8,0,0,367,368,3,4,2,0,368,370,1,0,0,0,
+		369,313,1,0,0,0,369,321,1,0,0,0,369,327,1,0,0,0,369,343,1,0,0,0,369,354,
+		1,0,0,0,370,43,1,0,0,0,371,375,5,78,0,0,372,375,3,150,75,0,373,375,5,103,
+		0,0,374,371,1,0,0,0,374,372,1,0,0,0,374,373,1,0,0,0,375,45,1,0,0,0,376,
+		379,5,83,0,0,377,378,4,23,2,0,378,380,3,144,72,0,379,377,1,0,0,0,379,380,
+		1,0,0,0,380,381,1,0,0,0,381,382,3,152,76,0,382,47,1,0,0,0,383,386,5,71,
+		0,0,384,385,4,24,3,0,385,387,3,144,72,0,386,384,1,0,0,0,386,387,1,0,0,
+		0,387,388,1,0,0,0,388,389,3,152,76,0,389,49,1,0,0,0,390,393,5,81,0,0,391,
+		392,4,25,4,0,392,394,3,112,56,0,393,391,1,0,0,0,393,394,1,0,0,0,394,395,
+		1,0,0,0,395,396,3,152,76,0,396,51,1,0,0,0,397,400,5,117,0,0,398,399,4,
+		26,5,0,399,401,3,112,56,0,400,398,1,0,0,0,400,401,1,0,0,0,401,402,1,0,
+		0,0,402,403,3,152,76,0,403,53,1,0,0,0,404,405,5,90,0,0,405,406,5,7,0,0,
+		406,407,3,112,56,0,407,408,5,8,0,0,408,409,3,4,2,0,409,55,1,0,0,0,410,
+		411,5,85,0,0,411,412,5,7,0,0,412,413,3,112,56,0,413,414,5,8,0,0,414,415,
+		3,58,29,0,415,57,1,0,0,0,416,418,5,9,0,0,417,419,3,60,30,0,418,417,1,0,
+		0,0,418,419,1,0,0,0,419,424,1,0,0,0,420,422,3,64,32,0,421,423,3,60,30,
+		0,422,421,1,0,0,0,422,423,1,0,0,0,423,425,1,0,0,0,424,420,1,0,0,0,424,
+		425,1,0,0,0,425,426,1,0,0,0,426,427,5,11,0,0,427,59,1,0,0,0,428,430,3,
+		62,31,0,429,428,1,0,0,0,430,431,1,0,0,0,431,429,1,0,0,0,431,432,1,0,0,
+		0,432,61,1,0,0,0,433,434,5,75,0,0,434,435,3,112,56,0,435,437,5,16,0,0,
+		436,438,3,8,4,0,437,436,1,0,0,0,437,438,1,0,0,0,438,63,1,0,0,0,439,440,
+		5,91,0,0,440,442,5,16,0,0,441,443,3,8,4,0,442,441,1,0,0,0,442,443,1,0,
+		0,0,443,65,1,0,0,0,444,445,3,144,72,0,445,446,5,16,0,0,446,447,3,4,2,0,
+		447,67,1,0,0,0,448,449,5,93,0,0,449,450,4,34,6,0,450,451,3,112,56,0,451,
+		452,3,152,76,0,452,69,1,0,0,0,453,454,5,96,0,0,454,460,3,6,3,0,455,457,
+		3,72,36,0,456,458,3,74,37,0,457,456,1,0,0,0,457,458,1,0,0,0,458,461,1,
+		0,0,0,459,461,3,74,37,0,460,455,1,0,0,0,460,459,1,0,0,0,461,71,1,0,0,0,
+		462,468,5,79,0,0,463,465,5,7,0,0,464,466,3,116,58,0,465,464,1,0,0,0,465,
+		466,1,0,0,0,466,467,1,0,0,0,467,469,5,8,0,0,468,463,1,0,0,0,468,469,1,
+		0,0,0,469,470,1,0,0,0,470,471,3,6,3,0,471,73,1,0,0,0,472,473,5,80,0,0,
+		473,474,3,6,3,0,474,75,1,0,0,0,475,476,5,87,0,0,476,477,3,152,76,0,477,
+		77,1,0,0,0,478,480,5,106,0,0,479,478,1,0,0,0,479,480,1,0,0,0,480,481,1,
+		0,0,0,481,483,5,88,0,0,482,484,5,25,0,0,483,482,1,0,0,0,483,484,1,0,0,
+		0,484,485,1,0,0,0,485,486,3,144,72,0,486,488,5,7,0,0,487,489,3,88,44,0,
+		488,487,1,0,0,0,488,489,1,0,0,0,489,490,1,0,0,0,490,491,5,8,0,0,491,492,
+		3,94,47,0,492,79,1,0,0,0,493,494,5,99,0,0,494,495,3,144,72,0,495,496,3,
+		82,41,0,496,81,1,0,0,0,497,498,5,101,0,0,498,500,3,114,57,0,499,497,1,
+		0,0,0,499,500,1,0,0,0,500,501,1,0,0,0,501,505,5,9,0,0,502,504,3,84,42,
+		0,503,502,1,0,0,0,504,507,1,0,0,0,505,503,1,0,0,0,505,506,1,0,0,0,506,
+		508,1,0,0,0,507,505,1,0,0,0,508,509,5,11,0,0,509,83,1,0,0,0,510,515,5,
+		116,0,0,511,512,4,42,7,0,512,515,3,144,72,0,513,515,5,106,0,0,514,510,
+		1,0,0,0,514,511,1,0,0,0,514,513,1,0,0,0,515,518,1,0,0,0,516,514,1,0,0,
+		0,516,517,1,0,0,0,517,525,1,0,0,0,518,516,1,0,0,0,519,526,3,86,43,0,520,
+		521,3,116,58,0,521,522,5,14,0,0,522,523,3,118,59,0,523,524,5,12,0,0,524,
+		526,1,0,0,0,525,519,1,0,0,0,525,520,1,0,0,0,526,536,1,0,0,0,527,536,3,
+		36,18,0,528,530,5,30,0,0,529,528,1,0,0,0,529,530,1,0,0,0,530,531,1,0,0,
+		0,531,532,3,106,53,0,532,533,5,14,0,0,533,534,3,114,57,0,534,536,1,0,0,
+		0,535,516,1,0,0,0,535,527,1,0,0,0,535,529,1,0,0,0,536,85,1,0,0,0,537,539,
+		5,25,0,0,538,537,1,0,0,0,538,539,1,0,0,0,539,541,1,0,0,0,540,542,5,30,
+		0,0,541,540,1,0,0,0,541,542,1,0,0,0,542,543,1,0,0,0,543,544,3,106,53,0,
+		544,546,5,7,0,0,545,547,3,88,44,0,546,545,1,0,0,0,546,547,1,0,0,0,547,
+		548,1,0,0,0,548,549,5,8,0,0,549,550,3,94,47,0,550,577,1,0,0,0,551,553,
+		5,25,0,0,552,551,1,0,0,0,552,553,1,0,0,0,553,555,1,0,0,0,554,556,5,30,
+		0,0,555,554,1,0,0,0,555,556,1,0,0,0,556,557,1,0,0,0,557,558,3,138,69,0,
+		558,559,5,7,0,0,559,560,5,8,0,0,560,561,3,94,47,0,561,577,1,0,0,0,562,
+		564,5,25,0,0,563,562,1,0,0,0,563,564,1,0,0,0,564,566,1,0,0,0,565,567,5,
+		30,0,0,566,565,1,0,0,0,566,567,1,0,0,0,567,568,1,0,0,0,568,569,3,140,70,
+		0,569,571,5,7,0,0,570,572,3,88,44,0,571,570,1,0,0,0,571,572,1,0,0,0,572,
+		573,1,0,0,0,573,574,5,8,0,0,574,575,3,94,47,0,575,577,1,0,0,0,576,538,
+		1,0,0,0,576,552,1,0,0,0,576,563,1,0,0,0,577,87,1,0,0,0,578,583,3,90,45,
+		0,579,580,5,13,0,0,580,582,3,90,45,0,581,579,1,0,0,0,582,585,1,0,0,0,583,
+		581,1,0,0,0,583,584,1,0,0,0,584,588,1,0,0,0,585,583,1,0,0,0,586,587,5,
+		13,0,0,587,589,3,92,46,0,588,586,1,0,0,0,588,589,1,0,0,0,589,592,1,0,0,
+		0,590,592,3,92,46,0,591,578,1,0,0,0,591,590,1,0,0,0,592,89,1,0,0,0,593,
+		596,3,116,58,0,594,595,5,14,0,0,595,597,3,114,57,0,596,594,1,0,0,0,596,
+		597,1,0,0,0,597,91,1,0,0,0,598,599,5,17,0,0,599,600,3,114,57,0,600,93,
+		1,0,0,0,601,603,5,9,0,0,602,604,3,96,48,0,603,602,1,0,0,0,603,604,1,0,
+		0,0,604,605,1,0,0,0,605,606,5,11,0,0,606,95,1,0,0,0,607,609,3,2,1,0,608,
+		607,1,0,0,0,609,610,1,0,0,0,610,608,1,0,0,0,610,611,1,0,0,0,611,97,1,0,
+		0,0,612,613,5,5,0,0,613,614,3,100,50,0,614,615,5,6,0,0,615,99,1,0,0,0,
+		616,618,5,13,0,0,617,616,1,0,0,0,618,621,1,0,0,0,619,617,1,0,0,0,619,620,
+		1,0,0,0,620,623,1,0,0,0,621,619,1,0,0,0,622,624,3,102,51,0,623,622,1,0,
+		0,0,623,624,1,0,0,0,624,633,1,0,0,0,625,627,5,13,0,0,626,625,1,0,0,0,627,
+		628,1,0,0,0,628,626,1,0,0,0,628,629,1,0,0,0,629,630,1,0,0,0,630,632,3,
+		102,51,0,631,626,1,0,0,0,632,635,1,0,0,0,633,631,1,0,0,0,633,634,1,0,0,
+		0,634,639,1,0,0,0,635,633,1,0,0,0,636,638,5,13,0,0,637,636,1,0,0,0,638,
+		641,1,0,0,0,639,637,1,0,0,0,639,640,1,0,0,0,640,101,1,0,0,0,641,639,1,
+		0,0,0,642,644,5,17,0,0,643,642,1,0,0,0,643,644,1,0,0,0,644,645,1,0,0,0,
+		645,646,3,114,57,0,646,103,1,0,0,0,647,648,3,106,53,0,648,649,5,16,0,0,
+		649,650,3,114,57,0,650,687,1,0,0,0,651,652,5,5,0,0,652,653,3,114,57,0,
+		653,654,5,6,0,0,654,655,5,16,0,0,655,656,3,114,57,0,656,687,1,0,0,0,657,
+		659,5,106,0,0,658,657,1,0,0,0,658,659,1,0,0,0,659,661,1,0,0,0,660,662,
+		5,25,0,0,661,660,1,0,0,0,661,662,1,0,0,0,662,663,1,0,0,0,663,664,3,106,
+		53,0,664,666,5,7,0,0,665,667,3,88,44,0,666,665,1,0,0,0,666,667,1,0,0,0,
+		667,668,1,0,0,0,668,669,5,8,0,0,669,670,3,94,47,0,670,687,1,0,0,0,671,
+		672,3,138,69,0,672,673,5,7,0,0,673,674,5,8,0,0,674,675,3,94,47,0,675,687,
+		1,0,0,0,676,677,3,140,70,0,677,678,5,7,0,0,678,679,3,90,45,0,679,680,5,
+		8,0,0,680,681,3,94,47,0,681,687,1,0,0,0,682,684,5,17,0,0,683,682,1,0,0,
+		0,683,684,1,0,0,0,684,685,1,0,0,0,685,687,3,114,57,0,686,647,1,0,0,0,686,
+		651,1,0,0,0,686,658,1,0,0,0,686,671,1,0,0,0,686,676,1,0,0,0,686,683,1,
+		0,0,0,687,105,1,0,0,0,688,696,3,142,71,0,689,696,5,119,0,0,690,696,3,134,
+		67,0,691,692,5,5,0,0,692,693,3,114,57,0,693,694,5,6,0,0,694,696,1,0,0,
+		0,695,688,1,0,0,0,695,689,1,0,0,0,695,690,1,0,0,0,695,691,1,0,0,0,696,
+		107,1,0,0,0,697,709,5,7,0,0,698,703,3,110,55,0,699,700,5,13,0,0,700,702,
+		3,110,55,0,701,699,1,0,0,0,702,705,1,0,0,0,703,701,1,0,0,0,703,704,1,0,
+		0,0,704,707,1,0,0,0,705,703,1,0,0,0,706,708,5,13,0,0,707,706,1,0,0,0,707,
+		708,1,0,0,0,708,710,1,0,0,0,709,698,1,0,0,0,709,710,1,0,0,0,710,711,1,
+		0,0,0,711,712,5,8,0,0,712,109,1,0,0,0,713,715,5,17,0,0,714,713,1,0,0,0,
+		714,715,1,0,0,0,715,718,1,0,0,0,716,719,3,114,57,0,717,719,3,144,72,0,
+		718,716,1,0,0,0,718,717,1,0,0,0,719,111,1,0,0,0,720,725,3,114,57,0,721,
+		722,5,13,0,0,722,724,3,114,57,0,723,721,1,0,0,0,724,727,1,0,0,0,725,723,
+		1,0,0,0,725,726,1,0,0,0,726,113,1,0,0,0,727,725,1,0,0,0,728,729,6,57,-1,
+		0,729,781,3,120,60,0,730,732,5,99,0,0,731,733,3,144,72,0,732,731,1,0,0,
+		0,732,733,1,0,0,0,733,734,1,0,0,0,734,781,3,82,41,0,735,736,5,77,0,0,736,
+		737,3,114,57,0,737,738,3,108,54,0,738,781,1,0,0,0,739,740,5,77,0,0,740,
+		781,3,114,57,42,741,742,5,77,0,0,742,743,5,18,0,0,743,781,3,144,72,0,744,
+		745,5,94,0,0,745,781,3,114,57,37,746,747,5,82,0,0,747,781,3,114,57,36,
+		748,749,5,74,0,0,749,781,3,114,57,35,750,751,5,19,0,0,751,781,3,114,57,
+		34,752,753,5,20,0,0,753,781,3,114,57,33,754,755,5,21,0,0,755,781,3,114,
+		57,32,756,757,5,22,0,0,757,781,3,114,57,31,758,759,5,23,0,0,759,781,3,
+		114,57,30,760,761,5,24,0,0,761,781,3,114,57,29,762,763,5,107,0,0,763,781,
+		3,114,57,28,764,765,5,105,0,0,765,766,5,7,0,0,766,767,3,114,57,0,767,768,
+		5,8,0,0,768,781,1,0,0,0,769,781,3,52,26,0,770,781,5,89,0,0,771,781,3,144,
+		72,0,772,781,5,102,0,0,773,781,3,128,64,0,774,781,3,98,49,0,775,781,3,
+		118,59,0,776,777,5,7,0,0,777,778,3,112,56,0,778,779,5,8,0,0,779,781,1,
+		0,0,0,780,728,1,0,0,0,780,730,1,0,0,0,780,735,1,0,0,0,780,739,1,0,0,0,
+		780,741,1,0,0,0,780,744,1,0,0,0,780,746,1,0,0,0,780,748,1,0,0,0,780,750,
+		1,0,0,0,780,752,1,0,0,0,780,754,1,0,0,0,780,756,1,0,0,0,780,758,1,0,0,
+		0,780,760,1,0,0,0,780,762,1,0,0,0,780,764,1,0,0,0,780,769,1,0,0,0,780,
+		770,1,0,0,0,780,771,1,0,0,0,780,772,1,0,0,0,780,773,1,0,0,0,780,774,1,
+		0,0,0,780,775,1,0,0,0,780,776,1,0,0,0,781,863,1,0,0,0,782,783,10,27,0,
+		0,783,784,5,28,0,0,784,862,3,114,57,27,785,786,10,26,0,0,786,787,7,0,0,
+		0,787,862,3,114,57,27,788,789,10,25,0,0,789,790,7,1,0,0,790,862,3,114,
+		57,26,791,792,10,24,0,0,792,793,5,29,0,0,793,862,3,114,57,25,794,795,10,
+		23,0,0,795,796,7,2,0,0,796,862,3,114,57,24,797,798,10,22,0,0,798,799,7,
+		3,0,0,799,862,3,114,57,23,800,801,10,21,0,0,801,802,5,73,0,0,802,862,3,
+		114,57,22,803,804,10,20,0,0,804,805,5,95,0,0,805,862,3,114,57,21,806,807,
+		10,19,0,0,807,808,7,4,0,0,808,862,3,114,57,20,809,810,10,18,0,0,810,811,
+		5,42,0,0,811,862,3,114,57,19,812,813,10,17,0,0,813,814,5,43,0,0,814,862,
+		3,114,57,18,815,816,10,16,0,0,816,817,5,44,0,0,817,862,3,114,57,17,818,
+		819,10,15,0,0,819,820,5,45,0,0,820,862,3,114,57,16,821,822,10,14,0,0,822,
+		823,5,46,0,0,823,862,3,114,57,15,824,825,10,13,0,0,825,826,5,15,0,0,826,
+		827,3,114,57,0,827,828,5,16,0,0,828,829,3,114,57,14,829,862,1,0,0,0,830,
+		831,10,12,0,0,831,832,5,14,0,0,832,862,3,114,57,12,833,834,10,11,0,0,834,
+		835,3,126,63,0,835,836,3,114,57,11,836,862,1,0,0,0,837,838,10,45,0,0,838,
+		839,5,5,0,0,839,840,3,112,56,0,840,841,5,6,0,0,841,862,1,0,0,0,842,844,
+		10,44,0,0,843,845,5,15,0,0,844,843,1,0,0,0,844,845,1,0,0,0,845,846,1,0,
+		0,0,846,848,5,18,0,0,847,849,5,30,0,0,848,847,1,0,0,0,848,849,1,0,0,0,
+		849,850,1,0,0,0,850,862,3,142,71,0,851,852,10,41,0,0,852,862,3,108,54,
+		0,853,854,10,39,0,0,854,855,4,57,29,0,855,862,5,19,0,0,856,857,10,38,0,
+		0,857,858,4,57,31,0,858,862,5,20,0,0,859,860,10,9,0,0,860,862,3,130,65,
+		0,861,782,1,0,0,0,861,785,1,0,0,0,861,788,1,0,0,0,861,791,1,0,0,0,861,
+		794,1,0,0,0,861,797,1,0,0,0,861,800,1,0,0,0,861,803,1,0,0,0,861,806,1,
+		0,0,0,861,809,1,0,0,0,861,812,1,0,0,0,861,815,1,0,0,0,861,818,1,0,0,0,
+		861,821,1,0,0,0,861,824,1,0,0,0,861,830,1,0,0,0,861,833,1,0,0,0,861,837,
+		1,0,0,0,861,842,1,0,0,0,861,851,1,0,0,0,861,853,1,0,0,0,861,856,1,0,0,
+		0,861,859,1,0,0,0,862,865,1,0,0,0,863,861,1,0,0,0,863,864,1,0,0,0,864,
+		115,1,0,0,0,865,863,1,0,0,0,866,870,3,144,72,0,867,870,3,98,49,0,868,870,
+		3,118,59,0,869,866,1,0,0,0,869,867,1,0,0,0,869,868,1,0,0,0,870,117,1,0,
+		0,0,871,883,5,9,0,0,872,877,3,104,52,0,873,874,5,13,0,0,874,876,3,104,
+		52,0,875,873,1,0,0,0,876,879,1,0,0,0,877,875,1,0,0,0,877,878,1,0,0,0,878,
+		881,1,0,0,0,879,877,1,0,0,0,880,882,5,13,0,0,881,880,1,0,0,0,881,882,1,
+		0,0,0,882,884,1,0,0,0,883,872,1,0,0,0,883,884,1,0,0,0,884,885,1,0,0,0,
+		885,886,5,11,0,0,886,119,1,0,0,0,887,909,3,78,39,0,888,890,5,106,0,0,889,
+		888,1,0,0,0,889,890,1,0,0,0,890,891,1,0,0,0,891,893,5,88,0,0,892,894,5,
+		25,0,0,893,892,1,0,0,0,893,894,1,0,0,0,894,895,1,0,0,0,895,897,5,7,0,0,
+		896,898,3,88,44,0,897,896,1,0,0,0,897,898,1,0,0,0,898,899,1,0,0,0,899,
+		900,5,8,0,0,900,909,3,94,47,0,901,903,5,106,0,0,902,901,1,0,0,0,902,903,
+		1,0,0,0,903,904,1,0,0,0,904,905,3,122,61,0,905,906,5,59,0,0,906,907,3,
+		124,62,0,907,909,1,0,0,0,908,887,1,0,0,0,908,889,1,0,0,0,908,902,1,0,0,
+		0,909,121,1,0,0,0,910,917,3,144,72,0,911,913,5,7,0,0,912,914,3,88,44,0,
+		913,912,1,0,0,0,913,914,1,0,0,0,914,915,1,0,0,0,915,917,5,8,0,0,916,910,
+		1,0,0,0,916,911,1,0,0,0,917,123,1,0,0,0,918,921,3,114,57,0,919,921,3,94,
+		47,0,920,918,1,0,0,0,920,919,1,0,0,0,921,125,1,0,0,0,922,923,7,5,0,0,923,
+		127,1,0,0,0,924,932,5,60,0,0,925,932,5,61,0,0,926,932,5,119,0,0,927,932,
+		3,130,65,0,928,932,5,4,0,0,929,932,3,134,67,0,930,932,3,136,68,0,931,924,
+		1,0,0,0,931,925,1,0,0,0,931,926,1,0,0,0,931,927,1,0,0,0,931,928,1,0,0,
+		0,931,929,1,0,0,0,931,930,1,0,0,0,932,129,1,0,0,0,933,937,5,120,0,0,934,
+		936,3,132,66,0,935,934,1,0,0,0,936,939,1,0,0,0,937,935,1,0,0,0,937,938,
+		1,0,0,0,938,940,1,0,0,0,939,937,1,0,0,0,940,941,5,120,0,0,941,131,1,0,
+		0,0,942,948,5,127,0,0,943,944,5,126,0,0,944,945,3,114,57,0,945,946,5,10,
+		0,0,946,948,1,0,0,0,947,942,1,0,0,0,947,943,1,0,0,0,948,133,1,0,0,0,949,
+		950,7,6,0,0,950,135,1,0,0,0,951,952,7,7,0,0,952,137,1,0,0,0,953,954,4,
+		69,33,0,954,955,3,144,72,0,955,956,3,106,53,0,956,139,1,0,0,0,957,958,
+		4,70,34,0,958,959,3,144,72,0,959,960,3,106,53,0,960,141,1,0,0,0,961,964,
+		3,144,72,0,962,964,3,146,73,0,963,961,1,0,0,0,963,962,1,0,0,0,964,143,
+		1,0,0,0,965,966,7,8,0,0,966,145,1,0,0,0,967,971,3,148,74,0,968,971,5,60,
+		0,0,969,971,5,61,0,0,970,967,1,0,0,0,970,968,1,0,0,0,970,969,1,0,0,0,971,
+		147,1,0,0,0,972,1019,5,71,0,0,973,1019,5,72,0,0,974,1019,5,73,0,0,975,
+		1019,5,74,0,0,976,1019,5,75,0,0,977,1019,5,76,0,0,978,1019,5,77,0,0,979,
+		1019,5,78,0,0,980,1019,5,79,0,0,981,1019,5,80,0,0,982,1019,5,81,0,0,983,
+		1019,5,82,0,0,984,1019,5,83,0,0,985,1019,5,84,0,0,986,1019,5,85,0,0,987,
+		1019,5,86,0,0,988,1019,5,87,0,0,989,1019,5,88,0,0,990,1019,5,89,0,0,991,
+		1019,5,90,0,0,992,1019,5,91,0,0,993,1019,5,92,0,0,994,1019,5,93,0,0,995,
+		1019,5,94,0,0,996,1019,5,95,0,0,997,1019,5,96,0,0,998,1019,5,99,0,0,999,
+		1019,5,100,0,0,1000,1019,5,101,0,0,1001,1019,5,102,0,0,1002,1019,5,103,
+		0,0,1003,1019,5,104,0,0,1004,1019,5,105,0,0,1005,1019,5,108,0,0,1006,1019,
+		3,150,75,0,1007,1019,5,111,0,0,1008,1019,5,112,0,0,1009,1019,5,113,0,0,
+		1010,1019,5,114,0,0,1011,1019,5,115,0,0,1012,1019,5,116,0,0,1013,1019,
+		5,117,0,0,1014,1019,5,106,0,0,1015,1019,5,107,0,0,1016,1019,5,98,0,0,1017,
+		1019,5,97,0,0,1018,972,1,0,0,0,1018,973,1,0,0,0,1018,974,1,0,0,0,1018,
+		975,1,0,0,0,1018,976,1,0,0,0,1018,977,1,0,0,0,1018,978,1,0,0,0,1018,979,
+		1,0,0,0,1018,980,1,0,0,0,1018,981,1,0,0,0,1018,982,1,0,0,0,1018,983,1,
+		0,0,0,1018,984,1,0,0,0,1018,985,1,0,0,0,1018,986,1,0,0,0,1018,987,1,0,
+		0,0,1018,988,1,0,0,0,1018,989,1,0,0,0,1018,990,1,0,0,0,1018,991,1,0,0,
+		0,1018,992,1,0,0,0,1018,993,1,0,0,0,1018,994,1,0,0,0,1018,995,1,0,0,0,
+		1018,996,1,0,0,0,1018,997,1,0,0,0,1018,998,1,0,0,0,1018,999,1,0,0,0,1018,
+		1000,1,0,0,0,1018,1001,1,0,0,0,1018,1002,1,0,0,0,1018,1003,1,0,0,0,1018,
+		1004,1,0,0,0,1018,1005,1,0,0,0,1018,1006,1,0,0,0,1018,1007,1,0,0,0,1018,
+		1008,1,0,0,0,1018,1009,1,0,0,0,1018,1010,1,0,0,0,1018,1011,1,0,0,0,1018,
+		1012,1,0,0,0,1018,1013,1,0,0,0,1018,1014,1,0,0,0,1018,1015,1,0,0,0,1018,
+		1016,1,0,0,0,1018,1017,1,0,0,0,1019,149,1,0,0,0,1020,1021,7,9,0,0,1021,
+		151,1,0,0,0,1022,1027,5,12,0,0,1023,1027,5,0,0,1,1024,1027,4,76,35,0,1025,
+		1027,4,76,36,0,1026,1022,1,0,0,0,1026,1023,1,0,0,0,1026,1024,1,0,0,0,1026,
+		1025,1,0,0,0,1027,153,1,0,0,0,112,155,158,184,188,195,201,205,212,220,
+		225,227,236,240,248,253,262,270,274,279,290,296,311,331,335,339,347,356,
+		361,369,374,379,386,393,400,418,422,424,431,437,442,457,460,465,468,479,
+		483,488,499,505,514,516,525,529,535,538,541,546,552,555,563,566,571,576,
+		583,588,591,596,603,610,619,623,628,633,639,643,658,661,666,683,686,695,
+		703,707,709,714,718,725,732,780,844,848,861,863,869,877,881,883,889,893,
+		897,902,908,913,916,920,931,937,947,963,970,1018,1026
+	]
 }

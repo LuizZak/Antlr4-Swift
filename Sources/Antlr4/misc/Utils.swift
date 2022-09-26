@@ -41,7 +41,7 @@ public class Utils {
     }
 
     public static func bitLeftShift(_ n: Int) -> Int64 {
-        return (1 as Int64) << Int64(n % 64)
+        return (Int64(1) &<< n)
     }
 
     public static func testBitLeftShiftArray(_ nArray: [Int], _ bitsShift: Int) -> Bool {
